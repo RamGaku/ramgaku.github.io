@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>람가의 블로그</title>
+    <title>블랙홀 시뮬레이션 - 람가의 블로그</title>
     <style>
         * {
             margin: 0;
@@ -13,121 +13,505 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
         
-        .container {
-            max-width: 800px;
-            padding: 40px 20px;
+        .space-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        #spaceCanvas {
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.5);
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #fff;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .controls {
             text-align: center;
-        }
-        
-        .hero {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        h1 {
-            font-size: 3.5rem;
             margin-bottom: 20px;
-            color: #2c3e50;
-            font-weight: 700;
         }
         
-        .subtitle {
-            font-size: 1.3rem;
-            color: #7f8c8d;
-            margin-bottom: 40px;
-            font-weight: 300;
+        .control-btn {
+            background: #444;
+            color: white;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background 0.3s;
         }
         
-        .welcome-message {
-            font-size: 1.1rem;
-            color: #555;
-            margin-bottom: 40px;
-            line-height: 1.8;
+        .control-btn:hover {
+            background: #555;
         }
         
-        .navigation {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .nav-link {
-            padding: 15px 30px;
+        .blog-button {
+            padding: 15px 40px;
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
+            font-size: 18px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .nav-link:hover {
-            transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            display: inline-block;
         }
         
-        .footer {
-            margin-top: 40px;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
+        .blog-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
         }
         
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero {
-                padding: 40px 20px;
-            }
-            
-            .navigation {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-link {
-                width: 200px;
+            #spaceCanvas {
+                width: 95vw;
+                height: 60vh;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <h1>람가의 블로그</h1>
-            <p class="subtitle">개발과 일상을 기록하는 공간</p>
-            
-            <div class="welcome-message">
-                <p>안녕하세요! 람가의 블로그에 오신 것을 환영합니다.</p>
-                <p>이곳에서 개발 이야기와 일상의 소소한 이야기들을 나누고 있습니다.</p>
-            </div>
-            
-            <nav class="navigation">
-                <a href="#" class="nav-link">블로그 글</a>
-                <a href="#" class="nav-link">프로젝트</a>
-                <a href="#" class="nav-link">소개</a>
-                <a href="#" class="nav-link">연락처</a>
-            </nav>
+    <div class="space-container">
+        <div class="info-panel">
+            <div>소행성: <span id="asteroidCount">0</span></div>
+            <div>파편: <span id="particleCount">0</span></div>
+            <div>흡수됨: <span id="absorbedCount">0</span></div>
         </div>
-        
-        <div class="footer">
-            <p>&copy; 2025 람가의 블로그. GitHub Pages로 제작되었습니다.</p>
+        <canvas id="spaceCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <button class="control-btn" onclick="togglePause()">일시정지</button>
+            <button class="control-btn" onclick="resetSimulation()">리셋</button>
+            <button class="control-btn" onclick="spawnAsteroid()">소행성 생성</button>
         </div>
     </div>
+    
+    <a href="#blog" class="blog-button">블로그 입장하기</a>
+
+    <script>
+        const canvas = document.getElementById('spaceCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 픽셀 아트 스타일 설정
+        ctx.imageSmoothingEnabled = false;
+        
+        let isPaused = false;
+        let animationId;
+        
+        // 블랙홀
+        const blackHole = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 40,
+            eventHorizon: 60,
+            gravityRange: 400,
+            mass: 1000
+        };
+        
+        // 소행성과 파편 배열
+        let asteroids = [];
+        let particles = [];
+        let stars = [];
+        let absorbers = [];
+        
+        // 통계
+        let stats = {
+            asteroidCount: 0,
+            particleCount: 0,
+            absorbedCount: 0
+        };
+        
+        // 별 생성 (배경)
+        function createStars() {
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    brightness: Math.random()
+                });
+            }
+        }
+        
+        // 소행성 생성
+        function createAsteroid() {
+            const side = Math.floor(Math.random() * 4);
+            let x, y, vx, vy;
+            
+            switch(side) {
+                case 0: // 왼쪽
+                    x = -30;
+                    y = Math.random() * canvas.height;
+                    vx = Math.random() * 2 + 1;
+                    vy = (Math.random() - 0.5) * 2;
+                    break;
+                case 1: // 오른쪽
+                    x = canvas.width + 30;
+                    y = Math.random() * canvas.height;
+                    vx = -(Math.random() * 2 + 1);
+                    vy = (Math.random() - 0.5) * 2;
+                    break;
+                case 2: // 위쪽
+                    x = Math.random() * canvas.width;
+                    y = -30;
+                    vx = (Math.random() - 0.5) * 2;
+                    vy = Math.random() * 2 + 1;
+                    break;
+                case 3: // 아래쪽
+                    x = Math.random() * canvas.width;
+                    y = canvas.height + 30;
+                    vx = (Math.random() - 0.5) * 2;
+                    vy = -(Math.random() * 2 + 1);
+                    break;
+            }
+            
+            asteroids.push({
+                x: x,
+                y: y,
+                vx: vx,
+                vy: vy,
+                size: Math.random() * 15 + 10,
+                health: 100,
+                maxHealth: 100,
+                color: Math.random() > 0.5 ? '#8B4513' : '#696969'
+            });
+        }
+        
+        // 파편 생성
+        function createParticles(x, y, count, color) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x + (Math.random() - 0.5) * 20,
+                    y: y + (Math.random() - 0.5) * 20,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    size: Math.random() * 3 + 1,
+                    life: 1,
+                    decay: 0,
+                    color: color
+                });
+            }
+        }
+        
+        // 중력 계산
+        function applyGravity(obj) {
+            const dx = blackHole.x - obj.x;
+            const dy = blackHole.y - obj.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < blackHole.gravityRange && distance > 0.1) {
+                const force = (blackHole.mass) / (distance * distance);
+                const ax = (dx / distance) * force * 0.1;
+                const ay = (dy / distance) * force * 0.1;
+                
+                obj.vx += ax;
+                obj.vy += ay;
+                
+                // 소행성이 블랙홀에 가까워질수록 파편 생성 (이벤트 호라이즌에서만)
+                if (distance < blackHole.eventHorizon && obj.health !== undefined) {
+                    obj.health -= 1;
+                    if (Math.random() < 0.2) {
+                        createParticles(obj.x, obj.y, 1, obj.color);
+                    }
+                }
+            }
+        }
+        
+        // 소행성끼리 충돌 체크
+        function checkAsteroidCollisions() {
+            for (let i = 0; i < asteroids.length; i++) {
+                for (let j = i + 1; j < asteroids.length; j++) {
+                    const a1 = asteroids[i];
+                    const a2 = asteroids[j];
+                    
+                    const dx = a1.x - a2.x;
+                    const dy = a1.y - a2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = a1.size + a2.size;
+                    
+                    if (distance < minDistance) {
+                        // 소행성 충돌! 둘 다 반으로 쪼개기
+                        
+                        // 첫 번째 소행성을 두 개로 분할
+                        if (a1.size > 8) {
+                            const newSize1 = a1.size * 0.7;
+                            const newSize2 = a1.size * 0.7;
+                            
+                            asteroids.push({
+                                x: a1.x + Math.random() * 10 - 5,
+                                y: a1.y + Math.random() * 10 - 5,
+                                vx: a1.vx + (Math.random() - 0.5) * 4,
+                                vy: a1.vy + (Math.random() - 0.5) * 4,
+                                size: newSize1,
+                                health: 100,
+                                maxHealth: 100,
+                                color: a1.color
+                            });
+                            
+                            asteroids.push({
+                                x: a1.x + Math.random() * 10 - 5,
+                                y: a1.y + Math.random() * 10 - 5,
+                                vx: a1.vx + (Math.random() - 0.5) * 4,
+                                vy: a1.vy + (Math.random() - 0.5) * 4,
+                                size: newSize2,
+                                health: 100,
+                                maxHealth: 100,
+                                color: a1.color
+                            });
+                        } else {
+                            // 너무 작으면 파편으로 변환
+                            createParticles(a1.x, a1.y, 8, a1.color);
+                        }
+                        
+                        // 두 번째 소행성을 두 개로 분할
+                        if (a2.size > 8) {
+                            const newSize1 = a2.size * 0.7;
+                            const newSize2 = a2.size * 0.7;
+                            
+                            asteroids.push({
+                                x: a2.x + Math.random() * 10 - 5,
+                                y: a2.y + Math.random() * 10 - 5,
+                                vx: a2.vx + (Math.random() - 0.5) * 4,
+                                vy: a2.vy + (Math.random() - 0.5) * 4,
+                                size: newSize1,
+                                health: 100,
+                                maxHealth: 100,
+                                color: a2.color
+                            });
+                            
+                            asteroids.push({
+                                x: a2.x + Math.random() * 10 - 5,
+                                y: a2.y + Math.random() * 10 - 5,
+                                vx: a2.vx + (Math.random() - 0.5) * 4,
+                                vy: a2.vy + (Math.random() - 0.5) * 4,
+                                size: newSize2,
+                                health: 100,
+                                maxHealth: 100,
+                                color: a2.color
+                            });
+                        } else {
+                            // 너무 작으면 파편으로 변환
+                            createParticles(a2.x, a2.y, 8, a2.color);
+                        }
+                        
+                        // 원래 소행성들 제거 (뒤에서부터 제거)
+                        asteroids.splice(Math.max(i, j), 1);
+                        asteroids.splice(Math.min(i, j), 1);
+                        
+                        return; // 한 번에 하나의 충돌만 처리
+                    }
+                }
+            }
+        }
+
+        // 소행성 업데이트
+        function updateAsteroids() {
+            // 소행성끼리 충돌 체크
+            checkAsteroidCollisions();
+            
+            for (let i = asteroids.length - 1; i >= 0; i--) {
+                const asteroid = asteroids[i];
+                
+                // 중력 적용
+                applyGravity(asteroid);
+                
+                // 위치 업데이트
+                asteroid.x += asteroid.vx;
+                asteroid.y += asteroid.vy;
+                
+                // 체력이 0이 되면 파편으로 분해
+                if (asteroid.health <= 0) {
+                    createParticles(asteroid.x, asteroid.y, 15, asteroid.color);
+                    asteroids.splice(i, 1);
+                    continue;
+                }
+                
+                // 화면 밖으로 나가면 제거 (더 넓은 범위)
+                if (asteroid.x < -200 || asteroid.x > canvas.width + 200 || 
+                    asteroid.y < -200 || asteroid.y > canvas.height + 200) {
+                    asteroids.splice(i, 1);
+                }
+            }
+        }
+        
+        // 파편 업데이트
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const particle = particles[i];
+                
+                // 중력 적용 (파편도 중력의 영향을 받음)
+                applyGravity(particle);
+                
+                // 위치 업데이트
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                
+                // 마찰력 (큰 파편은 덜 감속)
+                const friction = particle.isFragment ? 0.999 : 0.998;
+                particle.vx *= friction;
+                particle.vy *= friction;
+                
+                // 블랙홀 중심과 충돌하지 않음 - 그냥 통과함
+                // 진자 운동처럼 블랙홀 주변을 계속 맴돔
+                
+                // 화면 밖으로 나가면 제거
+                if (particle.x < -500 || particle.x > canvas.width + 500 || 
+                    particle.y < -500 || particle.y > canvas.height + 500) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+        
+        // 픽셀 아트 스타일로 원 그리기
+        function drawPixelCircle(x, y, radius, color) {
+            ctx.fillStyle = color;
+            for (let i = -radius; i <= radius; i++) {
+                for (let j = -radius; j <= radius; j++) {
+                    if (i * i + j * j <= radius * radius) {
+                        ctx.fillRect(Math.floor(x + i), Math.floor(y + j), 1, 1);
+                    }
+                }
+            }
+        }
+        
+        // 그리기 함수
+        function draw() {
+            // 배경 지우기
+            ctx.fillStyle = '#000008';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 별 그리기
+            stars.forEach(star => {
+                const twinkle = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness * twinkle})`;
+                ctx.fillRect(Math.floor(star.x), Math.floor(star.y), star.size, star.size);
+            });
+            
+            // 블랙홀 중력장 그리기 (링)
+            for (let r = blackHole.eventHorizon; r < blackHole.gravityRange; r += 20) {
+                const alpha = 1 - (r - blackHole.eventHorizon) / (blackHole.gravityRange - blackHole.eventHorizon);
+                ctx.strokeStyle = `rgba(138, 43, 226, ${alpha * 0.1})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(blackHole.x, blackHole.y, r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // 블랙홀 이벤트 호라이즌
+            drawPixelCircle(blackHole.x, blackHole.y, blackHole.eventHorizon, 'rgba(75, 0, 130, 0.3)');
+            
+            // 블랙홀 중심 (완전히 검은색)
+            drawPixelCircle(blackHole.x, blackHole.y, blackHole.radius, '#000000');
+            
+            // 블랙홀 중심의 미세한 보라빛
+            const time = Date.now() * 0.003;
+            const centerGlow = Math.sin(time) * 0.3 + 0.7;
+            drawPixelCircle(blackHole.x, blackHole.y, 5, `rgba(138, 43, 226, ${centerGlow})`);
+            
+            // 소행성 그리기
+            asteroids.forEach(asteroid => {
+                const healthRatio = asteroid.health / asteroid.maxHealth;
+                const red = Math.floor((1 - healthRatio) * 255);
+                const original = asteroid.color === '#8B4513' ? [139, 69, 19] : [105, 105, 105];
+                
+                const finalColor = `rgb(${Math.min(255, original[0] + red)}, ${Math.max(0, original[1] - red)}, ${Math.max(0, original[2] - red)})`;
+                
+                drawPixelCircle(asteroid.x, asteroid.y, asteroid.size, finalColor);
+                
+                // 소행성 표면 디테일
+                for (let i = 0; i < 3; i++) {
+                    const angle = (Date.now() * 0.001 + asteroid.x) * 0.5 + i * Math.PI * 2 / 3;
+                    const detailX = asteroid.x + Math.cos(angle) * (asteroid.size * 0.7);
+                    const detailY = asteroid.y + Math.sin(angle) * (asteroid.size * 0.7);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                    ctx.fillRect(Math.floor(detailX), Math.floor(detailY), 2, 2);
+                }
+            });
+            
+            // 파편 그리기
+            particles.forEach(particle => {
+                const size = Math.max(1, particle.size);
+                
+                if (particle.isFragment) {
+                    // 큰 파편은 픽셀 원으로 그리기
+                    drawPixelCircle(particle.x, particle.y, size, particle.color);
+                } else {
+                    // 작은 파편은 사각형으로 그리기
+                    ctx.fillStyle = particle.color;
+                    ctx.fillRect(Math.floor(particle.x), Math.floor(particle.y), Math.ceil(size), Math.ceil(size));
+                }
+            });
+        }
+        
+        // 통계 업데이트
+        function updateStats() {
+            stats.asteroidCount = asteroids.length;
+            stats.particleCount = particles.length;
+            
+            document.getElementById('asteroidCount').textContent = stats.asteroidCount;
+            document.getElementById('particleCount').textContent = stats.particleCount;
+            document.getElementById('absorbedCount').textContent = stats.absorbedCount;
+        }
+        
+        // 게임 루프
+        function gameLoop() {
+            if (!isPaused) {
+                updateAsteroids();
+                updateParticles();
+                draw();
+                updateStats();
+                
+                // 랜덤하게 소행성 생성
+                if (Math.random() < 0.01 && asteroids.length < 5) {
+                    createAsteroid();
+                }
+            }
+            
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        // 컨트롤 함수들
+        function togglePause() {
+            isPaused = !isPaused;
+        }
+        
+        function resetSimulation() {
+            asteroids = [];
+            particles = [];
+            stats.absorbedCount = 0;
+        }
+        
+        function spawnAsteroid() {
+            createAsteroid();
+        }
+        
+        // 초기화
+        createStars();
+        gameLoop();
+    </script>
 </body>
 </html>
