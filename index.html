@@ -145,6 +145,7 @@
             <div>소행성: <span id="asteroidCount">0</span></div>
             <div>파편: <span id="particleCount">0</span></div>
             <div>흡수됨: <span id="absorbedCount">0</span></div>
+            <div>중력: <span id="gravityStrength">1000</span></div>
         </div>
         <canvas id="spaceCanvas" width="800" height="600"></canvas>
         <div class="controls">
@@ -183,6 +184,7 @@
             blackHole.radius = 40 * scale;
             blackHole.eventHorizon = 60 * scale;
             blackHole.gravityRange = 400 * scale;
+            blackHole.coreRadius = 8 * scale; // 아주 작은 중심 원
         }
         
         const blackHole = {
@@ -191,7 +193,10 @@
             radius: 40,
             eventHorizon: 60,
             gravityRange: 400,
-            mass: 1000
+            coreRadius: 8, // 중력이 강해지는 중심 원
+            mass: 1000,
+            baseMass: 1000, // 기본 중력
+            coreParticleCount: 0 // 중심에 흡수된 파편 수
         };
         
         // 소행성과 파편 배열
@@ -293,11 +298,23 @@
                 obj.vx += ax;
                 obj.vy += ay;
                 
-                // 소행성이 블랙홀에 가까워질수록 파편 생성 (이벤트 호라이즌에서만)
-                if (distance < blackHole.eventHorizon && obj.health !== undefined) {
-                    obj.health -= 1;
-                    if (Math.random() < 0.2) {
-                        createParticles(obj.x, obj.y, 1, obj.color);
+                // 소행성이 강한 중력지대를 지날수록 더 많은 파편 생성
+                if (obj.health !== undefined && obj.size !== undefined) {
+                    const strongGravityZone = blackHole.eventHorizon * 1.5; // 이벤트 호라이즌의 1.5배까지
+                    
+                    if (distance < strongGravityZone) {
+                        const gravityStrength = 1 - (distance / strongGravityZone); // 0~1 사이
+                        const sizeMultiplier = Math.max(1, obj.size / 15); // 큰 소행성일수록 더 많이
+                        
+                        obj.health -= gravityStrength * 2 * sizeMultiplier;
+                        
+                        // 파편 생성 확률과 개수 증가
+                        const particleChance = 0.3 * gravityStrength * sizeMultiplier;
+                        const particleCount = Math.floor(gravityStrength * sizeMultiplier * 3) + 1;
+                        
+                        if (Math.random() < particleChance) {
+                            createParticles(obj.x, obj.y, particleCount, obj.color);
+                        }
                     }
                 }
             }
@@ -437,8 +454,18 @@
                 particle.vx *= friction;
                 particle.vy *= friction;
                 
-                // 블랙홀 중심과 충돌하지 않음 - 그냥 통과함
-                // 진자 운동처럼 블랙홀 주변을 계속 맴돔
+                // 아주 작은 중심 원에 파편이 닿으면 중력 강화
+                const dx = blackHole.x - particle.x;
+                const dy = blackHole.y - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < blackHole.coreRadius) {
+                    // 파편이 중심 원에 흡수되어 중력 증가
+                    blackHole.coreParticleCount++;
+                    blackHole.mass = blackHole.baseMass + (blackHole.coreParticleCount * 50); // 파편 하나당 중력 50 증가
+                    particles.splice(i, 1);
+                    continue;
+                }
                 
                 // 화면 밖으로 나가면 제거
                 if (particle.x < -500 || particle.x > canvas.width + 500 || 
@@ -494,6 +521,11 @@
             const centerGlow = Math.sin(time) * 0.3 + 0.7;
             drawPixelCircle(blackHole.x, blackHole.y, 5, `rgba(138, 43, 226, ${centerGlow})`);
             
+            // 아주 작은 중심 원 (중력 강화 지점) - 흡수된 파편 수에 따라 밝아짐
+            const coreIntensity = Math.min(1, blackHole.coreParticleCount / 20); // 20개까지 최대 밝기
+            const coreGlow = Math.sin(time * 2) * 0.2 + 0.8;
+            drawPixelCircle(blackHole.x, blackHole.y, blackHole.coreRadius, `rgba(255, 100, 255, ${coreIntensity * coreGlow * 0.8})`);
+            
             // 소행성 그리기
             asteroids.forEach(asteroid => {
                 const healthRatio = asteroid.health / asteroid.maxHealth;
@@ -537,6 +569,7 @@
             document.getElementById('asteroidCount').textContent = stats.asteroidCount;
             document.getElementById('particleCount').textContent = stats.particleCount;
             document.getElementById('absorbedCount').textContent = stats.absorbedCount;
+            document.getElementById('gravityStrength').textContent = Math.floor(blackHole.mass);
         }
         
         // 캔버스 리사이즈 처리
@@ -575,6 +608,8 @@
             asteroids = [];
             particles = [];
             stats.absorbedCount = 0;
+            blackHole.coreParticleCount = 0;
+            blackHole.mass = blackHole.baseMass;
         }
         
         function spawnAsteroid() {
