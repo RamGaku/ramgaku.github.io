@@ -20,6 +20,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            touch-action: manipulation; /* 모바일 더블탭 줌 방지 */
         }
         
         .space-container {
@@ -63,10 +64,69 @@
             cursor: pointer;
             margin: 0 5px;
             transition: background 0.3s;
+            touch-action: manipulation; /* 더블탭 줌 방지 */
+            user-select: none; /* 텍스트 선택 방지 */
         }
         
         .control-btn:hover {
             background: #555;
+        }
+        
+        .spawn-input {
+            background: #333;
+            color: white;
+            border: 1px solid #666;
+            padding: 6px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            width: 60px;
+            margin: 0 5px;
+            text-align: center;
+        }
+        
+        .spawn-label {
+            color: #ccc;
+            font-size: 12px;
+            margin-left: 2px;
+        }
+        
+        .slider-container {
+            width: 100%;
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .spawn-slider {
+            width: 200px;
+            height: 6px;
+            border-radius: 3px;
+            background: #333;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .spawn-slider::-webkit-slider-thumb {
+            appearance: -webkit-appearance;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .spawn-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
         
         .blog-button {
@@ -113,6 +173,20 @@
                 margin: 0 3px;
             }
             
+            .spawn-input {
+                width: 50px;
+                font-size: 10px;
+                padding: 4px 6px;
+            }
+            
+            .spawn-label {
+                font-size: 10px;
+            }
+            
+            .spawn-slider {
+                width: 150px;
+            }
+            
             .blog-button {
                 padding: 12px 30px;
                 font-size: 16px;
@@ -130,6 +204,20 @@
                 padding: 5px 10px;
                 font-size: 11px;
                 margin: 0 2px;
+            }
+            
+            .spawn-input {
+                width: 45px;
+                font-size: 9px;
+                padding: 3px 4px;
+            }
+            
+            .spawn-label {
+                font-size: 9px;
+            }
+            
+            .spawn-slider {
+                width: 120px;
             }
             
             .blog-button {
@@ -152,6 +240,11 @@
             <button class="control-btn" onclick="togglePause()">일시정지</button>
             <button class="control-btn" onclick="resetSimulation()">리셋</button>
             <button class="control-btn" onclick="spawnAsteroid()">소행성 생성</button>
+            <input type="number" id="spawnRate" class="spawn-input" min="0.2" max="10" step="0.1" value="0.2">
+            <label for="spawnRate" class="spawn-label">초당</label>
+            <div class="slider-container">
+                <input type="range" id="spawnSlider" class="spawn-slider" min="0.2" max="10" step="0.1" value="0.2">
+            </div>
         </div>
     </div>
     
@@ -269,14 +362,17 @@
         }
         
         // 파편 생성
-        function createParticles(x, y, count, color) {
+        function createParticles(x, y, count, color, sourceSize = null) {
             for (let i = 0; i < count; i++) {
+                // 소행성 크기에 따른 파편 크기 조정
+                const particleSize = sourceSize ? Math.min(sourceSize * 0.1, Math.random() * 3 + 1) : Math.random() * 3 + 1;
+                
                 particles.push({
                     x: x + (Math.random() - 0.5) * 20,
                     y: y + (Math.random() - 0.5) * 20,
                     vx: (Math.random() - 0.5) * 8,
                     vy: (Math.random() - 0.5) * 8,
-                    size: Math.random() * 3 + 1,
+                    size: particleSize,
                     life: 1,
                     decay: 0,
                     color: color
@@ -298,23 +394,37 @@
                 obj.vx += ax;
                 obj.vy += ay;
                 
-                // 소행성이 강한 중력지대를 지날수록 더 많은 파편 생성
+                // 소행성이 중력 범위 안에 있을 때 거리에 따른 파편 생성
                 if (obj.health !== undefined && obj.size !== undefined) {
-                    const strongGravityZone = blackHole.eventHorizon * 1.5; // 이벤트 호라이즌의 1.5배까지
+                    // 거리에 따른 중력 강도 계산 (역제곱 법칙)
+                    const gravityStrengthByDistance = Math.min(1, (blackHole.gravityRange / distance) * 0.3);
+                    const sizeMultiplier = Math.max(1, obj.size / 15); // 큰 소행성일수록 더 많이
                     
-                    if (distance < strongGravityZone) {
-                        const gravityStrength = 1 - (distance / strongGravityZone); // 0~1 사이
-                        const sizeMultiplier = Math.max(1, obj.size / 15); // 큰 소행성일수록 더 많이
+                    // 멀리 있어도 조금씩 파편 생성 (매우 낮은 확률)
+                    const baseParticleChance = gravityStrengthByDistance * 0.02 * sizeMultiplier;
+                    
+                    // 가까이 있으면 많이 파편 생성
+                    let intensiveZone = 0;
+                    if (distance < blackHole.eventHorizon * 2) {
+                        intensiveZone = 1 - (distance / (blackHole.eventHorizon * 2));
+                        obj.health -= intensiveZone * 3 * sizeMultiplier;
+                    }
+                    
+                    // 파편 생성 확률과 개수
+                    const totalParticleChance = baseParticleChance + (intensiveZone * 0.4 * sizeMultiplier);
+                    let particleCount = 1;
+                    
+                    if (intensiveZone > 0) {
+                        // 가까이 있으면 많은 파편 생성
+                        particleCount = Math.floor(intensiveZone * sizeMultiplier * 5) + 1;
+                    }
+                    
+                    if (Math.random() < totalParticleChance) {
+                        // 파편을 떼어낼 때 소행성 크기도 줄임
+                        const massLoss = particleCount * 0.5; // 파편 개수에 비례한 질량 손실
+                        obj.size = Math.max(5, obj.size - massLoss); // 최소 크기 5 유지
                         
-                        obj.health -= gravityStrength * 2 * sizeMultiplier;
-                        
-                        // 파편 생성 확률과 개수 증가
-                        const particleChance = 0.3 * gravityStrength * sizeMultiplier;
-                        const particleCount = Math.floor(gravityStrength * sizeMultiplier * 3) + 1;
-                        
-                        if (Math.random() < particleChance) {
-                            createParticles(obj.x, obj.y, particleCount, obj.color);
-                        }
+                        createParticles(obj.x, obj.y, particleCount, obj.color, obj.size);
                     }
                 }
             }
@@ -363,7 +473,7 @@
                             });
                         } else {
                             // 너무 작으면 파편으로 변환
-                            createParticles(a1.x, a1.y, 8, a1.color);
+                            createParticles(a1.x, a1.y, 8, a1.color, a1.size);
                         }
                         
                         // 두 번째 소행성을 두 개로 분할
@@ -394,7 +504,7 @@
                             });
                         } else {
                             // 너무 작으면 파편으로 변환
-                            createParticles(a2.x, a2.y, 8, a2.color);
+                            createParticles(a2.x, a2.y, 8, a2.color, a2.size);
                         }
                         
                         // 원래 소행성들 제거 (뒤에서부터 제거)
@@ -422,9 +532,10 @@
                 asteroid.x += asteroid.vx;
                 asteroid.y += asteroid.vy;
                 
-                // 체력이 0이 되면 파편으로 분해
-                if (asteroid.health <= 0) {
-                    createParticles(asteroid.x, asteroid.y, 15, asteroid.color);
+                // 체력이 0이 되거나 크기가 너무 작아지면 완전히 파편화
+                if (asteroid.health <= 0 || asteroid.size <= 5) {
+                    const finalParticleCount = Math.floor(asteroid.size / 2) + 5;
+                    createParticles(asteroid.x, asteroid.y, finalParticleCount, asteroid.color, asteroid.size);
                     asteroids.splice(i, 1);
                     continue;
                 }
@@ -442,9 +553,6 @@
             for (let i = particles.length - 1; i >= 0; i--) {
                 const particle = particles[i];
                 
-                // 중력 적용 (파편도 중력의 영향을 받음)
-                applyGravity(particle);
-                
                 // 위치 업데이트
                 particle.x += particle.vx;
                 particle.y += particle.vy;
@@ -454,15 +562,51 @@
                 particle.vx *= friction;
                 particle.vy *= friction;
                 
-                // 아주 작은 중심 원에 파편이 닿으면 중력 강화
+                // 블랙홀과의 거리 계산
                 const dx = blackHole.x - particle.x;
                 const dy = blackHole.y - particle.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
+                // 중력 적용 (파편도 중력의 영향을 받되, 파편 생성은 없음)
+                if (distance < blackHole.gravityRange && distance > 0.1) {
+                    const force = (blackHole.mass) / (distance * distance);
+                    const ax = (dx / distance) * force * 0.1;
+                    const ay = (dy / distance) * force * 0.1;
+                    
+                    particle.vx += ax;
+                    particle.vy += ay;
+                    
+                    // 파편도 중력 영향으로 조금씩 분해 (아주 가까이 있을 때만)
+                    if (distance < blackHole.eventHorizon && particle.isFragment && particle.size > 2) {
+                        const fragmentChance = (1 - distance / blackHole.eventHorizon) * 0.005;
+                        if (Math.random() < fragmentChance) {
+                            // 큰 파편을 더 작은 파편으로 분해
+                            for (let j = 0; j < 2; j++) {
+                                const angle = Math.random() * Math.PI * 2;
+                                const speed = Math.random() * 1 + 0.5;
+                                particles.push({
+                                    x: particle.x + Math.cos(angle) * 3,
+                                    y: particle.y + Math.sin(angle) * 3,
+                                    vx: particle.vx * 0.7 + Math.cos(angle) * speed,
+                                    vy: particle.vy * 0.7 + Math.sin(angle) * speed,
+                                    size: particle.size * 0.7,
+                                    life: 1,
+                                    decay: 0,
+                                    color: particle.color,
+                                    isFragment: true
+                                });
+                            }
+                            particles.splice(i, 1);
+                            continue;
+                        }
+                    }
+                }
+                
+                // 아주 작은 중심 원에 파편이 닿으면 중력 강화
                 if (distance < blackHole.coreRadius) {
                     // 파편이 중심 원에 흡수되어 중력 증가
                     blackHole.coreParticleCount++;
-                    blackHole.mass = blackHole.baseMass + (blackHole.coreParticleCount * 50); // 파편 하나당 중력 50 증가
+                    blackHole.mass = blackHole.baseMass + (blackHole.coreParticleCount * 100); // 파편 하나당 중력 100 증가
                     particles.splice(i, 1);
                     continue;
                 }
@@ -566,10 +710,13 @@
             stats.asteroidCount = asteroids.length;
             stats.particleCount = particles.length;
             
+            // 중력 표시를 1부터 시작하도록 스케일 조정
+            const gravityLevel = Math.floor((blackHole.mass - blackHole.baseMass) / 100) + 1;
+            
             document.getElementById('asteroidCount').textContent = stats.asteroidCount;
             document.getElementById('particleCount').textContent = stats.particleCount;
             document.getElementById('absorbedCount').textContent = stats.absorbedCount;
-            document.getElementById('gravityStrength').textContent = Math.floor(blackHole.mass);
+            document.getElementById('gravityStrength').textContent = gravityLevel;
         }
         
         // 캔버스 리사이즈 처리
@@ -582,17 +729,43 @@
             updateBlackHole();
         }
         
+        // 소행성 자동 생성 관련
+        let lastSpawnTime = 0;
+        
+        function getSpawnRate() {
+            const spawnInput = document.getElementById('spawnRate');
+            return parseFloat(spawnInput.value) || 0.2;
+        }
+        
+        // 슬라이더와 입력창 동기화
+        function syncSpawnControls() {
+            const spawnInput = document.getElementById('spawnRate');
+            const spawnSlider = document.getElementById('spawnSlider');
+            
+            spawnInput.addEventListener('input', function() {
+                spawnSlider.value = this.value;
+            });
+            
+            spawnSlider.addEventListener('input', function() {
+                spawnInput.value = this.value;
+            });
+        }
+        
         // 게임 루프
-        function gameLoop() {
+        function gameLoop(currentTime = 0) {
             if (!isPaused) {
                 updateAsteroids();
                 updateParticles();
                 draw();
                 updateStats();
                 
-                // 랜덤하게 소행성 생성
-                if (Math.random() < 0.01 && asteroids.length < 5) {
+                // 설정된 초당 생성률에 따른 소행성 생성
+                const spawnRate = getSpawnRate();
+                const spawnInterval = 1000 / spawnRate; // 밀리초 단위
+                
+                if (spawnRate > 0 && currentTime - lastSpawnTime >= spawnInterval) {
                     createAsteroid();
+                    lastSpawnTime = currentTime;
                 }
             }
             
@@ -619,6 +792,7 @@
         // 초기화
         createStars();
         updateBlackHole();
+        syncSpawnControls();
         
         // 리사이즈 이벤트 리스너
         window.addEventListener('resize', handleResize);
