@@ -39,6 +39,57 @@ const posts = {
                 <li>중력 및 질량계수에 대한 세밀한 조절이 추가적으로 필요</li>
             </ul>
         `
+    },
+    'giscus-comment': {
+        title: 'GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)',
+        category: 'Web',
+        date: '2024',
+        sections: [
+            { id: 'intro', title: '소개', level: 2 },
+            { id: 'why-giscus', title: '왜 Giscus인가', level: 2 },
+            { id: 'setup', title: '설정 방법', level: 2 },
+            { id: 'code', title: '코드 적용', level: 2 }
+        ],
+        content: `
+            <h2 id="intro">소개</h2>
+            <p>GitHub Pages 정적 사이트에 댓글 기능을 추가하는 방법.</p>
+            <p>기존에 Cusdis를 썼는데, 매번 관리자가 승인해야 댓글이 보이는 번거로움이 있어서 Giscus로 변경했다.</p>
+
+            <h2 id="why-giscus">왜 Giscus인가</h2>
+            <p>정적 사이트 댓글 시스템 비교:</p>
+            <ul>
+                <li><strong>Cusdis</strong> - 익명 가능, 근데 관리자 승인 필요 (번거로움)</li>
+                <li><strong>Disqus</strong> - 광고 있고 무거움</li>
+                <li><strong>utterances</strong> - GitHub Issues 기반, 가벼움</li>
+                <li><strong>Giscus</strong> - GitHub Discussions 기반, 승인 불필요, 리액션 지원</li>
+            </ul>
+            <p>Giscus가 가장 깔끔하고 GitHub Pages와 찰떡궁합이라 선택.</p>
+
+            <h2 id="setup">설정 방법</h2>
+            <ol>
+                <li>GitHub repo Settings → Features → <strong>Discussions 활성화</strong></li>
+                <li><a href="https://giscus.app/ko" target="_blank">giscus.app</a> 접속</li>
+                <li>Repository에 <code>username/repo-name</code> 입력</li>
+                <li>Discussion 카테고리 선택 (보통 Announcements)</li>
+                <li>생성된 script 코드 복사</li>
+            </ol>
+
+            <h2 id="code">코드 적용</h2>
+            <p>giscus.app에서 생성된 코드 예시:</p>
+            <pre><code>&lt;script src="https://giscus.app/client.js"
+    data-repo="username/repo-name"
+    data-repo-id="R_xxxxxx"
+    data-category="Announcements"
+    data-category-id="DIC_xxxxxx"
+    data-mapping="pathname"
+    data-theme="dark"
+    data-lang="ko"
+    crossorigin="anonymous"
+    async&gt;
+&lt;/script&gt;</code></pre>
+            <p>동적으로 로드하려면 JavaScript로 script 엘리먼트를 생성해서 추가하면 됨.</p>
+            <p>주의: 로컬 file:// 환경에서는 보안 정책 때문에 작동 안 함. 배포 후 테스트 필요.</p>
+        `
     }
 };
 
