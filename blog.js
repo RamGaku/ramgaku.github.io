@@ -67,14 +67,22 @@ function parseMarkdown(md) {
 function markdownToHtml(md) {
     let html = md;
 
-    // 코드 블록 (```로 감싼 부분)
+    // 코드 블록을 먼저 추출하여 플레이스홀더로 치환 (충돌 방지)
+    const codeBlocks = [];
     html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
         const escaped = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return `<pre><code class="language-${lang}">${escaped}</code></pre>`;
+        const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
+        codeBlocks.push(`<pre><code class="language-${lang}">${escaped}</code></pre>`);
+        return placeholder;
     });
 
-    // 인라인 코드
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // 인라인 코드도 먼저 추출
+    const inlineCodes = [];
+    html = html.replace(/`([^`]+)`/g, (match, code) => {
+        const placeholder = `__INLINE_CODE_${inlineCodes.length}__`;
+        inlineCodes.push(`<code>${code}</code>`);
+        return placeholder;
+    });
 
     // 헤더 (## → h2, ### → h3)
     html = html.replace(/^### (.+)$/gm, (match, title) => {
@@ -118,11 +126,22 @@ function markdownToHtml(md) {
         para = para.trim();
         if (!para) return '';
         if (para.startsWith('<')) return para;
+        if (para.startsWith('__CODE_BLOCK_')) return para; // 코드 블록 플레이스홀더는 그대로
         return `<p>${para}</p>`;
     }).join('\n');
 
     // 빈 p 태그 제거
     html = html.replace(/<p>\s*<\/p>/g, '');
+
+    // 코드 블록 복원
+    codeBlocks.forEach((block, i) => {
+        html = html.replace(`__CODE_BLOCK_${i}__`, block);
+    });
+
+    // 인라인 코드 복원
+    inlineCodes.forEach((code, i) => {
+        html = html.replace(`__INLINE_CODE_${i}__`, code);
+    });
 
     return html;
 }
