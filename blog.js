@@ -1,6 +1,8 @@
-// Cusdis 설정
-const CUSDIS_APP_ID = 'ea2dd455-570d-4ac5-a635-50ebd613ebdc';
-const CUSDIS_HOST = 'https://cusdis.com';
+// Giscus 설정
+const GISCUS_REPO = 'RamGaku/ramgaku.github.io';
+const GISCUS_REPO_ID = 'R_kgDOQcvYMg';
+const GISCUS_CATEGORY = 'Announcements';
+const GISCUS_CATEGORY_ID = 'DIC_kwDOQcvYMs4CzI0d';
 
 // 게시물 데이터
 const posts = {
@@ -156,19 +158,12 @@ function loadPost(postId) {
         <div class="post-content">${post.content}</div>
         <div class="comments-section">
             <h3 class="comments-title">댓글</h3>
-            <div id="cusdis_thread"
-                data-host="${CUSDIS_HOST}"
-                data-app-id="${CUSDIS_APP_ID}"
-                data-page-id="${postId}"
-                data-page-title="${post.title}"
-                data-page-url="${window.location.origin}/#${postId}"
-                data-theme="dark"
-            ></div>
+            <div class="giscus"></div>
         </div>
     `;
 
-    // Cusdis 스크립트 로드
-    loadCusdis();
+    // Giscus 스크립트 로드
+    loadGiscus(postId);
 
     // TOC 업데이트
     updateTOC(post.sections);
@@ -271,26 +266,38 @@ function toggleMobileMenu() {
     sidebar.classList.toggle('open');
 }
 
-// Cusdis 스크립트 로드
-function loadCusdis() {
+// Giscus 스크립트 로드
+function loadGiscus(postId) {
     // 기존 스크립트 제거
-    const existingScript = document.getElementById('cusdis-script');
+    const existingScript = document.getElementById('giscus-script');
     if (existingScript) {
         existingScript.remove();
     }
 
+    // 기존 giscus 컨테이너 초기화
+    const giscusContainer = document.querySelector('.giscus');
+    if (giscusContainer) {
+        giscusContainer.innerHTML = '';
+    }
+
     // 새 스크립트 로드
     const script = document.createElement('script');
-    script.id = 'cusdis-script';
-    script.src = 'https://cusdis.com/js/cusdis.es.js';
+    script.id = 'giscus-script';
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', GISCUS_REPO);
+    script.setAttribute('data-repo-id', GISCUS_REPO_ID);
+    script.setAttribute('data-category', GISCUS_CATEGORY);
+    script.setAttribute('data-category-id', GISCUS_CATEGORY_ID);
+    script.setAttribute('data-mapping', 'specific');
+    script.setAttribute('data-term', postId);
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', 'dark_tritanopia');
+    script.setAttribute('data-lang', 'ko');
+    script.crossOrigin = 'anonymous';
     script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
 
-    // 스크립트 로드 후 Cusdis 초기화
-    script.onload = () => {
-        if (window.CUSDIS) {
-            window.CUSDIS.initial();
-        }
-    };
+    document.body.appendChild(script);
 }
