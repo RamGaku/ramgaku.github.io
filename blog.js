@@ -18,6 +18,7 @@ const posts = {
         content: `
             <h2 id="intro">소개</h2>
             <p>심심풀이로 블랙홀 시뮬레이터를 클로드로 만들어보았다.</p>
+            <p class="standalone-link">standalone: <a href="blackholespace.html" target="_blank">blackholespace.html</a></p>
 
             <div class="iframe-container">
                 <iframe src="blackholespace.html" title="블랙홀 시뮬레이션"></iframe>
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 블로그 타이틀 타이핑 효과
-const BLOG_TITLE_TEXT = '람가의 블로그';
+const BLOG_TITLE_TEXT = '람가의 개발로그';
 let typingInterval = null;
 
 function initBlogTitle() {
@@ -232,6 +233,14 @@ function showRecentPosts() {
     contentTitle.textContent = '최근 게시물';
     tocNav.innerHTML = '<p class="toc-empty">게시물을 선택하세요</p>';
 
+    const githubLink = `
+        <div class="github-link">
+            <a href="https://github.com/RamGaku/ramgaku.github.io" target="_blank">
+                github.com/RamGaku/ramgaku.github.io
+            </a>
+        </div>
+    `;
+
     const recentPostsHtml = Object.entries(posts)
         .slice(0, 5)
         .map(([id, post]) => `
@@ -245,7 +254,7 @@ function showRecentPosts() {
             </article>
         `).join('');
 
-    contentBody.innerHTML = `<div class="recent-posts">${recentPostsHtml}</div>`;
+    contentBody.innerHTML = `${githubLink}<div class="recent-posts">${recentPostsHtml}</div>`;
 }
 
 // 발췌문 추출

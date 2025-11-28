@@ -238,6 +238,28 @@ body::before {
     max-width: 800px;
 }
 
+/* GitHub 링크 */
+.github-link {
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px dashed var(--border-color);
+}
+
+.github-link a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.github-link a::before {
+    content: '> ';
+    color: var(--text-muted);
+}
+
+.github-link a:hover {
+    text-decoration: underline;
+}
+
 /* 최근 게시물 카드 */
 .recent-posts {
     display: flex;
@@ -378,6 +400,21 @@ body::before {
 
 .post-content li::marker {
     color: var(--text-muted);
+}
+
+.post-content .standalone-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: -8px;
+}
+
+.post-content .standalone-link a {
+    color: var(--accent-primary);
+    text-decoration: none;
+}
+
+.post-content .standalone-link a:hover {
+    text-decoration: underline;
 }
 
 .post-content code {
