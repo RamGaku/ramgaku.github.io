@@ -1,3 +1,7 @@
+// Cusdis 설정
+const CUSDIS_APP_ID = 'ea2dd455-570d-4ac5-a635-50ebd613ebdc';
+const CUSDIS_HOST = 'https://cusdis.com';
+
 // 게시물 데이터
 const posts = {
     blackholespace: {
@@ -106,8 +110,24 @@ function loadPost(postId) {
     // 제목 업데이트
     contentTitle.textContent = post.title;
 
-    // 본문 업데이트
-    contentBody.innerHTML = `<div class="post-content">${post.content}</div>`;
+    // 본문 업데이트 (댓글 섹션 포함)
+    contentBody.innerHTML = `
+        <div class="post-content">${post.content}</div>
+        <div class="comments-section">
+            <h3 class="comments-title">댓글</h3>
+            <div id="cusdis_thread"
+                data-host="${CUSDIS_HOST}"
+                data-app-id="${CUSDIS_APP_ID}"
+                data-page-id="${postId}"
+                data-page-title="${post.title}"
+                data-page-url="${window.location.origin}/#${postId}"
+                data-theme="dark"
+            ></div>
+        </div>
+    `;
+
+    // Cusdis 스크립트 로드
+    loadCusdis();
 
     // TOC 업데이트
     updateTOC(post.sections);
@@ -200,4 +220,28 @@ function getExcerpt(content) {
 function toggleMobileMenu() {
     const sidebar = document.querySelector('.sidebar');
     sidebar.classList.toggle('open');
+}
+
+// Cusdis 스크립트 로드
+function loadCusdis() {
+    // 기존 스크립트 제거
+    const existingScript = document.getElementById('cusdis-script');
+    if (existingScript) {
+        existingScript.remove();
+    }
+
+    // 새 스크립트 로드
+    const script = document.createElement('script');
+    script.id = 'cusdis-script';
+    script.src = 'https://cusdis.com/js/cusdis.es.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    // 스크립트 로드 후 Cusdis 초기화
+    script.onload = () => {
+        if (window.CUSDIS) {
+            window.CUSDIS.initial();
+        }
+    };
 }

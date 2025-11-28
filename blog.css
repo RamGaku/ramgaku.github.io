@@ -390,3 +390,21 @@ body {
         display: none;
     }
 }
+
+/* 댓글 섹션 */
+.comments-section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-color);
+}
+
+.comments-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+}
+
+#cusdis_thread {
+    margin-top: 16px;
+}
