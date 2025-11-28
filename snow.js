@@ -81,15 +81,18 @@ function drawSnowflakes() {
     });
 }
 
-// 애니메이션 루프
-function snowLoop() {
-    updateSnowflakes();
-    drawSnowflakes();
-    requestAnimationFrame(snowLoop);
-}
-
 // 눈 효과 on/off
 let snowEnabled = true;
+let animationFrameId = null;
+
+// 애니메이션 루프
+function snowLoop() {
+    if (!snowEnabled) return;
+
+    updateSnowflakes();
+    drawSnowflakes();
+    animationFrameId = requestAnimationFrame(snowLoop);
+}
 
 function toggleSnow() {
     snowEnabled = !snowEnabled;
@@ -98,14 +101,28 @@ function toggleSnow() {
 
     if (snowEnabled) {
         btn.classList.remove('off');
+        btn.classList.add('on');
         text.textContent = 'snow: on';
         snowCanvas.style.display = 'block';
+        snowLoop(); // 루프 재시작
     } else {
+        btn.classList.remove('on');
         btn.classList.add('off');
         text.textContent = 'snow: off';
         snowCanvas.style.display = 'none';
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        snowflakes = []; // 눈송이 배열 비우기
     }
 }
+
+// 초기 상태 설정
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('snowToggle');
+    if (btn) btn.classList.add('on');
+});
 
 // 초기화
 resizeSnowCanvas();
