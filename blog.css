@@ -479,11 +479,40 @@ body::before {
     height: 100vh;
     background: transparent;
     border-left: 1px solid var(--border-color);
-    padding: 20px 12px;
+    padding: 0;
     overflow-y: auto;
     z-index: 10;
     display: flex;
     flex-direction: column;
+}
+
+/* 상단 목차 영역 (50%) */
+.toc-upper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px;
+    border-bottom: 1px solid var(--border-color);
+    overflow-y: auto;
+}
+
+/* 하단 광고 영역 (50%) */
+.toc-lower {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    min-height: 50%;
+}
+
+.ad-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toc-nav {

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
     <title>람가의 개발로그</title>
     <link rel="stylesheet" href="blog.css">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
 </head>
 <body>
     <canvas id="snowCanvas"></canvas>
@@ -100,16 +104,34 @@
 
         <!-- 우측 TOC 네비게이터 -->
         <aside class="toc">
-            <div class="toc-header">
-                <h3>목차</h3>
+            <!-- 상단: 목차 영역 -->
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <p class="toc-empty">게시물을 선택하세요</p>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
             </div>
-            <nav id="toc-nav" class="toc-nav">
-                <p class="toc-empty">게시물을 선택하세요</p>
-            </nav>
-            <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
-                <span class="snow-toggle-icon">❄</span>
-                <span class="snow-toggle-text">snow: on</span>
-            </button>
+            <!-- 하단: 광고 영역 -->
+            <div class="toc-lower">
+                <div class="ad-container">
+                    <!-- Google AdSense 코드를 여기에 삽입 -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot=""
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
         </aside>
     </div>
 
