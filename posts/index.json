@@ -1,0 +1,14 @@
+{
+  "posts": [
+    {
+      "id": "blackholespace",
+      "path": "posts/playground/blackholespace.md",
+      "category": "Playground"
+    },
+    {
+      "id": "giscus-comment",
+      "path": "posts/web/giscus-comment.md",
+      "category": "Web"
+    }
+  ]
+}

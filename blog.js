@@ -4,111 +4,186 @@ const GISCUS_REPO_ID = 'R_kgDOQcvYMg';
 const GISCUS_CATEGORY = 'Announcements';
 const GISCUS_CATEGORY_ID = 'DIC_kwDOQcvYMs4CzI0d';
 
-// 게시물 데이터
-const posts = {
-    blackholespace: {
-        title: '블랙홀 시뮬레이션',
-        category: 'Playground',
-        date: '2024',
-        type: 'iframe',
-        src: 'blackholespace.html',
-        sections: [
-            { id: 'intro', title: '소개', level: 2 },
-            { id: 'controls', title: '조작법', level: 2 },
-            { id: 'physics', title: '물리법칙 고려', level: 2 }
-        ],
-        content: `
-            <h2 id="intro">소개</h2>
-            <p>심심풀이로 블랙홀 시뮬레이터를 클로드로 만들어보았다.</p>
-            <p class="standalone-link">standalone: <a href="blackholespace.html" target="_blank">blackholespace.html</a></p>
-
-            <div class="iframe-container">
-                <iframe src="blackholespace.html" title="블랙홀 시뮬레이션"></iframe>
-            </div>
-
-            <h2 id="controls">조작법</h2>
-            <p>딱히 조작이랄건 없다. 그저 감상하는것.</p>
-
-            <h2 id="physics">물리법칙 고려</h2>
-            <ul>
-                <li>사건의 지평선 근처에서 소행성 파편화</li>
-                <li>소행성 간 충돌 시 분열</li>
-                <li>파편의 궤도 운동</li>
-                <li>재미를 위해 파편은 영원히 없어지지 않고 떠돌도록 하였음</li>
-                <li>근데 점점 중앙으로 끌려들어가서 보이지 않는 파편이 존재하기는 함</li>
-                <li>중력 및 질량계수에 대한 세밀한 조절이 추가적으로 필요</li>
-            </ul>
-        `
-    },
-    'giscus-comment': {
-        title: 'GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)',
-        category: 'Web',
-        date: '2024',
-        sections: [
-            { id: 'intro', title: '소개', level: 2 },
-            { id: 'why-giscus', title: '왜 Giscus인가', level: 2 },
-            { id: 'setup', title: '설정 방법', level: 2 },
-            { id: 'code', title: '코드 적용', level: 2 }
-        ],
-        content: `
-            <h2 id="intro">소개</h2>
-            <p>GitHub Pages 정적 사이트에 댓글 기능을 추가하는 방법.</p>
-            <p>기존에 Cusdis를 썼는데, 매번 관리자가 승인해야 댓글이 보이는 번거로움이 있어서 Giscus로 변경했다.</p>
-
-            <h2 id="why-giscus">왜 Giscus인가</h2>
-            <p>정적 사이트 댓글 시스템 비교:</p>
-            <ul>
-                <li><strong>Cusdis</strong> - 익명 가능, 근데 관리자 승인 필요 (번거로움)</li>
-                <li><strong>Disqus</strong> - 광고 있고 무거움</li>
-                <li><strong>utterances</strong> - GitHub Issues 기반, 가벼움</li>
-                <li><strong>Giscus</strong> - GitHub Discussions 기반, 승인 불필요, 리액션 지원</li>
-            </ul>
-            <p>Giscus가 가장 깔끔하고 GitHub Pages와 찰떡궁합이라 선택.</p>
-
-            <h2 id="setup">설정 방법</h2>
-            <ol>
-                <li>GitHub repo Settings → Features → <strong>Discussions 활성화</strong></li>
-                <li><a href="https://giscus.app/ko" target="_blank">giscus.app</a> 접속</li>
-                <li>Repository에 <code>username/repo-name</code> 입력</li>
-                <li>Discussion 카테고리 선택 (보통 Announcements)</li>
-                <li>생성된 script 코드 복사</li>
-            </ol>
-
-            <h2 id="code">코드 적용</h2>
-            <p>giscus.app에서 생성된 코드 예시:</p>
-            <pre><code>&lt;script src="https://giscus.app/client.js"
-    data-repo="username/repo-name"
-    data-repo-id="R_xxxxxx"
-    data-category="Announcements"
-    data-category-id="DIC_xxxxxx"
-    data-mapping="pathname"
-    data-theme="dark"
-    data-lang="ko"
-    crossorigin="anonymous"
-    async&gt;
-&lt;/script&gt;</code></pre>
-            <p>동적으로 로드하려면 JavaScript로 script 엘리먼트를 생성해서 추가하면 됨.</p>
-            <p>주의: 로컬 file:// 환경에서는 보안 정책 때문에 작동 안 함. 배포 후 테스트 필요.</p>
-        `
-    }
-};
+// 게시물 캐시
+let posts = {};
+let postsIndex = [];
 
 // DOM 요소
-const contentTitle = document.getElementById('content-title');
-const contentBody = document.getElementById('content-body');
-const tocNav = document.getElementById('toc-nav');
+let contentTitle, contentBody, tocNav;
 
 // 현재 활성화된 게시물
 let currentPost = null;
 
 // 초기화
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    contentTitle = document.getElementById('content-title');
+    contentBody = document.getElementById('content-body');
+    tocNav = document.getElementById('toc-nav');
+
+    await loadPostsIndex();
     initCategoryToggle();
     initPostNavigation();
     initPostCards();
     initBlogTitle();
     showRecentPosts();
 });
+
+// posts/index.json 로드
+async function loadPostsIndex() {
+    try {
+        const response = await fetch('posts/index.json');
+        const data = await response.json();
+        postsIndex = data.posts;
+    } catch (e) {
+        console.error('Failed to load posts index:', e);
+        postsIndex = [];
+    }
+}
+
+// MD 파일 파싱
+function parseMarkdown(md) {
+    // Front matter 파싱
+    const frontMatterMatch = md.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (!frontMatterMatch) {
+        return { meta: {}, content: md };
+    }
+
+    const frontMatter = frontMatterMatch[1];
+    const content = frontMatterMatch[2];
+
+    // 메타데이터 파싱
+    const meta = {};
+    frontMatter.split('\n').forEach(line => {
+        const [key, ...valueParts] = line.split(':');
+        if (key && valueParts.length) {
+            meta[key.trim()] = valueParts.join(':').trim();
+        }
+    });
+
+    return { meta, content };
+}
+
+// Markdown to HTML 변환 (간단한 구현)
+function markdownToHtml(md) {
+    let html = md;
+
+    // 코드 블록 (```로 감싼 부분)
+    html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        const escaped = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `<pre><code class="language-${lang}">${escaped}</code></pre>`;
+    });
+
+    // 인라인 코드
+    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // 헤더 (## → h2, ### → h3)
+    html = html.replace(/^### (.+)$/gm, (match, title) => {
+        const id = title.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+        return `<h3 id="${id}">${title}</h3>`;
+    });
+    html = html.replace(/^## (.+)$/gm, (match, title) => {
+        const id = title.toLowerCase().replace(/[^a-z0-9가-힣]/g, '-').replace(/-+/g, '-');
+        return `<h2 id="${id}">${title}</h2>`;
+    });
+
+    // 볼드
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    // 이탤릭
+    html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+    // 링크
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+    // iframe (특수 처리)
+    html = html.replace(/<iframe([^>]*)><\/iframe>/g, '<div class="iframe-container"><iframe$1></iframe></div>');
+
+    // standalone 링크 처리
+    html = html.replace(/^standalone: \[([^\]]+)\]\(([^)]+)\)$/gm,
+        '<p class="standalone-link">standalone: <a href="$2" target="_blank">$1</a></p>');
+
+    // 리스트 (순서 없음)
+    html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
+
+    // 리스트 (순서 있음)
+    html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+    // 연속된 숫자 리스트를 ol로 감싸기 위해 별도 처리
+    html = html.replace(/<ul>(<li>\d+\..*<\/li>\n?)+<\/ul>/g, match => {
+        return match.replace(/<ul>/g, '<ol>').replace(/<\/ul>/g, '</ol>');
+    });
+
+    // 단락
+    html = html.split('\n\n').map(para => {
+        para = para.trim();
+        if (!para) return '';
+        if (para.startsWith('<')) return para;
+        return `<p>${para}</p>`;
+    }).join('\n');
+
+    // 빈 p 태그 제거
+    html = html.replace(/<p>\s*<\/p>/g, '');
+
+    return html;
+}
+
+// 섹션 추출 (TOC용)
+function extractSections(html) {
+    const sections = [];
+    const regex = /<h([23]) id="([^"]+)">([^<]+)<\/h[23]>/g;
+    let match;
+
+    while ((match = regex.exec(html)) !== null) {
+        sections.push({
+            level: parseInt(match[1]),
+            id: match[2],
+            title: match[3]
+        });
+    }
+
+    return sections;
+}
+
+// 게시물 로드 (MD 파일에서)
+async function fetchPost(postId) {
+    // 캐시 확인
+    if (posts[postId]) {
+        return posts[postId];
+    }
+
+    // index에서 경로 찾기
+    const postInfo = postsIndex.find(p => p.id === postId);
+    if (!postInfo) {
+        console.error('Post not found in index:', postId);
+        return null;
+    }
+
+    try {
+        const response = await fetch(postInfo.path);
+        const md = await response.text();
+        const { meta, content } = parseMarkdown(md);
+        const htmlContent = markdownToHtml(content);
+        const sections = extractSections(htmlContent);
+
+        const post = {
+            id: postId,
+            title: meta.title || postId,
+            category: meta.category || postInfo.category,
+            date: meta.date || '',
+            type: meta.type || 'post',
+            src: meta.src || '',
+            content: htmlContent,
+            sections: sections
+        };
+
+        // 캐시에 저장
+        posts[postId] = post;
+        return post;
+    } catch (e) {
+        console.error('Failed to load post:', postId, e);
+        return null;
+    }
+}
 
 // 블로그 타이틀 타이핑 효과
 const BLOG_TITLE_TEXT = '람가의 개발로그';
@@ -195,8 +270,8 @@ function initPostCards() {
 }
 
 // 게시물 로드
-function loadPost(postId) {
-    const post = posts[postId];
+async function loadPost(postId) {
+    const post = await fetchPost(postId);
     if (!post) return;
 
     currentPost = postId;
@@ -275,7 +350,7 @@ function setupScrollSpy() {
 }
 
 // 최근 게시물 표시
-function showRecentPosts() {
+async function showRecentPosts() {
     contentTitle.textContent = '최근 게시물';
     tocNav.innerHTML = '<p class="toc-empty">게시물을 선택하세요</p>';
 
@@ -287,10 +362,15 @@ function showRecentPosts() {
         </div>
     `;
 
-    const recentPostsHtml = Object.entries(posts)
-        .slice(0, 5)
-        .map(([id, post]) => `
-            <article class="post-card" data-post="${id}">
+    // 모든 게시물 로드
+    const loadedPosts = await Promise.all(
+        postsIndex.slice(0, 5).map(p => fetchPost(p.id))
+    );
+
+    const recentPostsHtml = loadedPosts
+        .filter(post => post)
+        .map(post => `
+            <article class="post-card" data-post="${post.id}">
                 <div class="post-category">${post.category}</div>
                 <h3 class="post-title">${post.title}</h3>
                 <p class="post-excerpt">${getExcerpt(post.content)}</p>
