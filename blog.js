@@ -13,32 +13,27 @@ const posts = {
         sections: [
             { id: 'intro', title: '소개', level: 2 },
             { id: 'controls', title: '조작법', level: 2 },
-            { id: 'physics', title: '물리 엔진', level: 2 }
+            { id: 'physics', title: '물리법칙 고려', level: 2 }
         ],
         content: `
             <h2 id="intro">소개</h2>
-            <p>HTML5 Canvas를 이용한 블랙홀과 소행성의 중력 시뮬레이션입니다.
-            역제곱 법칙을 적용한 중력 시스템과 소행성 충돌/파편화 시스템을 구현했습니다.</p>
+            <p>심심풀이로 블랙홀 시뮬레이터를 클로드로 만들어보았다.</p>
 
             <div class="iframe-container">
                 <iframe src="blackholespace.html" title="블랙홀 시뮬레이션"></iframe>
             </div>
 
             <h2 id="controls">조작법</h2>
-            <ul>
-                <li><strong>일시정지</strong>: 시뮬레이션을 일시 정지/재개합니다</li>
-                <li><strong>리셋</strong>: 모든 소행성과 파편을 제거하고 초기화합니다</li>
-                <li><strong>소행성 생성</strong>: 새로운 소행성을 생성합니다</li>
-                <li><strong>초당 생성률</strong>: 슬라이더로 자동 생성 속도를 조절합니다</li>
-            </ul>
+            <p>딱히 조작이랄건 없다. 그저 감상하는것.</p>
 
-            <h2 id="physics">물리 엔진</h2>
-            <p>시뮬레이션은 다음과 같은 물리 법칙을 적용합니다:</p>
+            <h2 id="physics">물리법칙 고려</h2>
             <ul>
-                <li>역제곱 법칙에 따른 중력 계산</li>
                 <li>사건의 지평선 근처에서 소행성 파편화</li>
                 <li>소행성 간 충돌 시 분열</li>
                 <li>파편의 궤도 운동</li>
+                <li>재미를 위해 파편은 영원히 없어지지 않고 떠돌도록 하였음</li>
+                <li>근데 점점 중앙으로 끌려들어가서 보이지 않는 파편이 존재하기는 함</li>
+                <li>중력 및 질량계수에 대한 세밀한 조절이 추가적으로 필요</li>
             </ul>
         `
     }
