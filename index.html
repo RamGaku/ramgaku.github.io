@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="blog.css">
 </head>
 <body>
+    <canvas id="snowCanvas"></canvas>
     <div class="blog-container">
         <!-- 좌측 네비게이션 -->
         <nav class="sidebar">
@@ -85,9 +86,14 @@
             <nav id="toc-nav" class="toc-nav">
                 <p class="toc-empty">게시물을 선택하세요</p>
             </nav>
+            <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                <span class="snow-toggle-icon">❄</span>
+                <span class="snow-toggle-text">snow: on</span>
+            </button>
         </aside>
     </div>
 
     <script src="blog.js"></script>
+    <script src="snow.js"></script>
 </body>
 </html>

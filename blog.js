@@ -52,8 +52,53 @@ document.addEventListener('DOMContentLoaded', () => {
     initCategoryToggle();
     initPostNavigation();
     initPostCards();
+    initBlogTitle();
     showRecentPosts();
 });
+
+// 블로그 타이틀 타이핑 효과
+const BLOG_TITLE_TEXT = '람가의 블로그';
+let typingInterval = null;
+
+function initBlogTitle() {
+    const titleElement = document.querySelector('.blog-title');
+
+    // 클릭 시 대문으로
+    titleElement.style.cursor = 'pointer';
+    titleElement.addEventListener('click', () => {
+        currentPost = null;
+        document.querySelectorAll('.category-posts a').forEach(a => a.classList.remove('active'));
+        showRecentPosts();
+    });
+
+    // 타이핑 효과 시작
+    startTypingEffect();
+}
+
+function startTypingEffect() {
+    const titleElement = document.querySelector('.blog-title');
+    let charIndex = 0;
+
+    // 기존 타이핑 중단
+    if (typingInterval) {
+        clearInterval(typingInterval);
+    }
+
+    // 텍스트 초기화
+    titleElement.textContent = '';
+
+    // 한 글자씩 타이핑
+    typingInterval = setInterval(() => {
+        if (charIndex < BLOG_TITLE_TEXT.length) {
+            titleElement.textContent = BLOG_TITLE_TEXT.substring(0, charIndex + 1);
+            charIndex++;
+        } else {
+            clearInterval(typingInterval);
+            // 5초 후 다시 시작
+            setTimeout(startTypingEffect, 5000);
+        }
+    }, 150);
+}
 
 // 카테고리 토글
 function initCategoryToggle() {
