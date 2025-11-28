@@ -9,6 +9,11 @@
       "id": "giscus-comment",
       "path": "posts/web/giscus-comment.txt",
       "category": "Web"
+    },
+    {
+      "id": "vanilla-blog",
+      "path": "posts/trouble/vanilla-blog.txt",
+      "category": "삽질 기록"
     }
   ]
 }
