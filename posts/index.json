@@ -2,12 +2,12 @@
   "posts": [
     {
       "id": "blackholespace",
-      "path": "posts/playground/blackholespace.md",
+      "path": "posts/playground/blackholespace.txt",
       "category": "Playground"
     },
     {
       "id": "giscus-comment",
-      "path": "posts/web/giscus-comment.md",
+      "path": "posts/web/giscus-comment.txt",
       "category": "Web"
     }
   ]
