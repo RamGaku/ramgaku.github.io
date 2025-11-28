@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블랙홀 시뮬레이션 - 람가의 블로그</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="space-container">
+        <div class="info-panel">
+            <div>소행성: <span id="asteroidCount">0</span></div>
+            <div>파편: <span id="particleCount">0</span></div>
+            <div>흡수됨: <span id="absorbedCount">0</span></div>
+            <div>중력: <span id="gravityStrength">1000</span></div>
+        </div>
+        <canvas id="spaceCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <button class="control-btn" onclick="togglePause()">일시정지</button>
+            <button class="control-btn" onclick="resetSimulation()">리셋</button>
+            <button class="control-btn" onclick="spawnAsteroid()">소행성 생성</button>
+            <label for="spawnRate" class="spawn-label">초당</label>
+            <input type="number" id="spawnRate" class="spawn-input" min="0.2" max="10" step="0.1" value="0.2">
+            <span class="spawn-label">개</span>
+            <div class="slider-container">
+                <input type="range" id="spawnSlider" class="spawn-slider" min="0.2" max="10" step="0.1" value="0.2">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

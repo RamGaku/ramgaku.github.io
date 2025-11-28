@@ -3,805 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>블랙홀 시뮬레이션 - 람가의 블로그</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            touch-action: manipulation; /* 모바일 더블탭 줌 방지 */
-        }
-        
-        .space-container {
-            position: relative;
-            margin-bottom: 30px;
-        }
-        
-        #spaceCanvas {
-            border: 2px solid #333;
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(138, 43, 226, 0.5);
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
-        }
-        
-        .info-panel {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #fff;
-            font-size: 14px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .controls {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .control-btn {
-            background: #444;
-            color: white;
-            border: 1px solid #666;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 14px;
-            cursor: pointer;
-            margin: 0 5px;
-            transition: background 0.3s;
-            touch-action: manipulation; /* 더블탭 줌 방지 */
-            user-select: none; /* 텍스트 선택 방지 */
-        }
-        
-        .control-btn:hover {
-            background: #555;
-        }
-        
-        .spawn-input {
-            background: #333;
-            color: white;
-            border: 1px solid #666;
-            padding: 6px 8px;
-            border-radius: 5px;
-            font-size: 12px;
-            width: 60px;
-            margin: 0 5px;
-            text-align: center;
-        }
-        
-        .spawn-label {
-            color: #ccc;
-            font-size: 12px;
-            margin-left: 2px;
-        }
-        
-        .slider-container {
-            width: 100%;
-            margin-top: 8px;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .spawn-slider {
-            width: 200px;
-            height: 6px;
-            border-radius: 3px;
-            background: #333;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        
-        .spawn-slider::-webkit-slider-thumb {
-            appearance: -webkit-appearance;
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        
-        .spawn-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        
-        .blog-button {
-            padding: 15px 40px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            display: inline-block;
-        }
-        
-        .blog-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
-        }
-        
-        @media (max-width: 768px) {
-            .space-container {
-                margin-bottom: 20px;
-            }
-            
-            #spaceCanvas {
-                width: 95vw;
-                height: calc(95vw * 0.75); /* 4:3 비율 유지 */
-                max-height: 70vh;
-            }
-            
-            .info-panel {
-                font-size: 12px;
-                padding: 8px;
-            }
-            
-            .controls {
-                margin-bottom: 15px;
-            }
-            
-            .control-btn {
-                padding: 6px 12px;
-                font-size: 12px;
-                margin: 0 3px;
-            }
-            
-            .spawn-input {
-                width: 50px;
-                font-size: 10px;
-                padding: 4px 6px;
-            }
-            
-            .spawn-label {
-                font-size: 10px;
-            }
-            
-            .spawn-slider {
-                width: 150px;
-            }
-            
-            .blog-button {
-                padding: 12px 30px;
-                font-size: 16px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            #spaceCanvas {
-                width: 98vw;
-                height: calc(98vw * 0.75); /* 4:3 비율 유지 */
-                max-height: 65vh;
-            }
-            
-            .control-btn {
-                padding: 5px 10px;
-                font-size: 11px;
-                margin: 0 2px;
-            }
-            
-            .spawn-input {
-                width: 45px;
-                font-size: 9px;
-                padding: 3px 4px;
-            }
-            
-            .spawn-label {
-                font-size: 9px;
-            }
-            
-            .spawn-slider {
-                width: 120px;
-            }
-            
-            .blog-button {
-                padding: 10px 25px;
-                font-size: 14px;
-            }
-        }
-    </style>
+    <title>람가의 블로그</title>
+    <link rel="stylesheet" href="blog.css">
 </head>
 <body>
-    <div class="space-container">
-        <div class="info-panel">
-            <div>소행성: <span id="asteroidCount">0</span></div>
-            <div>파편: <span id="particleCount">0</span></div>
-            <div>흡수됨: <span id="absorbedCount">0</span></div>
-            <div>중력: <span id="gravityStrength">1000</span></div>
-        </div>
-        <canvas id="spaceCanvas" width="800" height="600"></canvas>
-        <div class="controls">
-            <button class="control-btn" onclick="togglePause()">일시정지</button>
-            <button class="control-btn" onclick="resetSimulation()">리셋</button>
-            <button class="control-btn" onclick="spawnAsteroid()">소행성 생성</button>
-            <label for="spawnRate" class="spawn-label">초당</label>
-            <input type="number" id="spawnRate" class="spawn-input" min="0.2" max="10" step="0.1" value="0.2">
-            <span class="spawn-label">개</span>
-            <div class="slider-container">
-                <input type="range" id="spawnSlider" class="spawn-slider" min="0.2" max="10" step="0.1" value="0.2">
+    <div class="blog-container">
+        <!-- 좌측 네비게이션 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title">람가의 블로그</h1>
             </div>
-        </div>
+            <div class="nav-menu">
+                <div class="nav-category" data-category="playground">
+                    <div class="category-header">
+                        <span class="category-icon">🎮</span>
+                        <span class="category-name">Playground</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <ul class="category-posts">
+                        <li><a href="#" data-post="blackholespace">블랙홀 시뮬레이션</a></li>
+                    </ul>
+                </div>
+                <div class="nav-category" data-category="dotnet">
+                    <div class="category-header">
+                        <span class="category-icon">🔷</span>
+                        <span class="category-name">.NET</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <ul class="category-posts">
+                        <li class="empty-category">게시물이 없습니다</li>
+                    </ul>
+                </div>
+                <div class="nav-category" data-category="ai">
+                    <div class="category-header">
+                        <span class="category-icon">🤖</span>
+                        <span class="category-name">AI</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <ul class="category-posts">
+                        <li class="empty-category">게시물이 없습니다</li>
+                    </ul>
+                </div>
+                <div class="nav-category" data-category="network">
+                    <div class="category-header">
+                        <span class="category-icon">🌐</span>
+                        <span class="category-name">Network</span>
+                        <span class="toggle-icon">▼</span>
+                    </div>
+                    <ul class="category-posts">
+                        <li class="empty-category">게시물이 없습니다</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 영역 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">최근 게시물</h2>
+            </div>
+            <div id="content-body" class="content-body">
+                <!-- 최근 게시물 목록 (메인 페이지) -->
+                <div class="recent-posts">
+                    <article class="post-card" data-post="blackholespace">
+                        <div class="post-category">Playground</div>
+                        <h3 class="post-title">블랙홀 시뮬레이션</h3>
+                        <p class="post-excerpt">HTML5 Canvas를 이용한 블랙홀과 소행성의 중력 시뮬레이션입니다.</p>
+                        <div class="post-meta">
+                            <span class="post-date">2024</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC 네비게이터 -->
+        <aside class="toc">
+            <div class="toc-header">
+                <h3>목차</h3>
+            </div>
+            <nav id="toc-nav" class="toc-nav">
+                <p class="toc-empty">게시물을 선택하세요</p>
+            </nav>
+        </aside>
     </div>
-    
-    <a href="#blog" class="blog-button">블로그 입장하기</a>
 
-    <script>
-        const canvas = document.getElementById('spaceCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        // 픽셀 아트 스타일 설정
-        ctx.imageSmoothingEnabled = false;
-        
-        let isPaused = false;
-        let animationId;
-        
-        // 캔버스 크기에 따른 스케일 팩터 계산
-        function getScaleFactor() {
-            const baseWidth = 800;
-            const baseHeight = 600;
-            const scaleX = canvas.width / baseWidth;
-            const scaleY = canvas.height / baseHeight;
-            return Math.min(scaleX, scaleY);
-        }
-        
-        // 블랙홀 (크기를 스케일에 맞춰 조정)
-        function updateBlackHole() {
-            const scale = getScaleFactor();
-            blackHole.x = canvas.width / 2;
-            blackHole.y = canvas.height / 2;
-            blackHole.radius = 4 * scale;
-            blackHole.eventHorizon = 60 * scale;
-            blackHole.gravityRange = 400 * scale;
-            blackHole.coreRadius = 8 * scale; // 흡수 범위
-        }
-        
-        const blackHole = {
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            radius: 4,
-            eventHorizon: 60,
-            gravityRange: 400,
-            coreRadius: 8, // 흡수 범위
-            mass: 1000,
-            baseMass: 1000, // 기본 중력
-            coreParticleCount: 0 // 중심에 흡수된 파편 수
-        };
-        
-        // 소행성과 파편 배열
-        let asteroids = [];
-        let particles = [];
-        let stars = [];
-        let absorbers = [];
-        
-        // 통계
-        let stats = {
-            asteroidCount: 0,
-            particleCount: 0,
-            absorbedCount: 0
-        };
-        
-        // 별 생성 (배경)
-        function createStars() {
-            for (let i = 0; i < 100; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1,
-                    brightness: Math.random()
-                });
-            }
-        }
-        
-        // 소행성 생성
-        function createAsteroid() {
-            const side = Math.floor(Math.random() * 4);
-            let x, y, vx, vy;
-            
-            switch(side) {
-                case 0: // 왼쪽
-                    x = -30;
-                    y = Math.random() * canvas.height;
-                    vx = Math.random() * 2 + 1;
-                    vy = (Math.random() - 0.5) * 2;
-                    break;
-                case 1: // 오른쪽
-                    x = canvas.width + 30;
-                    y = Math.random() * canvas.height;
-                    vx = -(Math.random() * 2 + 1);
-                    vy = (Math.random() - 0.5) * 2;
-                    break;
-                case 2: // 위쪽
-                    x = Math.random() * canvas.width;
-                    y = -30;
-                    vx = (Math.random() - 0.5) * 2;
-                    vy = Math.random() * 2 + 1;
-                    break;
-                case 3: // 아래쪽
-                    x = Math.random() * canvas.width;
-                    y = canvas.height + 30;
-                    vx = (Math.random() - 0.5) * 2;
-                    vy = -(Math.random() * 2 + 1);
-                    break;
-            }
-            
-            asteroids.push({
-                x: x,
-                y: y,
-                vx: vx,
-                vy: vy,
-                size: Math.random() * 15 + 10,
-                health: 100,
-                maxHealth: 100,
-                color: Math.random() > 0.5 ? '#8B4513' : '#696969'
-            });
-        }
-        
-        // 파편 생성
-        function createParticles(x, y, count, color, sourceSize = null) {
-            for (let i = 0; i < count; i++) {
-                // 소행성 크기에 따른 파편 크기 조정
-                const particleSize = sourceSize ? Math.min(sourceSize * 0.1, Math.random() * 3 + 1) : Math.random() * 3 + 1;
-                
-                particles.push({
-                    x: x + (Math.random() - 0.5) * 20,
-                    y: y + (Math.random() - 0.5) * 20,
-                    vx: (Math.random() - 0.5) * 8,
-                    vy: (Math.random() - 0.5) * 8,
-                    size: particleSize,
-                    life: 1,
-                    decay: 0,
-                    color: color,
-                    counted: false // 중력 계수에 반영됐는지 여부
-                });
-            }
-        }
-        
-        // 중력 계산
-        function applyGravity(obj) {
-            const dx = blackHole.x - obj.x;
-            const dy = blackHole.y - obj.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < blackHole.gravityRange && distance > 0.1) {
-                const force = (blackHole.mass) / (distance * distance);
-                const ax = (dx / distance) * force * 0.1;
-                const ay = (dy / distance) * force * 0.1;
-                
-                obj.vx += ax;
-                obj.vy += ay;
-                
-                // 소행성이 중력 범위 안에 있을 때 거리에 따른 파편 생성
-                if (obj.health !== undefined && obj.size !== undefined) {
-                    // 거리에 따른 중력 강도 계산 (역제곱 법칙)
-                    const gravityStrengthByDistance = Math.min(1, (blackHole.gravityRange / distance) * 0.3);
-                    const sizeMultiplier = Math.max(1, obj.size / 15); // 큰 소행성일수록 더 많이
-                    
-                    // 멀리 있어도 조금씩 파편 생성 (매우 낮은 확률)
-                    const baseParticleChance = gravityStrengthByDistance * 0.02 * sizeMultiplier;
-                    
-                    // 가까이 있으면 많이 파편 생성
-                    let intensiveZone = 0;
-                    if (distance < blackHole.eventHorizon * 2) {
-                        intensiveZone = 1 - (distance / (blackHole.eventHorizon * 2));
-                        obj.health -= intensiveZone * 3 * sizeMultiplier;
-                    }
-                    
-                    // 파편 생성 확률과 개수
-                    const totalParticleChance = baseParticleChance + (intensiveZone * 0.4 * sizeMultiplier);
-                    let particleCount = 1;
-                    
-                    if (intensiveZone > 0) {
-                        // 가까이 있으면 많은 파편 생성
-                        particleCount = Math.floor(intensiveZone * sizeMultiplier * 5) + 1;
-                    }
-                    
-                    if (Math.random() < totalParticleChance) {
-                        // 파편을 떼어낼 때 소행성 크기도 줄임
-                        const massLoss = particleCount * 0.5; // 파편 개수에 비례한 질량 손실
-                        obj.size = Math.max(5, obj.size - massLoss); // 최소 크기 5 유지
-                        
-                        createParticles(obj.x, obj.y, particleCount, obj.color, obj.size);
-                    }
-                }
-            }
-        }
-        
-        // 소행성끼리 충돌 체크
-        function checkAsteroidCollisions() {
-            for (let i = 0; i < asteroids.length; i++) {
-                for (let j = i + 1; j < asteroids.length; j++) {
-                    const a1 = asteroids[i];
-                    const a2 = asteroids[j];
-                    
-                    const dx = a1.x - a2.x;
-                    const dy = a1.y - a2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const minDistance = a1.size + a2.size;
-                    
-                    if (distance < minDistance) {
-                        // 소행성 충돌! 둘 다 반으로 쪼개기
-                        
-                        // 첫 번째 소행성을 두 개로 분할
-                        if (a1.size > 8) {
-                            const newSize1 = a1.size * 0.7;
-                            const newSize2 = a1.size * 0.7;
-                            
-                            asteroids.push({
-                                x: a1.x + Math.random() * 10 - 5,
-                                y: a1.y + Math.random() * 10 - 5,
-                                vx: a1.vx + (Math.random() - 0.5) * 4,
-                                vy: a1.vy + (Math.random() - 0.5) * 4,
-                                size: newSize1,
-                                health: 100,
-                                maxHealth: 100,
-                                color: a1.color
-                            });
-                            
-                            asteroids.push({
-                                x: a1.x + Math.random() * 10 - 5,
-                                y: a1.y + Math.random() * 10 - 5,
-                                vx: a1.vx + (Math.random() - 0.5) * 4,
-                                vy: a1.vy + (Math.random() - 0.5) * 4,
-                                size: newSize2,
-                                health: 100,
-                                maxHealth: 100,
-                                color: a1.color
-                            });
-                        } else {
-                            // 너무 작으면 파편으로 변환
-                            createParticles(a1.x, a1.y, 8, a1.color, a1.size);
-                        }
-                        
-                        // 두 번째 소행성을 두 개로 분할
-                        if (a2.size > 8) {
-                            const newSize1 = a2.size * 0.7;
-                            const newSize2 = a2.size * 0.7;
-                            
-                            asteroids.push({
-                                x: a2.x + Math.random() * 10 - 5,
-                                y: a2.y + Math.random() * 10 - 5,
-                                vx: a2.vx + (Math.random() - 0.5) * 4,
-                                vy: a2.vy + (Math.random() - 0.5) * 4,
-                                size: newSize1,
-                                health: 100,
-                                maxHealth: 100,
-                                color: a2.color
-                            });
-                            
-                            asteroids.push({
-                                x: a2.x + Math.random() * 10 - 5,
-                                y: a2.y + Math.random() * 10 - 5,
-                                vx: a2.vx + (Math.random() - 0.5) * 4,
-                                vy: a2.vy + (Math.random() - 0.5) * 4,
-                                size: newSize2,
-                                health: 100,
-                                maxHealth: 100,
-                                color: a2.color
-                            });
-                        } else {
-                            // 너무 작으면 파편으로 변환
-                            createParticles(a2.x, a2.y, 8, a2.color, a2.size);
-                        }
-                        
-                        // 원래 소행성들 제거 (뒤에서부터 제거)
-                        asteroids.splice(Math.max(i, j), 1);
-                        asteroids.splice(Math.min(i, j), 1);
-                        
-                        return; // 한 번에 하나의 충돌만 처리
-                    }
-                }
-            }
-        }
-
-        // 소행성 업데이트
-        function updateAsteroids() {
-            // 소행성끼리 충돌 체크
-            checkAsteroidCollisions();
-            
-            for (let i = asteroids.length - 1; i >= 0; i--) {
-                const asteroid = asteroids[i];
-                
-                // 중력 적용
-                applyGravity(asteroid);
-                
-                // 위치 업데이트
-                asteroid.x += asteroid.vx;
-                asteroid.y += asteroid.vy;
-                
-                // 체력이 0이 되거나 크기가 너무 작아지면 완전히 파편화
-                if (asteroid.health <= 0 || asteroid.size <= 5) {
-                    const finalParticleCount = Math.floor(asteroid.size / 2) + 5;
-                    createParticles(asteroid.x, asteroid.y, finalParticleCount, asteroid.color, asteroid.size);
-                    asteroids.splice(i, 1);
-                    continue;
-                }
-                
-                // 화면 밖으로 나가면 제거 (더 넓은 범위)
-                if (asteroid.x < -200 || asteroid.x > canvas.width + 200 || 
-                    asteroid.y < -200 || asteroid.y > canvas.height + 200) {
-                    asteroids.splice(i, 1);
-                }
-            }
-        }
-        
-        // 파편 업데이트
-        function updateParticles() {
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const particle = particles[i];
-                
-                // 위치 업데이트
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                
-                // 마찰력 (큰 파편은 덜 감속)
-                const friction = particle.isFragment ? 0.999 : 0.998;
-                particle.vx *= friction;
-                particle.vy *= friction;
-                
-                // 블랙홀과의 거리 계산
-                const dx = blackHole.x - particle.x;
-                const dy = blackHole.y - particle.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                // 중력 적용 (파편도 중력의 영향을 받되, 파편 생성은 없음)
-                if (distance < blackHole.gravityRange && distance > 0.1) {
-                    const force = (blackHole.mass) / (distance * distance);
-                    const ax = (dx / distance) * force * 0.1;
-                    const ay = (dy / distance) * force * 0.1;
-                    
-                    particle.vx += ax;
-                    particle.vy += ay;
-                    
-                }
-                
-                // 블랙홀 glow 영역 근처에 파편이 닿으면 궤도 운동으로 전환
-                const glowOuterRadius = 40; // glow 끝 반경
-                if (distance < glowOuterRadius) {
-                    // 아직 카운트 안됐으면 중력 계수만 올림
-                    if (!particle.counted) {
-                        particle.counted = true;
-                        blackHole.coreParticleCount++;
-                        blackHole.mass = blackHole.baseMass + (blackHole.coreParticleCount * 100);
-                    }
-
-                    // 현재 각도 계산
-                    const angle = Math.atan2(particle.y - blackHole.y, particle.x - blackHole.x);
-
-                    // 다양한 궤도 반경으로 이동 (40~120 사이)
-                    const newOrbitRadius = glowOuterRadius + Math.random() * 80;
-                    particle.x = blackHole.x + Math.cos(angle) * newOrbitRadius;
-                    particle.y = blackHole.y + Math.sin(angle) * newOrbitRadius;
-
-                    // 타원 궤도를 위해 접선에서 벗어난 각도로 속도 부여
-                    const orbitSpeed = 2 + Math.random() * 4;
-                    const angleOffset = (Math.random() - 0.5) * Math.PI / 3; // -30도 ~ +30도 편차
-                    const direction = Math.random() > 0.5 ? 1 : -1;
-                    particle.vx = Math.cos(angle + Math.PI / 2 * direction + angleOffset) * orbitSpeed;
-                    particle.vy = Math.sin(angle + Math.PI / 2 * direction + angleOffset) * orbitSpeed;
-                }
-
-                // 속도 제한 (NaN 방지)
-                const maxSpeed = 20;
-                particle.vx = Math.max(-maxSpeed, Math.min(maxSpeed, particle.vx));
-                particle.vy = Math.max(-maxSpeed, Math.min(maxSpeed, particle.vy));
-
-                // NaN 체크 및 복구
-                if (isNaN(particle.x) || isNaN(particle.y)) {
-                    particle.x = blackHole.x + (Math.random() - 0.5) * 100;
-                    particle.y = blackHole.y + (Math.random() - 0.5) * 100;
-                    particle.vx = (Math.random() - 0.5) * 4;
-                    particle.vy = (Math.random() - 0.5) * 4;
-                }
-
-                // 화면 밖으로 너무 멀리 나가면 블랙홀 방향으로 끌어오기
-                if (particle.x < -500 || particle.x > canvas.width + 500 ||
-                    particle.y < -500 || particle.y > canvas.height + 500) {
-                    particle.x = blackHole.x + (Math.random() - 0.5) * 200;
-                    particle.y = blackHole.y + (Math.random() - 0.5) * 200;
-                }
-            }
-        }
-        
-        // 픽셀 아트 스타일로 원 그리기
-        function drawPixelCircle(x, y, radius, color) {
-            ctx.fillStyle = color;
-            for (let i = -radius; i <= radius; i++) {
-                for (let j = -radius; j <= radius; j++) {
-                    if (i * i + j * j <= radius * radius) {
-                        ctx.fillRect(Math.floor(x + i), Math.floor(y + j), 1, 1);
-                    }
-                }
-            }
-        }
-        
-        // 그리기 함수
-        function draw() {
-            // 배경 지우기
-            ctx.fillStyle = '#000008';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // 별 그리기
-            stars.forEach(star => {
-                const twinkle = Math.sin(Date.now() * 0.001 + star.x) * 0.5 + 0.5;
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.brightness * twinkle})`;
-                ctx.fillRect(Math.floor(star.x), Math.floor(star.y), star.size, star.size);
-            });
-            
-            // 블랙홀 중심 크기 계산 - 중력에 비례해서 천천히 커짐
-            const gravityScale = blackHole.mass / blackHole.baseMass;
-            const dynamicRadius = blackHole.radius * (1 + Math.log(gravityScale) * 0.3);
-            const time = Date.now() * 0.001;
-
-            // 사건의 지평선 glow 효과 (일렁거림)
-            const glowLayers = 8;
-            for (let i = glowLayers; i >= 0; i--) {
-                const waveOffset = Math.sin(time * 2 + i * 0.5) * 2 + Math.cos(time * 3 + i * 0.3) * 1.5;
-                const glowRadius = dynamicRadius + i * 4 + waveOffset;
-                const alphaWave = Math.sin(time * 1.5 + i * 0.7) * 0.1 + 0.9;
-                const alpha = (1 - i / glowLayers) * 0.4 * alphaWave;
-                drawPixelCircle(blackHole.x, blackHole.y, glowRadius, `rgba(138, 43, 226, ${alpha})`);
-            }
-
-            // 소행성 그리기
-            asteroids.forEach(asteroid => {
-                const healthRatio = asteroid.health / asteroid.maxHealth;
-                const red = Math.floor((1 - healthRatio) * 255);
-                const original = asteroid.color === '#8B4513' ? [139, 69, 19] : [105, 105, 105];
-
-                const finalColor = `rgb(${Math.min(255, original[0] + red)}, ${Math.max(0, original[1] - red)}, ${Math.max(0, original[2] - red)})`;
-
-                drawPixelCircle(asteroid.x, asteroid.y, asteroid.size, finalColor);
-
-                // 소행성 표면 디테일
-                for (let i = 0; i < 3; i++) {
-                    const angle = (Date.now() * 0.001 + asteroid.x) * 0.5 + i * Math.PI * 2 / 3;
-                    const detailX = asteroid.x + Math.cos(angle) * (asteroid.size * 0.7);
-                    const detailY = asteroid.y + Math.sin(angle) * (asteroid.size * 0.7);
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-                    ctx.fillRect(Math.floor(detailX), Math.floor(detailY), 2, 2);
-                }
-            });
-
-            // 파편 그리기
-            particles.forEach(particle => {
-                const size = Math.max(1, particle.size);
-
-                if (particle.isFragment) {
-                    // 큰 파편은 픽셀 원으로 그리기
-                    drawPixelCircle(particle.x, particle.y, size, particle.color);
-                } else {
-                    // 작은 파편은 사각형으로 그리기
-                    ctx.fillStyle = particle.color;
-                    ctx.fillRect(Math.floor(particle.x), Math.floor(particle.y), Math.ceil(size), Math.ceil(size));
-                }
-            });
-
-            // 블랙홀 중심 (완전히 검은색) - 파편 위에 그림
-            drawPixelCircle(blackHole.x, blackHole.y, dynamicRadius, '#000000');
-        }
-        
-        // 통계 업데이트
-        function updateStats() {
-            stats.asteroidCount = asteroids.length;
-            stats.particleCount = particles.length;
-            
-            // 중력 표시를 1부터 시작하도록 스케일 조정
-            const gravityLevel = Math.floor((blackHole.mass - blackHole.baseMass) / 100) + 1;
-            
-            document.getElementById('asteroidCount').textContent = stats.asteroidCount;
-            document.getElementById('particleCount').textContent = stats.particleCount;
-            document.getElementById('absorbedCount').textContent = stats.absorbedCount;
-            document.getElementById('gravityStrength').textContent = gravityLevel;
-        }
-        
-        // 캔버스 리사이즈 처리
-        function handleResize() {
-            const rect = canvas.getBoundingClientRect();
-            canvas.style.width = rect.width + 'px';
-            canvas.style.height = rect.height + 'px';
-            
-            // 블랙홀 위치와 크기 업데이트
-            updateBlackHole();
-        }
-        
-        // 소행성 자동 생성 관련
-        let lastSpawnTime = 0;
-        
-        function getSpawnRate() {
-            const spawnInput = document.getElementById('spawnRate');
-            return parseFloat(spawnInput.value) || 0.2;
-        }
-        
-        // 슬라이더와 입력창 동기화
-        function syncSpawnControls() {
-            const spawnInput = document.getElementById('spawnRate');
-            const spawnSlider = document.getElementById('spawnSlider');
-            
-            spawnInput.addEventListener('input', function() {
-                spawnSlider.value = this.value;
-            });
-            
-            spawnSlider.addEventListener('input', function() {
-                spawnInput.value = this.value;
-            });
-        }
-        
-        // 게임 루프
-        function gameLoop(currentTime = 0) {
-            if (!isPaused) {
-                updateAsteroids();
-                updateParticles();
-                draw();
-                updateStats();
-                
-                // 설정된 초당 생성률에 따른 소행성 생성
-                const spawnRate = getSpawnRate();
-                const spawnInterval = 1000 / spawnRate; // 밀리초 단위
-                
-                if (spawnRate > 0 && currentTime - lastSpawnTime >= spawnInterval) {
-                    createAsteroid();
-                    lastSpawnTime = currentTime;
-                }
-            }
-            
-            animationId = requestAnimationFrame(gameLoop);
-        }
-        
-        // 컨트롤 함수들
-        function togglePause() {
-            isPaused = !isPaused;
-        }
-        
-        function resetSimulation() {
-            asteroids = [];
-            particles = [];
-            stats.absorbedCount = 0;
-            blackHole.coreParticleCount = 0;
-            blackHole.mass = blackHole.baseMass;
-        }
-        
-        function spawnAsteroid() {
-            createAsteroid();
-        }
-        
-        // 초기화
-        createStars();
-        updateBlackHole();
-        syncSpawnControls();
-        
-        // 리사이즈 이벤트 리스너
-        window.addEventListener('resize', handleResize);
-        window.addEventListener('orientationchange', () => {
-            setTimeout(handleResize, 100);
-        });
-        
-        gameLoop();
-    </script>
+    <script src="blog.js"></script>
 </body>
 </html>
