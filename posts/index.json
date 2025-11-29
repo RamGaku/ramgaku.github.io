@@ -24,6 +24,11 @@
       "id": "vanilla-blog",
       "path": "posts/trouble/vanilla-blog.txt",
       "category": "삽질 기록"
+    },
+    {
+      "id": "github-pages-seo-optimization",
+      "path": "posts/web/github-pages-seo-optimization.txt",
+      "category": "Web"
     }
   ]
 }
