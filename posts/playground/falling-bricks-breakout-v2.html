@@ -478,8 +478,9 @@
         let gameState = 'playing';
         let score = 0;
         let level = 1;
-        let autoMode = true;
+        let autoMode = false; // 처음에는 수동모드로 시작
         let autoModeInterval = null;
+        let hasUsedAutoMode = false; // 자동모드 사용 여부 추적
 
         // 공 시스템 (다중 공 지원)
         let balls = [];
@@ -940,6 +941,8 @@
             const toggle = document.querySelector('.toggle-switch');
             if (autoMode) {
                 toggle.classList.add('active');
+                hasUsedAutoMode = true; // 자동모드가 켜지면 추적
+                console.log('⚠️ 자동모드 사용: 랭킹 등록 불가');
                 startAutoMode();
             } else {
                 toggle.classList.remove('active');
@@ -1033,6 +1036,15 @@
             dropTimer = 0;
             dropSpeed = 180;
             
+            // 자동모드 추적 리셋 및 수동모드로 시작
+            hasUsedAutoMode = false;
+            if (autoMode) {
+                autoMode = false;
+                const toggle = document.querySelector('.toggle-switch');
+                toggle.classList.remove('active');
+                stopAutoMode();
+            }
+            
             initBalls();
             paddle.x = canvas.width / 2 - 50;
             items = [];
@@ -1044,9 +1056,7 @@
             
             initBricks();
             
-            if (autoMode) {
-                startAutoMode();
-            }
+            console.log('🎮 수동모드로 새 게임 시작 - 랭킹 등록 가능');
         }
 
         // 랭킹 시스템 함수들
@@ -1065,16 +1075,42 @@
             
             if (currentScore > 0) {
                 document.getElementById('finalScore').textContent = currentScore.toLocaleString();
-                document.getElementById('scoreSubmitSection').style.display = 'block';
                 document.getElementById('rankingContainer').style.display = 'block';
+                
+                // 자동모드 사용 여부 체크
+                if (hasUsedAutoMode) {
+                    console.log('❌ 자동모드 사용으로 인해 랭킹 등록 불가');
+                    // 자동모드 사용 메시지 표시 (점수 등록 섹션 숨기기)
+                    document.getElementById('scoreSubmitSection').style.display = 'none';
+                    
+                    // 자동모드 사용 안내 메시지 추가
+                    const rankingContainer = document.getElementById('rankingContainer');
+                    let autoModeWarning = document.getElementById('autoModeWarning');
+                    if (!autoModeWarning) {
+                        autoModeWarning = document.createElement('div');
+                        autoModeWarning.id = 'autoModeWarning';
+                        autoModeWarning.style.cssText = 'color: #ff6666; text-align: center; margin-bottom: 15px; padding: 10px; border: 1px solid #ff6666; border-radius: 5px; background: rgba(255, 102, 102, 0.1);';
+                        autoModeWarning.innerHTML = '⚠️ 자동모드를 사용했기 때문에<br>랭킹 등록이 불가능합니다.<br><span style="font-size: 12px;">수동모드로만 플레이해야 랭킹 등록이 가능합니다.</span>';
+                        rankingContainer.insertBefore(autoModeWarning, document.getElementById('rankingList'));
+                    }
+                } else {
+                    console.log('✅ 수동모드로만 플레이 - 랭킹 등록 가능');
+                    document.getElementById('scoreSubmitSection').style.display = 'block';
+                    
+                    // 자동모드 경고 메시지 제거
+                    const autoModeWarning = document.getElementById('autoModeWarning');
+                    if (autoModeWarning) {
+                        autoModeWarning.remove();
+                    }
+                    
+                    // 이름 입력창에 포커스
+                    setTimeout(() => {
+                        document.getElementById('playerNameInput').focus();
+                    }, 500);
+                }
                 
                 // 기존 랭킹 로드해서 보여주기
                 loadRankings();
-                
-                // 이름 입력창에 포커스
-                setTimeout(() => {
-                    document.getElementById('playerNameInput').focus();
-                }, 500);
             }
         }
         
@@ -1155,7 +1191,6 @@
         initBricks();
         initBalls();
         gameLoop();
-        startAutoMode();
         resizeCanvas();
     </script>
 </body>
