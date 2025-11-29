@@ -422,13 +422,28 @@ async function showRecentPosts() {
         </div>
     `;
 
-    // 모든 게시물 로드
-    const loadedPosts = await Promise.all(
-        postsIndex.slice(0, 5).map(p => fetchPost(p.id))
+    // 모든 게시물 로드 및 날짜순 정렬
+    const allPosts = await Promise.all(
+        postsIndex.map(p => fetchPost(p.id))
     );
 
-    const recentPostsHtml = loadedPosts
+    const sortedPosts = allPosts
         .filter(post => post)
+        .sort((a, b) => {
+            // 날짜 처리: YYYY-MM-DD 형식이면 그대로, 아니면 YYYY-01-01로 변환
+            const parseDate = (dateStr) => {
+                if (!dateStr) return new Date('1970-01-01');
+                if (dateStr.includes('-')) return new Date(dateStr);
+                return new Date(`${dateStr}-01-01`);
+            };
+            
+            const dateA = parseDate(a.date);
+            const dateB = parseDate(b.date);
+            return dateB - dateA; // 최신 날짜 우선
+        })
+        .slice(0, 5); // 최근 5개만
+
+    const recentPostsHtml = sortedPosts
         .map(post => `
             <article class="post-card" data-post="${post.id}">
                 <div class="post-category">${post.category}</div>
