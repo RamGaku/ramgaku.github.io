@@ -9,7 +9,7 @@ let posts = {};
 let postsIndex = [];
 
 // DOM 요소
-let contentTitle, contentBody, tocNav, adContainer;
+let contentTitle, contentBody, tocNav, adContainer, lastUpdatedTime;
 
 // 현재 활성화된 게시물
 let currentPost = null;
@@ -27,18 +27,38 @@ function hideAd() {
     }
 }
 
+// 마지막 수정 시간 업데이트
+function updateLastModifiedTime() {
+    if (lastUpdatedTime) {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        };
+        const formattedTime = now.toLocaleDateString('ko-KR', options).replace(/\. /g, '.').replace('.', '') + ' ' + 
+                             now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+        lastUpdatedTime.textContent = formattedTime;
+    }
+}
+
 // 초기화
 document.addEventListener('DOMContentLoaded', async () => {
     contentTitle = document.getElementById('content-title');
     contentBody = document.getElementById('content-body');
     tocNav = document.getElementById('toc-nav');
     adContainer = document.getElementById('ad-container');
+    lastUpdatedTime = document.getElementById('last-updated-time');
 
     await loadPostsIndex();
     initCategoryToggle();
     initPostNavigation();
     initPostCards();
     initBlogTitle();
+    updateLastModifiedTime();
     showRecentPosts();
 });
 
