@@ -920,12 +920,22 @@
 
         // 게임오버 체크
         function checkGameOver() {
-            const paddleRow = Math.floor((paddle.y - brickGrid.offsetY) / brickGrid.cellHeight);
-            for (let c = 0; c < brickGrid.cols; c++) {
-                if (paddleRow >= 0 && paddleRow < brickGrid.rows && bricks[paddleRow][c]) {
-                    gameState = 'gameOver';
-                    showGameOver();
-                    return;
+            // 패들 위치보다 아래에 있는 벽돌이 있으면 게임오버
+            const paddleTopY = paddle.y;
+            
+            for (let r = 0; r < brickGrid.rows; r++) {
+                for (let c = 0; c < brickGrid.cols; c++) {
+                    if (bricks[r][c]) {
+                        const brickBottomY = brickGrid.offsetY + (r + 1) * brickGrid.cellHeight;
+                        
+                        // 벽돌 아래쪽이 패들 위쪽보다 아래에 있으면 게임오버
+                        if (brickBottomY >= paddleTopY) {
+                            console.log(`게임오버: 벽돌이 패들까지 내려옴 (벽돌Y: ${brickBottomY}, 패들Y: ${paddleTopY})`);
+                            gameState = 'gameOver';
+                            showGameOver();
+                            return;
+                        }
+                    }
                 }
             }
         }
@@ -1125,6 +1135,9 @@
                     dropNewBrickLine();
                     dropTimer = 0;
                 }
+                
+                // 게임오버 체크 (매 프레임마다)
+                checkGameOver();
             }
             
             drawBricks();
