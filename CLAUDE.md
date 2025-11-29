@@ -67,3 +67,50 @@ npx serve .
 - `ads.txt` 파일 루트에 있음
 - 로컬에서는 광고 테스트 불가 (승인된 도메인에서만 작동)
 - GDPR 동의 메시지: 3가지 선택사항으로 설정됨 (EEA/영국/스위스 사용자 대상)
+
+## Chrome DevTools Protocol (CDP)
+
+웹 브라우저 자동화 및 디버깅용 CDP 사용 가능:
+
+**설정:**
+```bash
+# Chrome 디버깅 포트로 실행
+start chrome --remote-debugging-port=9222 --user-data-dir="c:\temp\chrome_debug"
+
+# CDP 라이브러리 설치  
+npm install chrome-remote-interface
+```
+
+**기본 사용법:**
+```js
+const CDP = require('chrome-remote-interface');
+
+async function automateChrome() {
+    // 새 탭 생성 후 연결
+    const tab = await CDP.New({port: 9222});
+    const client = await CDP({tab});
+    
+    const {Page, Runtime} = client;
+    await Page.enable();
+    await Runtime.enable();
+    
+    // 페이지 로드
+    await Page.navigate({url: 'file:///path/to/page.html'});
+    await new Promise(resolve => Page.loadEventFired(resolve));
+    
+    // JavaScript 실행
+    await Runtime.evaluate({
+        expression: `console.log('CDP로 조작됨');`
+    });
+    
+    client.close();
+}
+```
+
+**활용 예시:**
+- DOM 요소 실시간 조작
+- 키보드/마우스 이벤트 시뮬레이션
+- 게임 자동화 (AI 플레이어)
+- 웹페이지 스크래핑 및 테스트 자동화
+- 네트워크 트래픽 모니터링
+- 윈도우 OS이므로 항상 윈도우 명령어를 이용할 것
