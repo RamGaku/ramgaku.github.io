@@ -334,6 +334,9 @@ async function loadPost(postId) {
 
     // 제목 업데이트
     contentTitle.textContent = post.title;
+    
+    // SEO 메타데이터 동적 업데이트
+    updateSEOMetadata(post, postId);
 
     // 본문 업데이트 (댓글 섹션 포함)
     contentBody.innerHTML = `
@@ -506,4 +509,54 @@ function loadGiscus(postId) {
     script.async = true;
 
     document.body.appendChild(script);
+}
+
+// SEO 메타데이터 동적 업데이트
+function updateSEOMetadata(post, postId) {
+    // 페이지 제목 업데이트
+    document.title = `${post.title} - 람가의 개발로그`;
+    
+    // 메타 description 업데이트 (게시물 내용에서 첫 번째 문단 추출)
+    const description = post.description || 
+                       post.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+    
+    updateMetaTag('name', 'description', description);
+    
+    // Open Graph 메타 태그 업데이트
+    updateMetaTag('property', 'og:title', post.title);
+    updateMetaTag('property', 'og:description', description);
+    updateMetaTag('property', 'og:url', `https://ramgaku.github.io/#${postId}`);
+    
+    // Twitter Card 업데이트
+    updateMetaTag('name', 'twitter:title', post.title);
+    updateMetaTag('name', 'twitter:description', description);
+    
+    // Canonical URL 업데이트
+    updateLinkTag('canonical', `https://ramgaku.github.io/#${postId}`);
+}
+
+// 메타 태그 업데이트 유틸리티
+function updateMetaTag(attr, name, content) {
+    let meta = document.querySelector(`meta[${attr}="${name}"]`);
+    if (meta) {
+        meta.setAttribute('content', content);
+    } else {
+        meta = document.createElement('meta');
+        meta.setAttribute(attr, name);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+    }
+}
+
+// 링크 태그 업데이트 유틸리티  
+function updateLinkTag(rel, href) {
+    let link = document.querySelector(`link[rel="${rel}"]`);
+    if (link) {
+        link.setAttribute('href', href);
+    } else {
+        link = document.createElement('link');
+        link.setAttribute('rel', rel);
+        link.setAttribute('href', href);
+        document.head.appendChild(link);
+    }
 }
