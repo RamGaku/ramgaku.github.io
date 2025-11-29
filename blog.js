@@ -9,16 +9,30 @@ let posts = {};
 let postsIndex = [];
 
 // DOM 요소
-let contentTitle, contentBody, tocNav;
+let contentTitle, contentBody, tocNav, adContainer;
 
 // 현재 활성화된 게시물
 let currentPost = null;
+
+// 광고 표시/숨김
+function showAd() {
+    if (adContainer) {
+        adContainer.style.display = 'block';
+    }
+}
+
+function hideAd() {
+    if (adContainer) {
+        adContainer.style.display = 'none';
+    }
+}
 
 // 초기화
 document.addEventListener('DOMContentLoaded', async () => {
     contentTitle = document.getElementById('content-title');
     contentBody = document.getElementById('content-body');
     tocNav = document.getElementById('toc-nav');
+    adContainer = document.getElementById('ad-container');
 
     await loadPostsIndex();
     initCategoryToggle();
@@ -291,7 +305,10 @@ function initPostCards() {
 // 게시물 로드
 async function loadPost(postId) {
     const post = await fetchPost(postId);
-    if (!post) return;
+    if (!post) {
+        hideAd(); // 게시물 로드 실패 시 광고 숨김
+        return;
+    }
 
     currentPost = postId;
 
@@ -320,6 +337,9 @@ async function loadPost(postId) {
     document.querySelectorAll('.category-posts a').forEach(a => {
         a.classList.toggle('active', a.dataset.post === postId);
     });
+
+    // 게시물 로드 성공 시 광고 표시
+    showAd();
 }
 
 // TOC 업데이트
@@ -372,6 +392,7 @@ function setupScrollSpy() {
 async function showRecentPosts() {
     contentTitle.textContent = '최근 게시물';
     tocNav.innerHTML = '<p class="toc-empty">게시물을 선택하세요</p>';
+    hideAd(); // 메인 페이지에서는 광고 숨김
 
     const githubLink = `
         <div class="github-link">
