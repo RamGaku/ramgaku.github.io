@@ -29,6 +29,11 @@
       "id": "github-pages-seo-optimization",
       "path": "posts/web/github-pages-seo-optimization.txt",
       "category": "Web"
+    },
+    {
+      "id": "github-pages-markdown-404-hell",
+      "path": "posts/trouble/github-pages-markdown-404-hell.txt",
+      "category": "삽질 기록"
     }
   ]
 }
