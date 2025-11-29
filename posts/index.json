@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "id": "firebase-ranking-system",
+      "path": "posts/web/firebase-ranking-system.txt", 
+      "category": "Web"
+    },
+    {
       "id": "chrome-devtools-protocol",
       "path": "posts/web/chrome-devtools-protocol.txt",
       "category": "Web"
