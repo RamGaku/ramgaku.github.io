@@ -4,6 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Falling Bricks Breakout v2</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+        
+        // Firebase 설정 - ramgaku-playgrnd-rankdb 프로젝트 (테스트용)
+        const firebaseConfig = {
+            apiKey: "demo-api-key-for-github-pages", 
+            authDomain: "ramgaku-playgrnd-rankdb.firebaseapp.com", 
+            databaseURL: "https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "ramgaku-playgrnd-rankdb",
+            storageBucket: "ramgaku-playgrnd-rankdb.appspot.com",
+            messagingSenderId: "123456789", 
+            appId: "demo-app-id-for-public-access"
+        };
+        
+        let firebaseApp, database;
+        let isFirebaseEnabled = false;
+        
+        try {
+            firebaseApp = initializeApp(firebaseConfig);
+            database = getDatabase(firebaseApp);
+            isFirebaseEnabled = true;
+            console.log('🔥 Firebase 연결 성공!');
+            console.log('📍 Database URL:', firebaseConfig.databaseURL);
+            
+            // 연결 테스트
+            const testRef = ref(database, '.info/connected');
+            onValue(testRef, (snapshot) => {
+                const connected = snapshot.val();
+                console.log(connected ? '✅ Firebase 실시간 연결됨' : '❌ Firebase 연결 끊어짐');
+            });
+            
+        } catch (error) {
+            console.log('⚠️ Firebase 연결 실패 (로컬/데모 모드):', error);
+            console.log('📋 설정값:', firebaseConfig);
+            isFirebaseEnabled = false;
+        }
+        
+        // 전역 Firebase 함수들
+        window.saveScore = async function(playerName, score, level) {
+            if (!isFirebaseEnabled) {
+                console.log('Firebase 미연결 상태 - 로컬 점수 저장');
+                saveLocalScore(playerName, score, level);
+                return;
+            }
+            
+            try {
+                const scoresRef = ref(database, 'falling-breakout-scores');
+                await push(scoresRef, {
+                    name: playerName.substring(0, 10), // 이름 길이 제한
+                    score: score,
+                    level: level,
+                    timestamp: Date.now(),
+                    date: new Date().toISOString().split('T')[0]
+                });
+                console.log('💾 점수 저장 완료!');
+                loadRankings();
+            } catch (error) {
+                console.error('점수 저장 실패:', error);
+                saveLocalScore(playerName, score, level);
+            }
+        };
+        
+        window.loadRankings = function() {
+            if (!isFirebaseEnabled) {
+                console.log('Firebase 미연결 - 로컬 랭킹 로드');
+                loadLocalRankings();
+                return;
+            }
+            
+            try {
+                const scoresRef = ref(database, 'falling-breakout-scores');
+                const topScoresQuery = query(scoresRef, orderByChild('score'), limitToLast(10));
+                
+                onValue(topScoresQuery, (snapshot) => {
+                    const scores = [];
+                    snapshot.forEach((childSnapshot) => {
+                        scores.push(childSnapshot.val());
+                    });
+                    
+                    // 점수 높은 순으로 정렬
+                    scores.sort((a, b) => b.score - a.score);
+                    displayRankings(scores);
+                });
+            } catch (error) {
+                console.error('랭킹 로드 실패:', error);
+                loadLocalRankings();
+            }
+        };
+        
+        // 로컬 저장소 백업 시스템
+        function saveLocalScore(name, score, level) {
+            let localScores = JSON.parse(localStorage.getItem('falling-breakout-local-scores') || '[]');
+            localScores.push({
+                name: name,
+                score: score,
+                level: level,
+                timestamp: Date.now(),
+                date: new Date().toISOString().split('T')[0]
+            });
+            
+            // 상위 20개만 보관
+            localScores.sort((a, b) => b.score - a.score);
+            localScores = localScores.slice(0, 20);
+            
+            localStorage.setItem('falling-breakout-local-scores', JSON.stringify(localScores));
+            loadLocalRankings();
+        }
+        
+        function loadLocalRankings() {
+            const localScores = JSON.parse(localStorage.getItem('falling-breakout-local-scores') || '[]');
+            displayRankings(localScores.slice(0, 10));
+        }
+        
+        function displayRankings(scores) {
+            const rankingList = document.getElementById('rankingList');
+            if (!rankingList) return;
+            
+            rankingList.innerHTML = '';
+            
+            if (scores.length === 0) {
+                rankingList.innerHTML = '<div class="no-scores">아직 등록된 점수가 없습니다</div>';
+                return;
+            }
+            
+            scores.forEach((score, index) => {
+                const rankingItem = document.createElement('div');
+                rankingItem.className = 'ranking-item';
+                rankingItem.innerHTML = `
+                    <span class="rank">${index + 1}</span>
+                    <span class="name">${score.name}</span>
+                    <span class="score">${score.score.toLocaleString()}</span>
+                    <span class="level">Lv.${score.level}</span>
+                `;
+                rankingList.appendChild(rankingItem);
+            });
+        }
+        
+        // 페이지 로드 시 랭킹 로드
+        window.addEventListener('load', () => {
+            setTimeout(loadRankings, 500); // 게임 초기화 후 로드
+        });
+        
+        window.isFirebaseEnabled = () => isFirebaseEnabled;
+    </script>
+    
     <style>
         * {
             box-sizing: border-box;
@@ -90,6 +238,115 @@
             margin-top: 20px;
             display: none;
             text-shadow: 0 0 15px #ff0080;
+        }
+        
+        /* 랭킹 시스템 스타일 */
+        #rankingContainer {
+            display: none;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 20px #00ffff40;
+        }
+        
+        #rankingContainer h3 {
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .score-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .score-input input {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            padding: 8px 12px;
+            color: #00ffff;
+            font-family: 'Consolas', 'Monaco', monospace;
+            text-align: center;
+            max-width: 200px;
+            outline: none;
+        }
+        
+        .score-input input:focus {
+            box-shadow: 0 0 10px #00ffff40;
+        }
+        
+        .score-input input::placeholder {
+            color: #00ffff60;
+        }
+        
+        .score-info {
+            color: #ff0080;
+            font-size: 18px;
+            text-shadow: 0 0 10px #ff0080;
+            margin-bottom: 10px;
+        }
+        
+        #rankingList {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .ranking-item {
+            display: grid;
+            grid-template-columns: 40px 1fr auto auto;
+            gap: 10px;
+            padding: 8px;
+            border-bottom: 1px solid #00ffff20;
+            align-items: center;
+        }
+        
+        .ranking-item:nth-child(1) .rank { color: #ffd700; }
+        .ranking-item:nth-child(2) .rank { color: #c0c0c0; }
+        .ranking-item:nth-child(3) .rank { color: #cd7f32; }
+        
+        .ranking-item .rank {
+            color: #00ffff;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .ranking-item .name {
+            color: #40ff40;
+            font-weight: bold;
+        }
+        
+        .ranking-item .score {
+            color: #ff8000;
+            font-weight: bold;
+        }
+        
+        .ranking-item .level {
+            color: #8080ff;
+            font-size: 12px;
+        }
+        
+        .no-scores {
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .ranking-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
         .btn {
             background: linear-gradient(45deg, #ff0080, #8000ff);
@@ -179,6 +436,34 @@
         </div>
         
         <div id="gameOver">게임 오버!</div>
+        
+        <!-- 랭킹 시스템 -->
+        <div id="rankingContainer">
+            <h3>🏆 최고 기록</h3>
+            
+            <div id="scoreSubmitSection" style="display: none;">
+                <div class="score-info">
+                    새로운 기록! <span id="finalScore"></span>점 달성!
+                </div>
+                <div class="score-input">
+                    <input type="text" id="playerNameInput" placeholder="이름 입력 (최대 10자)" maxlength="10">
+                    <div class="ranking-buttons">
+                        <button class="btn" onclick="submitScore()">점수 등록</button>
+                        <button class="btn" onclick="skipScore()">건너뛰기</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="rankingList">
+                <div class="no-scores">랭킹을 로딩중...</div>
+            </div>
+            
+            <div class="ranking-buttons">
+                <button class="btn" onclick="showRanking()">랭킹 보기</button>
+                <button class="btn" onclick="hideRanking()">닫기</button>
+                <button class="btn" onclick="restartGame()">다시 시작</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -629,7 +914,7 @@
             // 모든 공이 사라지면 게임 오버
             if (balls.length === 0) {
                 gameState = 'gameOver';
-                gameOverElement.style.display = 'block';
+                showGameOver();
             }
         }
 
@@ -639,7 +924,7 @@
             for (let c = 0; c < brickGrid.cols; c++) {
                 if (paddleRow >= 0 && paddleRow < brickGrid.rows && bricks[paddleRow][c]) {
                     gameState = 'gameOver';
-                    gameOverElement.style.display = 'block';
+                    showGameOver();
                     return;
                 }
             }
@@ -751,6 +1036,7 @@
             scoreElement.textContent = `점수: ${score}`;
             levelElement.textContent = `레벨: ${level}`;
             gameOverElement.style.display = 'none';
+            document.getElementById('rankingContainer').style.display = 'none';
             
             initBricks();
             
@@ -758,6 +1044,70 @@
                 startAutoMode();
             }
         }
+
+        // 랭킹 시스템 함수들
+        function showGameOver() {
+            gameOverElement.style.display = 'block';
+            
+            // 랭킹 체크 (상위 10위 안에 들면 이름 입력 창 표시)
+            setTimeout(() => {
+                checkAndShowRanking();
+            }, 1000);
+        }
+        
+        function checkAndShowRanking() {
+            // 현재 점수가 랭킹에 들어갈지 체크
+            const currentScore = score;
+            
+            if (currentScore > 0) {
+                document.getElementById('finalScore').textContent = currentScore.toLocaleString();
+                document.getElementById('scoreSubmitSection').style.display = 'block';
+                document.getElementById('rankingContainer').style.display = 'block';
+                
+                // 기존 랭킹 로드해서 보여주기
+                loadRankings();
+                
+                // 이름 입력창에 포커스
+                setTimeout(() => {
+                    document.getElementById('playerNameInput').focus();
+                }, 500);
+            }
+        }
+        
+        function submitScore() {
+            const playerName = document.getElementById('playerNameInput').value.trim() || '익명';
+            const currentScore = score;
+            const currentLevel = level;
+            
+            if (currentScore > 0) {
+                saveScore(playerName, currentScore, currentLevel);
+            }
+            
+            document.getElementById('scoreSubmitSection').style.display = 'none';
+        }
+        
+        function skipScore() {
+            document.getElementById('scoreSubmitSection').style.display = 'none';
+            loadRankings(); // 기존 랭킹만 표시
+        }
+        
+        function showRanking() {
+            document.getElementById('rankingContainer').style.display = 'block';
+            loadRankings();
+        }
+        
+        function hideRanking() {
+            document.getElementById('rankingContainer').style.display = 'none';
+        }
+        
+        // Enter 키로 점수 제출
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitScore();
+                }
+            });
+        });
 
         // 메인 게임 루프
         function gameLoop() {
