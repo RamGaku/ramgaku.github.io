@@ -1,13 +1,13 @@
 ---
-title: Chrome DevTools Protocol로 브라우저 자동화하기
-description: CDP를 이용해서 Chrome과 Edge 브라우저를 완전히 자동화하는 방법
+title: Chrome DevTools Protocol로 브라우저 제어하기
+description: CDP를 이용해서 Chrome과 Edge 브라우저를 완전히 프로그래밍 방식으로 제어하는 방법
 date: 2024-11-29
-tags: [CDP, 브라우저 자동화, Chrome, Edge, JavaScript, Node.js]
+tags: [CDP, 브라우저 제어, Chrome, Edge, JavaScript, Node.js]
 ---
 
-# Chrome DevTools Protocol로 브라우저 자동화하기 🤖
+# Chrome DevTools Protocol로 브라우저 제어하기 🌐
 
-웹 브라우저를 프로그래밍 방식으로 완전히 조작할 수 있는 **Chrome DevTools Protocol (CDP)**를 소개하고, 실제로 벽돌깨기 게임을 AI가 자동으로 플레이하도록 만드는 과정을 보여드릴게!
+웹 브라우저를 프로그래밍 방식으로 완전히 조작할 수 있는 **Chrome DevTools Protocol (CDP)**를 소개하고, 실제로 벽돌깨기 게임을 스크립트로 플레이하도록 만드는 과정을 보여드릴게!
 
 ## 🎯 CDP란?
 
@@ -73,11 +73,11 @@ async function connectToBrowser() {
 connectToBrowser();
 ```
 
-## 🎮 실전 예제: 벽돌깨기 게임 AI
+## 🎮 실전 예제: 벽돌깨기 게임 스크립트
 
-벽돌깨기 게임을 AI가 자동으로 플레이하도록 만들어보겠습니다!
+벽돌깨기 게임을 스크립트로 플레이하도록 만들어보겠습니다!
 
-### 게임 자동화 스크립트
+### 게임 제어 스크립트
 
 ```javascript
 const CDP = require('chrome-remote-interface');
@@ -103,7 +103,7 @@ async function autoPlayBreakout() {
         
         console.log('게임 로드 완료');
         
-        // 자동 플레이 AI 주입
+        // 게임 제어 스크립트 주입
         await Runtime.evaluate({
             expression: `
                 let autoPlayInterval;
@@ -134,7 +134,7 @@ async function autoPlayBreakout() {
                 }
                 
                 startAutoPlay();
-                'AI 자동 플레이 시작됨!';
+                '게임 제어 스크립트 시작됨!';
             `
         });
         
@@ -177,7 +177,7 @@ async function autoPlayBreakout() {
         // 30초 후 종료
         setTimeout(() => {
             clearInterval(monitorInterval);
-            console.log('자동화 종료');
+            console.log('게임 제어 종료');
             client.close();
         }, 30000);
         
@@ -248,7 +248,7 @@ console.log('스크린샷 저장됨: screenshot.png');
 
 ## 🌟 실전 활용 사례
 
-### 1. 웹 스크래핑 자동화
+### 1. 웹 스크래핑 제어
 ```javascript
 // 무한 스크롤 페이지 전체 로드
 await Runtime.evaluate({
@@ -269,7 +269,7 @@ await Runtime.evaluate({
 });
 ```
 
-### 2. 폼 자동 완성
+### 2. 폼 제어
 ```javascript
 await Runtime.evaluate({
     expression: `
@@ -336,17 +336,17 @@ process.on('SIGINT', () => cleanup(client));
 
 ### 대안 도구들
 - **Puppeteer**: CDP 기반 high-level API
-- **Playwright**: 멀티 브라우저 자동화
+- **Playwright**: 멀티 브라우저 제어
 - **Selenium**: WebDriver 기반 (다른 프로토콜)
 
 ## 🎊 마무리
 
-CDP는 웹 개발자에게 **브라우저의 모든 기능에 접근**할 수 있는 강력한 도구입니다. 단순한 자동화부터 복잡한 테스팅까지, 상상력의 한계가 곧 가능성의 한계!
+CDP는 웹 개발자에게 **브라우저의 모든 기능에 접근**할 수 있는 강력한 도구입니다. 단순한 제어부터 복잡한 테스팅까지, 상상력의 한계가 곧 가능성의 한계!
 
-특히 게임 자동화나 복잡한 웹 앱 테스팅에서는 기존의 도구들로는 불가능했던 세밀한 제어가 가능합니다.
+특히 게임 제어나 복잡한 웹 앱 테스팅에서는 기존의 도구들로는 불가능했던 세밀한 제어가 가능합니다.
 
-**실제로 우리 벽돌깨기 게임에서 AI가 인간보다 정확하게 패들을 조작하는 모습**을 보면, CDP의 강력함을 실감할 수 있을 거예요! 🎮🤖
+**실제로 우리 벽돌깨기 게임에서 스크립트가 인간보다 정확하게 패들을 조작하는 모습**을 보면, CDP의 강력함을 실감할 수 있을 거예요! 🎮⚡
 
 ---
 
-*CDP로 여러분만의 브라우저 자동화 도구를 만들어보세요!*
+*CDP로 여러분만의 브라우저 제어 도구를 만들어보세요!*
