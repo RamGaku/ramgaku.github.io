@@ -114,3 +114,64 @@ async function automateChrome() {
 - 웹페이지 스크래핑 및 테스트 자동화
 - 네트워크 트래픽 모니터링
 - 윈도우 OS이므로 항상 윈도우 명령어를 이용할 것
+
+## Firebase Realtime Database
+
+### 프로젝트 정보
+- **프로젝트 이름**: `ramgaku-playgrnd-rankdb`
+- **Database URL**: `https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/`
+- **지역**: asia-southeast1 (아시아 서버)
+- **상태**: 테스트 모드 (2025년까지 유효)
+
+### 현재 보안 규칙
+```json
+{
+  "rules": {
+    ".read": "auth == null",
+    ".write": "auth == null"
+  }
+}
+```
+
+### curl을 이용한 테스트 방법
+```bash
+# 데이터베이스 읽기 테스트
+curl -X GET "https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/.json"
+
+# 게임 점수 조회
+curl -X GET "https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/falling-breakout-scores.json"
+
+# 테스트 점수 추가
+curl -X PUT "https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/falling-breakout-scores/test1.json" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"테스터","score":1500,"level":2,"timestamp":1700000000000}'
+
+# 특정 점수 삭제 (개발용)
+curl -X DELETE "https://ramgaku-playgrnd-rankdb-default-rtdb.asia-southeast1.firebasedatabase.app/falling-breakout-scores/test1.json"
+```
+
+### 데이터 구조
+```json
+{
+  "falling-breakout-scores": {
+    "$scoreId": {
+      "name": "플레이어명 (최대 10자)",
+      "score": "점수 (숫자)",
+      "level": "레벨 (숫자)", 
+      "timestamp": "타임스탬프 (밀리초)",
+      "date": "날짜 (YYYY-MM-DD)"
+    }
+  }
+}
+```
+
+### 연동된 게임
+- **Falling Bricks Breakout v2** (`posts/playground/falling-bricks-breakout-v2.html`)
+- 게임오버 시 자동 랭킹 등록
+- 실시간 상위 10위 표시
+- 로컬스토리지 백업 시스템
+
+### 주의사항
+- Firebase 무료 티어: 동시 연결 100개, 10GB/월 전송량
+- 한국어 인코딩 문제: curl에서는 깨지지만 브라우저에서는 정상
+- 테스트 모드이므로 보안 규칙이 느슨함 (프로덕션에서는 강화 필요)
