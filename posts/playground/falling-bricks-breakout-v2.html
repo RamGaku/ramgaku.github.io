@@ -1132,12 +1132,9 @@
                 // 벽돌 떨어뜨리기
                 dropTimer++;
                 if (dropTimer >= dropSpeed) {
-                    dropNewBrickLine();
+                    dropNewBrickLine(); // 이 함수 안에서 checkGameOver() 호출됨
                     dropTimer = 0;
                 }
-                
-                // 게임오버 체크 (매 프레임마다)
-                checkGameOver();
             }
             
             drawBricks();
