@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "id": "chrome-devtools-protocol",
+      "path": "posts/web/chrome-devtools-protocol.txt",
+      "category": "Web"
+    },
+    {
       "id": "neon-breakout",
       "path": "posts/playground/neon-breakout.txt",
       "category": "Playground"
