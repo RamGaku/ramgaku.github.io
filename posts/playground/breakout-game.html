@@ -598,21 +598,25 @@
             requestAnimationFrame(inputLoop);
         }
 
-        // 자동 모드 함수
+        // 자동 모드 함수 (훨씬 빠르고 정확함)
         function startAutoMode() {
             if (autoModeInterval) return;
             
             autoModeInterval = setInterval(() => {
                 if (gameState === 'playing' && autoMode) {
                     const targetX = ball.x - paddle.width / 2;
+                    const distance = targetX - paddle.x;
                     
-                    if (targetX > paddle.x + 10) {
-                        paddle.x = Math.min(paddle.x + paddle.speed * 1.2, canvas.width - paddle.width);
-                    } else if (targetX < paddle.x - 10) {
-                        paddle.x = Math.max(paddle.x - paddle.speed * 1.2, 0);
+                    // 거리에 비례한 빠른 속도
+                    const speed = Math.min(Math.abs(distance) * 0.8, paddle.speed * 3);
+                    
+                    if (distance > 5) {
+                        paddle.x = Math.min(paddle.x + speed, canvas.width - paddle.width);
+                    } else if (distance < -5) {
+                        paddle.x = Math.max(paddle.x - speed, 0);
                     }
                 }
-            }, 50);
+            }, 16); // 60fps로 업데이트
         }
 
         function stopAutoMode() {

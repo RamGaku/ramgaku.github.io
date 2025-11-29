@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "id": "neon-breakout",
+      "path": "posts/playground/neon-breakout.txt",
+      "category": "Playground"
+    },
+    {
       "id": "blackholespace",
       "path": "posts/playground/blackholespace.txt",
       "category": "Playground"
