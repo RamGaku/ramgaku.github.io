@@ -920,22 +920,16 @@
 
         // 게임오버 체크
         function checkGameOver() {
-            // 패들 위치보다 아래에 있는 벽돌이 있으면 게임오버
-            const paddleTopY = paddle.y;
+            // 맨 아래칸(마지막 row)에 벽돌이 있으면 게임오버
+            // 다음에 벽돌이 떨어질 때 이 벽돌들이 화면 밖으로 밀려나기 때문
+            const lastRow = brickGrid.rows - 1;
             
-            for (let r = 0; r < brickGrid.rows; r++) {
-                for (let c = 0; c < brickGrid.cols; c++) {
-                    if (bricks[r][c]) {
-                        const brickBottomY = brickGrid.offsetY + (r + 1) * brickGrid.cellHeight;
-                        
-                        // 벽돌 아래쪽이 패들 위쪽보다 아래에 있으면 게임오버
-                        if (brickBottomY >= paddleTopY) {
-                            console.log(`게임오버: 벽돌이 패들까지 내려옴 (벽돌Y: ${brickBottomY}, 패들Y: ${paddleTopY})`);
-                            gameState = 'gameOver';
-                            showGameOver();
-                            return;
-                        }
-                    }
+            for (let c = 0; c < brickGrid.cols; c++) {
+                if (bricks[lastRow][c]) {
+                    console.log(`게임오버: 벽돌이 맨 아래칸(${lastRow}행)에 도달`);
+                    gameState = 'gameOver';
+                    showGameOver();
+                    return;
                 }
             }
         }
