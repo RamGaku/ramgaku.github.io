@@ -1,0 +1,49 @@
+---
+title: GitBlogEditor 개발기
+description: GitHub Pages 블로그를 위한 통합 웹 에디터 개발 과정
+date: 2024-11-30
+tags: [GitBlogEditor, 블로그, 웹에디터]
+---
+
+# GitBlogEditor 개발기
+
+GitHub Pages 블로그 관리의 불편함을 해결하기 위해 웹 기반 통합 에디터를 개발했다.
+
+## 개발 동기
+
+기존 GitHub Pages 블로그 관리는 매번 로컬 에디터와 터미널을 오가며 작업해야 하는 불편함이 있었다. 이를 해결하기 위해 브라우저에서 모든 작업을 처리할 수 있는 통합 도구를 만들었다.
+
+## 핵심 기능
+
+### 1. Monaco Editor 통합
+- VS Code와 동일한 편집 경험
+- 마크다운 문법 하이라이팅
+- 자동완성 및 스니펫 지원
+
+### 2. 실시간 웹 터미널
+- Socket.io 기반 실시간 터미널
+- git 명령어 직접 실행 가능
+- 다중 클라이언트 지원
+
+### 3. RESTful API
+- 게시물 목록 조회
+- 게시물 생성/수정
+- 자동 index.json 업데이트
+
+## 기술 스택
+
+- Node.js + Express: 웹 서버
+- Socket.io: 실시간 양방향 통신
+- Monaco Editor: VS Code 에디터
+- XTerm.js: 웹 터미널
+
+## 혁신적인 워크플로우
+
+1. 브라우저에서 접속
+2. 사이드바에서 게시물 선택
+3. Monaco Editor에서 편집
+4. 미리보기 탭에서 확인
+5. 터미널에서 git 명령어 실행
+6. 원클릭 배포
+
+이 포스팅도 GitBlogEditor로 작성되었다!

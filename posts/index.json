@@ -1,8 +1,18 @@
 {
   "posts": [
     {
+      "id": "gitblogeditor-development-story",
+      "path": "posts/web/gitblogeditor-development-story.txt",
+      "category": "Web"
+    },
+    {
+      "id": "test-post",
+      "path": "posts/web/test-post.txt",
+      "category": "Web"
+    },
+    {
       "id": "firebase-ranking-system",
-      "path": "posts/web/firebase-ranking-system.txt", 
+      "path": "posts/web/firebase-ranking-system.txt",
       "category": "Web"
     },
     {
