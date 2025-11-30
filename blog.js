@@ -45,6 +45,29 @@ function updateLastModifiedTime() {
     }
 }
 
+// URL 라우팅 처리
+function handleRouting() {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+        loadPost(hash);
+        return;
+    }
+    
+    // URL 경로를 게시물 ID로 변환
+    const path = window.location.pathname.slice(1);
+    if (path && path !== 'index.html') {
+        const segments = path.split('/');
+        if (segments.length >= 3 && segments[0] === 'posts') {
+            const postId = segments[2];
+            loadPost(postId);
+            return;
+        }
+    }
+    
+    // 기본 페이지
+    showRecentPosts();
+}
+
 // 초기화
 document.addEventListener('DOMContentLoaded', async () => {
     contentTitle = document.getElementById('content-title');
@@ -59,7 +82,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     initPostCards();
     initBlogTitle();
     updateLastModifiedTime();
-    showRecentPosts();
+    
+    // URL 라우팅 처리
+    handleRouting();
+    window.addEventListener('hashchange', handleRouting);
 });
 
 // posts/index.json 로드
@@ -331,6 +357,12 @@ async function loadPost(postId) {
     }
 
     currentPost = postId;
+    
+    // URL 업데이트 (브라우저 히스토리에 추가하지 않고 교체)
+    const newUrl = `#${postId}`;
+    if (window.location.hash !== newUrl) {
+        history.replaceState(null, null, newUrl);
+    }
 
     // 제목 업데이트
     contentTitle.textContent = post.title;

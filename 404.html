@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>페이지를 찾을 수 없습니다</title>
+    <script>
+        // GitHub Pages SPA 라우팅 해결
+        // 현재 URL의 경로를 메인 페이지로 리다이렉트하면서 해시로 전달
+        const path = window.location.pathname.slice(1);
+        if (path && path !== '404.html') {
+            window.location.replace('/#' + path.replace(/\//g, '-'));
+        } else {
+            window.location.replace('/');
+        }
+    </script>
+</head>
+<body>
+    <p>페이지를 리다이렉트 중입니다...</p>
+</body>
+</html>
