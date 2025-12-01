@@ -166,31 +166,6 @@ https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/
 </div>
 ```
 
-## 4단계: CSS 스타일
-
-```css
-.visitor-counter {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.75rem;
-}
-
-.visitor-label {
-    color: #606060;
-}
-
-.visitor-count {
-    color: #4ec9b0;
-    font-family: monospace;
-}
-
-.visitor-separator {
-    color: #606060;
-    margin: 0 2px;
-}
-```
-
 ## 중복 카운트 방지 원리
 
 ```
