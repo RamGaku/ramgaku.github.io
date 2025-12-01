@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>github-pages-markdown-404-hell - 람가의 개발로그</title>
+    <meta name="description" content="github-pages-markdown-404-hell">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="github-pages-markdown-404-hell">
+    <meta property="og:description" content="github-pages-markdown-404-hell">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/trouble/github-pages-markdown-404-hell.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="github-pages-markdown-404-hell">
+    <meta name="twitter:description" content="github-pages-markdown-404-hell">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/trouble/github-pages-markdown-404-hell.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "github-pages-markdown-404-hell",
+        "description": "github-pages-markdown-404-hell",
+        "url": "https://ramgaku.github.io/posts/trouble/github-pages-markdown-404-hell.html",
+        "datePublished": "2025-12-01",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">github-pages-markdown-404-hell</h2>
+                <div class="post-meta-header">
+                    <span class="post-date"></span>
+                    <span class="post-category-tag">trouble</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <p>---
+title: GitHub Pages에서 .md 파일이 404 나는 Jekyll 지옥 탈출기
+description: 몇 시간 삽질한 끝에 발견한 GitHub Pages의 숨겨진 Jekyll 처리 함정과 .nojekyll 파일의 진실
+date: 2024-11-29
+tags: [GitHub Pages, Jekyll, 삽질기록, 404에러, .nojekyll, 마크다운]
+---
+
+<h1>GitHub Pages에서 .md 파일이 404 나는 Jekyll 지옥 탈출기 😭</h1>
+
+바닐라 JS로 블로그 만들면서 겪은 <strong>가장 황당한 버그</strong> 이야기. 
+
+몇 시간 삽질한 끝에 알게 된 <strong>GitHub Pages의 숨겨진 함정</strong>과 왜 .md 대신 .txt를 써야 하는지 그 이유를 공유해요.
+
+<h2 id="-문제-발생-md-파일이-404-">🔥 문제 발생: .md 파일이 404?!</h2>
+
+<h3 id="상황">상황</h3>
+
+블로그 시스템을 만들면서 게시물을 <code>.md</code> 파일로 저장했어요.
+
+``<code>
+posts/
+├── web/
+│   ├── chrome-devtools-protocol.md
+│   └── giscus-comment.md
+├── playground/
+│   └── neon-breakout.md
+└── index.json
+</code>`<code>
+
+로컬에서는 완벽하게 작동했는데, **GitHub Pages에 배포하니까 모든 .md 파일이 404 에러!**
+
+</code>`<code>javascript
+// 이 코드가 로컬에서는 잘 되는데...
+fetch('posts/web/chrome-devtools-protocol.md')
+    .then(response => response.text())
+    .then(content => console.log(content));
+</code>`<code>
+
+GitHub Pages에서는:
+</code>`<code>
+GET https://username.github.io/posts/web/chrome-devtools-protocol.md
+404 Not Found
+</code>`<code>
+
+## 😵 첫 번째 삽질: 경로 문제인 줄 알았음
+
+**"아, 경로가 잘못됐나?"**
+
+</code>`<code>javascript
+// 절대경로로 바꿔보기
+fetch('/posts/web/chrome-devtools-protocol.md')
+
+// 상대경로 다시 확인
+fetch('./posts/web/chrome-devtools-protocol.md')
+
+// URL 인코딩까지 해보기
+fetch(encodeURIComponent('posts/web/chrome-devtools-protocol.md'))
+</code>`<code>
+
+**결과: 여전히 404** 🤯
+
+## 🤦‍♂️ 두 번째 삽질: 캐시 문제인 줄 알았음
+
+**"GitHub Pages 배포가 늦은가?"**
+
+- 30분 기다림
+- 캐시 무효화 시도
+- 하드 리프레시 (Ctrl + Shift + R)
+- 다른 브라우저에서 테스트
+
+**결과: 여전히 404** 😡
+
+## 🔍 세 번째 삽질: MIME 타입 문제인 줄 알았음
+
+**"GitHub Pages가 .md 파일을 안 서빙하나?"**
+
+</code>`<code>javascript
+// fetch 헤더 확인해보기
+fetch('posts/web/chrome-devtools-protocol.md')
+    .then(response => {
+        console.log('Status:', response.status);
+        console.log('Headers:', response.headers);
+        return response.text();
+    });
+</code>`<code>
+
+여전히 404인데, 다른 정적 파일들(.css, .js, .json)은 잘 됨.
+
+**뭔가 .md 파일만 특별히 안 되는 거 같은데...?** 🤔
+
+## 💡 해결책 발견: .txt로 바꾸니까 됨!
+
+절망적인 마음으로 **확장자를 .txt로 바꿔봤어요.**
+
+</code>`<code>
+posts/
+├── web/
+│   ├── chrome-devtools-protocol.txt  ← .md에서 변경
+│   └── giscus-comment.txt            ← .md에서 변경
+├── playground/
+│   └── neon-breakout.txt             ← .md에서 변경
+└── index.json
+</code>`<code>
+
+**결과: 완벽하게 작동!** ✨
+
+</code>`<code>javascript
+fetch('posts/web/chrome-devtools-protocol.txt')
+    .then(response => response.text())
+    .then(content => {
+        console.log('드디어 된다!', content);
+    });
+</code>`<code>
+
+## 🕵️‍♂️ 진실 파헤치기: 왜 .md는 안 되고 .txt는 될까?
+
+### Jekyll의 숨겨진 마크다운 처리
+
+조사해보니 **충격적인 사실** 발견:
+
+> **GitHub Pages는 Jekyll을 사용하지 않는 저장소에서도 기본적으로 모든 파일을 Jekyll로 처리합니다!**
+
+#### Jekyll이 .md 파일에게 하는 일
+
+1. **.md 파일을 발견**하면 "아, 마크다운이네! HTML로 변환해야지!"
+2. **Front Matter 파싱** 시도 (---로 시작하는 YAML)
+3. **마크다운 → HTML 변환** 시도
+4. **변환 결과를 다른 경로에 저장** (보통 .html로)
+
+#### 우리 블로그의 .md 파일 구조
+
+</code>`<code>markdown
+---
+title: Chrome DevTools Protocol로 브라우저 제어하기
+description: CDP를 이용해서 Chrome과 Edge 브라우저를 프로그래밍 방식으로 제어하는 방법
+date: 2024-11-29
+tags: [CDP, 브라우저 제어, Chrome, Edge, JavaScript, Node.js]
+---
+
+# Chrome DevTools Protocol로 브라우저 제어하기 ⚡
+...
+</code>`<code>
+
+Jekyll이 보기에는:
+- "오, Front Matter가 있는 마크다운 파일이네!"
+- "HTML로 변환해서 </code>/posts/web/chrome-devtools-protocol/<code> 같은 경로에 저장해야지!"
+- **원래 .md 파일은 더 이상 접근 불가능**
+
+그런데 우리는 **원본 .md 파일을 fetch()로 직접 가져오려고** 했으니까 당연히 404!
+
+### .txt 파일은 왜 됐을까?
+
+Jekyll은 **.txt 파일을 마크다운으로 인식하지 않아요.**
+- Jekyll: "텍스트 파일이네, 그냥 두자"
+- **원본 파일이 그대로 유지됨**
+- fetch()로 접근 가능
+
+## 🛠️ .nojekyll 파일의 진실
+
+우리 프로젝트 루트에 </code>.nojekyll<code> 파일이 있잖아요?
+
+</code>`<code>bash
+D:\_00_gitpage\ramgaku.github.io\.nojekyll
+</code>`<code>
+
+**"이게 있으면 Jekyll 처리를 안 한다고 했는데 왜 .md 파일이 404 났지?"**
+
+### .nojekyll의 실제 역할 범위
+
+조사해보니 </code>.nojekyll<code> 파일은:
+
+✅ **Jekyll 빌드 프로세스 비활성화** (테마, 플러그인 등)
+✅ **</code>_<code>로 시작하는 파일/폴더 무시 방지**
+❌ **마크다운 파일 변환 처리는 여전히 발생**
+
+즉, Jekyll의 **핵심 마크다운 처리 엔진은 여전히 동작**해요!
+
+### GitHub의 공식 문서에 나와있는 함정
+
+</code>`<code>
+By default, GitHub Pages runs all files through Jekyll
+(even if your repository is not set up to use Jekyll).
+</code>`<code>
+
+**.nojekyll이 있어도 마크다운 처리는 계속 된다는 뜻!** 😱
+
+## 🔧 다른 해결책들
+
+### 1. 다른 확장자 사용
+</code>`<code>
+.txt   ✅ 잘 됨
+.md    ❌ Jekyll 처리됨  
+.mdx   ✅ 잘 됨
+.data  ✅ 잘 됨
+</code>`<code>
+
+### 2. Jekyll Front Matter 제거
+마크다운 파일에서 </code>---<code> Front Matter를 제거하면 Jekyll이 무시할 수도 있어요. (하지만 불확실)
+
+### 3. GitHub Actions로 커스텀 배포
+Jekyll 대신 GitHub Actions로 직접 배포하면 완전히 우회 가능해요.
+
+</code>`<code>yaml
+# .github/workflows/pages.yml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+</code>`<code>
+
+## 📚 교훈과 해결책
+
+### 왜 .txt를 강력 추천하는가?
+
+1. **안정성**: Jekyll 처리 완전 회피
+2. **예측 가능성**: 파일이 있는 그대로 서빙됨  
+3. **호환성**: 모든 정적 서버에서 동작
+4. **단순성**: 추가 설정 불필요
+
+## 🎯 비슷한 상황에 처한 개발자들에게
+
+### 증상 체크리스트
+
+□ 로컬에서는 잘 되는데 GitHub Pages에서 404  
+□ .md, .markdown 확장자 파일들만 404  
+□ 다른 정적 파일(.css, .js, .json)은 잘 됨  
+□ .nojekyll 파일이 있는데도 문제 발생  
+
+**→ Jekyll 마크다운 처리가 원인일 확률 95%**
+
+### 빠른 해결법
+
+1. **확장자를 .txt로 변경** (가장 간단)
+2. **Front Matter 제거** 시도
+3. **GitHub Actions 커스텀 배포** (고급)
+
+### 예방법
+
+프로젝트 문서에 다음과 같은 경고를 추가하는 것을 추천:
+
+</code>`<code>markdown
+# README.md 또는 프로젝트 문서에 추가
+- **절대 .md 확장자 사용 금지** - GitHub Pages Jekyll 처리 때문에 404 발생
+- 반드시 .txt 사용할 것
+</code>``
+
+<h2 id="-그럼-왜-다른-사람들은-md-잘-쓰는데-">🤔 그럼 왜 다른 사람들은 .md 잘 쓰는데?</h2>
+
+<strong>대부분의 GitHub Pages 블로그는:</strong>
+
+1. <strong>Jekyll을 정식으로 사용</strong> - 마크다운이 HTML로 변환되어 정상 동작
+2. <strong>GitHub Actions 커스텀 배포</strong> - Jekyll 우회
+3. <strong>다른 정적 사이트 도구 사용</strong> (Gatsby, Next.js 등)
+
+<strong>우리처럼 바닐라 JS로 fetch()를 써서 원본 마크다운을 직접 가져오는 경우는 드물어요!</strong>
+
+<h2 id="-마무리-소중한-삽질의-가치">🎊 마무리: 소중한 삽질의 가치</h2>
+
+이 몇 시간의 삽질 덕분에:
+
+✅ <strong>GitHub Pages Jekyll 처리 메커니즘 이해</strong>  
+✅ <strong>.nojekyll 파일의 실제 역할 파악</strong>  
+✅ <strong>안정적인 블로그 시스템 구축</strong>  
+✅ <strong>다른 개발자들에게 도움이 될 지식 획득</strong>  
+
+<strong>삽질도 가치 있는 학습이야!</strong> 🎓
+
+특히 GitHub Pages 같은 플랫폼은 <strong>문서에 없는 숨겨진 동작</strong>들이 많아서, 직접 부딪혀봐야 알 수 있는 것들이 정말 많더라고요.
+
+---
+
+<em>혹시 비슷한 문제로 고생하고 있다면, .txt 확장자를 써보세요. 진짜 됩니다! 🙏</em>
+
+<h3 id="-관련-링크">🔗 관련 링크</h3>
+<ul><li><a href="https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll" target="_blank">GitHub Pages Jekyll 문서</a></li></ul>
+<ul><li><a href="https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/" target="_blank">.nojekyll 파일에 대한 공식 설명</a></li></ul>
+<ul><li><a href="https://jekyllrb.com/docs/configuration/markdown/" target="_blank">Jekyll 마크다운 처리 가이드</a></li></ul></p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#-문제-발생-md-파일이-404-" class="toc-h2" data-section="-문제-발생-md-파일이-404-">🔥 문제 발생: .md 파일이 404?!</a>
+                    <a href="#상황" class="toc-h3" data-section="상황">상황</a>
+                    <a href="#-그럼-왜-다른-사람들은-md-잘-쓰는데-" class="toc-h2" data-section="-그럼-왜-다른-사람들은-md-잘-쓰는데-">🤔 그럼 왜 다른 사람들은 .md 잘 쓰는데?</a>
+                    <a href="#-마무리-소중한-삽질의-가치" class="toc-h2" data-section="-마무리-소중한-삽질의-가치">🎊 마무리: 소중한 삽질의 가치</a>
+                    <a href="#-관련-링크" class="toc-h3" data-section="-관련-링크">🔗 관련 링크</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="github-pages-markdown-404-hell"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

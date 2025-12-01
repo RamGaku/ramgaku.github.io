@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus) - 람가의 개발로그</title>
+    <meta name="description" content="GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)">
+    <meta property="og:description" content="GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/web/giscus-comment.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)">
+    <meta name="twitter:description" content="GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/web/giscus-comment.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)",
+        "description": "GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)",
+        "url": "https://ramgaku.github.io/posts/web/giscus-comment.html",
+        "datePublished": "2024",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">GitHub Pages 블로그에 댓글 시스템 연동하기 (Giscus)</h2>
+                <div class="post-meta-header">
+                    <span class="post-date">2024</span>
+                    <span class="post-category-tag">web</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <h2 id="소개">소개</h2>
+<p>GitHub Pages 정적 사이트에 댓글 기능을 추가하는 방법.</p>
+<p>기존에 Cusdis를 썼는데, 매번 관리자가 승인해야 댓글이 보이는 번거로움이 있어서 Giscus로 변경했다.</p>
+<h2 id="왜-giscus인가">왜 Giscus인가</h2>
+<p>정적 사이트 댓글 시스템 비교:</p>
+<ul><li><strong>Cusdis</strong> - 익명 가능, 근데 관리자 승인 필요 (번거로움)</li>
+<li><strong>Disqus</strong> - 광고 있고 무거움</li>
+<li><strong>utterances</strong> - GitHub Issues 기반, 가벼움</li>
+<li><strong>Giscus</strong> - GitHub Discussions 기반, 승인 불필요, 리액션 지원</li>
+</ul>
+Giscus가 가장 깔끔하고 GitHub Pages와 찰떡궁합이라 선택.
+<h2 id="설정-방법">설정 방법</h2>
+<p>1. GitHub repo Settings → Features → <strong>Discussions 활성화</strong>
+2. <a href="https://giscus.app/ko" target="_blank">giscus.app</a> 접속
+3. Repository에 <code>username/repo-name</code> 입력
+4. Discussion 카테고리 선택 (보통 Announcements)
+5. 생성된 script 코드 복사</p>
+<h2 id="코드-적용">코드 적용</h2>
+<p>giscus.app에서 생성된 코드 예시:</p>
+<pre><code class="language-html">&lt;script src="https://giscus.app/client.js"
+    data-repo="username/repo-name"
+    data-repo-id="R_xxxxxx"
+    data-category="Announcements"
+    data-category-id="DIC_xxxxxx"
+    data-mapping="pathname"
+    data-theme="dark"
+    data-lang="ko"
+    crossorigin="anonymous"
+    async&gt;
+&lt;/script&gt;
+</code></pre>
+<p>동적으로 로드하려면 JavaScript로 script 엘리먼트를 생성해서 추가하면 됨.</p>
+<p>주의: 로컬 file:// 환경에서는 보안 정책 때문에 작동 안 함. 배포 후 테스트 필요.</p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#소개" class="toc-h2" data-section="소개">소개</a>
+                    <a href="#왜-giscus인가" class="toc-h2" data-section="왜-giscus인가">왜 Giscus인가</a>
+                    <a href="#설정-방법" class="toc-h2" data-section="설정-방법">설정 방법</a>
+                    <a href="#코드-적용" class="toc-h2" data-section="코드-적용">코드 적용</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="giscus-comment"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

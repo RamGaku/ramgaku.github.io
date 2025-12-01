@@ -343,7 +343,9 @@ function initPostCards() {
         const card = e.target.closest('.post-card');
         if (card) {
             const postId = card.dataset.post;
-            loadPost(postId);
+            const category = card.dataset.category;
+            // HTML 페이지로 이동
+            window.location.href = `posts/${category}/${postId}.html`;
         }
     });
 }
@@ -479,8 +481,11 @@ async function showRecentPosts() {
         .slice(0, 5); // 최근 5개만
 
     const recentPostsHtml = sortedPosts
-        .map(post => `
-            <article class="post-card" data-post="${post.id}">
+        .map(post => {
+            // 카테고리 → 폴더명 변환
+            const categoryFolder = getCategoryFolder(post.category);
+            return `
+            <article class="post-card" data-post="${post.id}" data-category="${categoryFolder}">
                 <div class="post-category">${post.category}</div>
                 <h3 class="post-title">${post.title}</h3>
                 <p class="post-excerpt">${getExcerpt(post.content)}</p>
@@ -488,7 +493,8 @@ async function showRecentPosts() {
                     <span class="post-date">${post.date}</span>
                 </div>
             </article>
-        `).join('');
+        `;
+        }).join('');
 
     contentBody.innerHTML = `${githubLink}<div class="recent-posts">${recentPostsHtml}</div>`;
 }
@@ -499,6 +505,16 @@ function getExcerpt(content) {
     div.innerHTML = content;
     const text = div.textContent || div.innerText;
     return text.substring(0, 100).trim() + '...';
+}
+
+// 카테고리 → 폴더명 변환
+function getCategoryFolder(category) {
+    const map = {
+        'Web': 'web',
+        'Playground': 'playground',
+        '삽질 기록': 'trouble'
+    };
+    return map[category] || category.toLowerCase();
 }
 
 // 모바일 메뉴 토글

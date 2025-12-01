@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>github-pages-seo-optimization - 람가의 개발로그</title>
+    <meta name="description" content="github-pages-seo-optimization">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="github-pages-seo-optimization">
+    <meta property="og:description" content="github-pages-seo-optimization">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/web/github-pages-seo-optimization.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="github-pages-seo-optimization">
+    <meta name="twitter:description" content="github-pages-seo-optimization">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/web/github-pages-seo-optimization.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "github-pages-seo-optimization",
+        "description": "github-pages-seo-optimization",
+        "url": "https://ramgaku.github.io/posts/web/github-pages-seo-optimization.html",
+        "datePublished": "2025-12-01",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">github-pages-seo-optimization</h2>
+                <div class="post-meta-header">
+                    <span class="post-date"></span>
+                    <span class="post-category-tag">web</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <p>---
+title: GitHub Pages 블로그 SEO 완전 최적화 가이드
+description: 검색엔진 친화적인 정적 블로그 만들기 - robots.txt, sitemap.xml, 메타태그부터 구조화된 데이터까지
+date: 2024-11-29
+tags: [SEO, GitHub Pages, 블로그 최적화, 검색엔진 최적화, sitemap, robots.txt, 메타태그]
+---
+
+<h1>GitHub Pages 블로그 SEO 완전 최적화 가이드 🔍</h1>
+
+GitHub Pages로 만든 정적 블로그가 검색엔진에서 잘 노출되지 않나요? <strong>검색 트래픽을 10배 늘리는 실전 SEO 최적화 방법</strong>을 단계별로 알려드릴게요!
+
+<h2 id="-seo-최적화-전후-비교">🎯 SEO 최적화 전후 비교</h2>
+
+<h3 id="before-기본-html-">Before (기본 HTML)</h3>
+<ul><li>SEO 점수: <strong>30-40점</strong></li></ul>
+<ul><li>검색엔진 발견 어려움</li></ul>
+<ul><li>소셜 공유 시 엉망인 미리보기</li></ul>
+<ul><li>구조화된 정보 부족</li></ul>
+
+<h3 id="after-완전-최적화-">After (완전 최적화)</h3>
+<ul><li>SEO 점수: <strong>80-90점</strong></li></ul>
+<ul><li>검색엔진 친화적 구조</li></ul>
+<ul><li>완벽한 소셜 미디어 지원</li></ul>
+<ul><li>리치 스니펫 대응</li></ul>
+
+<h2 id="-1단계-기본-seo-인프라-구축">🚀 1단계: 기본 SEO 인프라 구축</h2>
+
+<h3 id="robots-txt-생성">robots.txt 생성</h3>
+
+검색엔진 크롤러에게 사이트 구조를 알려주는 필수 파일입니다.
+
+``<code>txt
+User-agent: *
+Allow: /
+
+# 사이트맵 위치
+Sitemap: https://yoursite.github.io/sitemap.xml
+
+# 불필요한 파일들 차단
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /*.js$
+Disallow: /*.css$
+</code>`<code>
+
+### 동적 사이트맵 생성기
+
+게시물이 추가될 때마다 사이트맵을 업데이트하는 스크립트입니다.
+
+</code>`<code>javascript
+// generate-sitemap.js
+const fs = require('fs');
+
+async function generateSitemap() {
+    const baseUrl = 'https://yoursite.github.io';
+    const posts = JSON.parse(fs.readFileSync('./posts/index.json', 'utf8'));
+    
+    let sitemap = </code><?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- 메인 페이지 -->
+    <url>
+        <loc>${baseUrl}/</loc>
+        <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+<code>;
+
+    // 각 게시물별 URL 추가
+    for (const post of posts.posts) {
+        const postContent = fs.readFileSync(post.path, 'utf8');
+        const frontMatterMatch = postContent.match(/^---([\s\S]*?)---/);
+        let lastmod = new Date().toISOString().split('T')[0];
+        
+        if (frontMatterMatch) {
+            const frontMatter = frontMatterMatch[1];
+            const dateMatch = frontMatter.match(/date:\s*(.+)/);
+            if (dateMatch) {
+                const date = dateMatch[1].trim();
+                lastmod = date.includes('-') ? date : </code>${date}-01-01<code>;
+            }
+        }
+        
+        sitemap += </code>    <url>
+        <loc>${baseUrl}/#${post.id}</loc>
+        <lastmod>${lastmod}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+<code>;
+    }
+    
+    sitemap += </code></urlset><code>;
+    fs.writeFileSync('./sitemap.xml', sitemap);
+    console.log('사이트맵 생성 완료!');
+}
+
+generateSitemap().catch(console.error);
+</code>`<code>
+
+**사용법:**
+</code>`<code>bash
+node generate-sitemap.js
+</code>`<code>
+
+## 📝 2단계: 메타 태그 최적화
+
+### HTML head 섹션 강화
+
+</code>`<code>html
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO 메타 태그 -->
+    <title>블로그 제목 - 주요 키워드 포함</title>
+    <meta name="description" content="검색 결과에 나타날 설명문 (150자 이내)">
+    <meta name="keywords" content="주요키워드, 관련키워드, 태그들">
+    <meta name="author" content="작성자명">
+    
+    <!-- Open Graph (페이스북, 카카오톡 등) -->
+    <meta property="og:title" content="블로그 제목">
+    <meta property="og:description" content="블로그 설명">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yoursite.github.io/">
+    <meta property="og:site_name" content="사이트명">
+    <meta property="og:locale" content="ko_KR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="블로그 제목">
+    <meta name="twitter:description" content="블로그 설명">
+    
+    <!-- 검색엔진 최적화 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://yoursite.github.io/">
+</head>
+</code>`<code>
+
+### 🔧 동적 메타데이터 업데이트
+
+게시물을 로드할 때마다 메타데이터를 업데이트하는 JavaScript 함수:
+
+</code>`<code>javascript
+// SEO 메타데이터 동적 업데이트
+function updateSEOMetadata(post, postId) {
+    // 페이지 제목 업데이트
+    document.title = </code>${post.title} - 블로그명<code>;
+    
+    // 메타 description 업데이트
+    const description = post.description || 
+                       post.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
+    
+    updateMetaTag('name', 'description', description);
+    updateMetaTag('property', 'og:title', post.title);
+    updateMetaTag('property', 'og:description', description);
+    updateMetaTag('property', 'og:url', </code>https://yoursite.github.io/#${postId}<code>);
+    
+    // Canonical URL 업데이트
+    updateLinkTag('canonical', </code>https://yoursite.github.io/#${postId}<code>);
+}
+
+// 유틸리티 함수들
+function updateMetaTag(attr, name, content) {
+    let meta = document.querySelector(</code>meta[${attr}="${name}"]<code>);
+    if (meta) {
+        meta.setAttribute('content', content);
+    } else {
+        meta = document.createElement('meta');
+        meta.setAttribute(attr, name);
+        meta.setAttribute('content', content);
+        document.head.appendChild(meta);
+    }
+}
+
+function updateLinkTag(rel, href) {
+    let link = document.querySelector(</code>link[rel="${rel}"]<code>);
+    if (link) {
+        link.setAttribute('href', href);
+    } else {
+        link = document.createElement('link');
+        link.setAttribute('rel', rel);
+        link.setAttribute('href', href);
+        document.head.appendChild(link);
+    }
+}
+</code>`<code>
+
+## 🏗️ 3단계: 구조화된 데이터 (JSON-LD)
+
+구글이 이해하기 쉬운 형태로 블로그 정보를 제공합니다.
+
+</code>`<code>html
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "블로그명",
+    "description": "블로그 설명",
+    "url": "https://yoursite.github.io/",
+    "author": {
+        "@type": "Person",
+        "name": "작성자명"
+    },
+    "publisher": {
+        "@type": "Person",
+        "name": "작성자명"
+    },
+    "inLanguage": "ko-KR",
+    "blogPost": [
+        {
+            "@type": "BlogPosting",
+            "headline": "게시물 제목",
+            "url": "https://yoursite.github.io/#post-id",
+            "datePublished": "2024-11-29",
+            "author": {
+                "@type": "Person",
+                "name": "작성자명"
+            }
+        }
+    ]
+}
+</script>
+</code>`<code>
+
+## 📊 4단계: SEO 모니터링 설정
+
+### Google Search Console 등록
+
+1. [Google Search Console](https://search.google.com/search-console) 접속
+2. 속성 추가 → URL 접두사 방식 선택
+3. GitHub Pages 도메인 입력
+4. HTML 파일 업로드로 소유권 확인
+5. 사이트맵 제출: </code>https://yoursite.github.io/sitemap.xml<code>
+
+### 핵심 모니터링 지표
+
+- **검색 노출수**: 게시물이 검색 결과에 나타난 횟수
+- **클릭수**: 실제 방문자 수
+- **평균 게재순위**: 검색 결과에서의 평균 순위
+- **CTR (클릭률)**: 노출 대비 클릭 비율
+
+## 🎯 5단계: 컨텐츠 SEO 최적화
+
+### 게시물 Front Matter 최적화
+
+</code>`<code>yaml
+---
+title: 구체적이고 검색 친화적인 제목
+description: 게시물 요약 설명 (150자 이내)
+date: 2024-11-29
+tags: [주요키워드, 관련키워드, 세부키워드]
+category: Web
+---
+</code>`<code>
+
+### SEO 친화적 글쓰기 팁
+
+1. **제목 최적화**
+   - 주요 키워드를 제목 앞쪽에 배치
+   - 60자 이내로 작성
+   - 클릭을 유도하는 매력적인 표현 사용
+
+2. **메타 description 작성**
+   - 150-160자 이내
+   - 핵심 키워드 포함
+   - 클릭 유도 문구 포함
+
+3. **헤딩 구조화**
+   </code>`<code>markdown
+   # H1: 메인 제목 (페이지당 1개)
+   ## H2: 주요 섹션
+   ### H3: 세부 항목
+   </code>`<code>
+
+4. **내부 링크 활용**
+   - 관련 게시물 간 연결
+   - 앵커 텍스트에 키워드 포함
+
+## 🚀 6단계: 성능 최적화
+
+### 이미지 SEO
+
+</code>`<code>html
+<!-- SEO 친화적 이미지 태그 -->
+<img src="image.jpg" 
+     alt="구체적인 이미지 설명" 
+     title="이미지 제목"
+     loading="lazy"
+     width="800" 
+     height="600">
+</code>`<code>
+
+### Core Web Vitals 최적화
+
+- **LCP (Largest Contentful Paint)**: 2.5초 이내
+- **FID (First Input Delay)**: 100ms 이내  
+- **CLS (Cumulative Layout Shift)**: 0.1 이내
+
+## 📈 실전 SEO 체크리스트
+
+### ✅ 기술적 SEO
+- [ ] robots.txt 설정
+- [ ] sitemap.xml 생성
+- [ ] 메타 태그 완성
+- [ ] 구조화된 데이터 추가
+- [ ] HTTPS 설정 (GitHub Pages 기본 제공)
+
+### ✅ 컨텐츠 SEO  
+- [ ] 키워드 리서치 완료
+- [ ] 제목 최적화
+- [ ] 메타 description 작성
+- [ ] 헤딩 구조화
+- [ ] 내부 링크 추가
+
+### ✅ 사용자 경험
+- [ ] 모바일 친화적 디자인
+- [ ] 빠른 로딩 속도
+- [ ] 명확한 네비게이션
+- [ ] 읽기 쉬운 폰트와 색상
+
+## 🎊 SEO 배포 스크립트
+
+새 게시물 추가 시 SEO 작업을 처리하는 배포 스크립트:
+
+</code>`<code>bash
+#!/bin/bash
+# deploy.sh
+
+echo "🚀 SEO 최적화 배포 시작..."
+
+# 사이트맵 재생성
+echo "📄 사이트맵 업데이트..."
+node generate-sitemap.js
+
+# Git 커밋
+echo "📤 변경사항 커밋..."
+git add .
+git commit -m "새 게시물 추가 및 SEO 최적화"
+git push
+
+echo "✅ 배포 완료! Google Search Console에서 사이트맵 재제출하세요."
+</code>``
+
+<h2 id="-seo-성과-측정">🔍 SEO 성과 측정</h2>
+
+<h3 id="예상-개선-효과-3개월-기준-">예상 개선 효과 (3개월 기준)</h3>
+
+<ul><li><strong>검색 트래픽</strong>: 300-500% 증가</li></ul>
+<ul><li><strong>검색 노출수</strong>: 10배 이상 증가  </li></ul>
+<ul><li><strong>평균 게재순위</strong>: 50위 → 10위 내</li></ul>
+<ul><li><strong>브랜드 인지도</strong>: 크게 향상</li></ul>
+
+<h3 id="핵심-성공-지표">핵심 성공 지표</h3>
+
+1. <strong>유기적 검색 트래픽 증가</strong>
+2. <strong>검색 결과 상위 노출</strong>
+3. <strong>소셜 미디어 공유 증가</strong>
+4. <strong>백링크 자연 획득</strong>
+
+<h2 id="-마무리">🎯 마무리</h2>
+
+GitHub Pages 블로그의 SEO 최적화는 <strong>한 번 설정하면 지속적인 효과</strong>를 가져다주는 투자입니다. 
+
+특히 개발 블로그의 경우, 기술적 내용에 대한 검색 수요가 높아서 <strong>제대로 최적화된 블로그는 엄청난 트래픽</strong>을 얻을 수 있어요.
+
+위의 가이드를 따라 하나씩 적용하다 보면, 여러분의 블로그도 검색엔진에서 <strong>상위 노출되는 권위 있는 사이트</strong>로 성장할 거예요! 🚀
+
+---
+
+<em>SEO는 마라톤이에요. 꾸준히 좋은 컨텐츠를 만들면서 기술적 최적화를 병행하세요!</em></p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#-seo-최적화-전후-비교" class="toc-h2" data-section="-seo-최적화-전후-비교">🎯 SEO 최적화 전후 비교</a>
+                    <a href="#before-기본-html-" class="toc-h3" data-section="before-기본-html-">Before (기본 HTML)</a>
+                    <a href="#after-완전-최적화-" class="toc-h3" data-section="after-완전-최적화-">After (완전 최적화)</a>
+                    <a href="#-1단계-기본-seo-인프라-구축" class="toc-h2" data-section="-1단계-기본-seo-인프라-구축">🚀 1단계: 기본 SEO 인프라 구축</a>
+                    <a href="#robots-txt-생성" class="toc-h3" data-section="robots-txt-생성">robots.txt 생성</a>
+                    <a href="#-seo-성과-측정" class="toc-h2" data-section="-seo-성과-측정">🔍 SEO 성과 측정</a>
+                    <a href="#예상-개선-효과-3개월-기준-" class="toc-h3" data-section="예상-개선-효과-3개월-기준-">예상 개선 효과 (3개월 기준)</a>
+                    <a href="#핵심-성공-지표" class="toc-h3" data-section="핵심-성공-지표">핵심 성공 지표</a>
+                    <a href="#-마무리" class="toc-h2" data-section="-마무리">🎯 마무리</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="github-pages-seo-optimization"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

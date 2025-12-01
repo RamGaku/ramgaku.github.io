@@ -9,63 +9,63 @@
     </url>
     <!-- Web 카테고리 -->
     <url>
-        <loc>https://ramgaku.github.io/#github-pages-visitor-counter</loc>
+        <loc>https://ramgaku.github.io/posts/web/github-pages-visitor-counter.html</loc>
         <lastmod>2025-12-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#gitblogeditor-development-story</loc>
+        <loc>https://ramgaku.github.io/posts/web/gitblogeditor-development-story.html</loc>
         <lastmod>2025-11-30</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#firebase-ranking-system</loc>
+        <loc>https://ramgaku.github.io/posts/web/firebase-ranking-system.html</loc>
         <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#chrome-devtools-protocol</loc>
+        <loc>https://ramgaku.github.io/posts/web/chrome-devtools-protocol.html</loc>
         <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#github-pages-seo-optimization</loc>
+        <loc>https://ramgaku.github.io/posts/web/github-pages-seo-optimization.html</loc>
         <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#giscus-comment</loc>
+        <loc>https://ramgaku.github.io/posts/web/giscus-comment.html</loc>
         <lastmod>2024-01-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- Playground 카테고리 -->
     <url>
-        <loc>https://ramgaku.github.io/#neon-breakout</loc>
+        <loc>https://ramgaku.github.io/posts/playground/neon-breakout.html</loc>
         <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#blackholespace</loc>
+        <loc>https://ramgaku.github.io/posts/playground/blackholespace.html</loc>
         <lastmod>2024-01-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- 삽질 기록 카테고리 -->
     <url>
-        <loc>https://ramgaku.github.io/#vanilla-blog</loc>
+        <loc>https://ramgaku.github.io/posts/trouble/vanilla-blog.html</loc>
         <lastmod>2024-01-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ramgaku.github.io/#github-pages-markdown-404-hell</loc>
+        <loc>https://ramgaku.github.io/posts/trouble/github-pages-markdown-404-hell.html</loc>
         <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>

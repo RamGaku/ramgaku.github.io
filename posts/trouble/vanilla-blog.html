@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>GitHub Pages 정적 블로그 만들기 (프레임워크 없이) - 람가의 개발로그</title>
+    <meta name="description" content="GitHub Pages 정적 블로그 만들기 (프레임워크 없이)">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="GitHub Pages 정적 블로그 만들기 (프레임워크 없이)">
+    <meta property="og:description" content="GitHub Pages 정적 블로그 만들기 (프레임워크 없이)">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/trouble/vanilla-blog.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="GitHub Pages 정적 블로그 만들기 (프레임워크 없이)">
+    <meta name="twitter:description" content="GitHub Pages 정적 블로그 만들기 (프레임워크 없이)">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/trouble/vanilla-blog.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "GitHub Pages 정적 블로그 만들기 (프레임워크 없이)",
+        "description": "GitHub Pages 정적 블로그 만들기 (프레임워크 없이)",
+        "url": "https://ramgaku.github.io/posts/trouble/vanilla-blog.html",
+        "datePublished": "2024",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">GitHub Pages 정적 블로그 만들기 (프레임워크 없이)</h2>
+                <div class="post-meta-header">
+                    <span class="post-date">2024</span>
+                    <span class="post-category-tag">trouble</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <h2 id="왜-바닐라로-">왜 바닐라로?</h2>
+<p>Jekyll, Hugo, Gatsby 등 좋은 정적 사이트 생성기가 많은데 굳이 바닐라 JS로 만든 이유:</p>
+<ul><li><strong>배우기 싫어서</strong> - Ruby(Jekyll)나 Go(Hugo) 환경 설정하기 귀찮음</li>
+<li><strong>커스터마이징 자유도</strong> - 프레임워크 제약 없이 원하는 대로</li>
+<li><strong>단순함</strong> - 빌드 과정 없이 그냥 HTML/CSS/JS만 푸시하면 끝</li>
+</ul>
+물론 장단점이 있음. 마크다운 파싱이나 라우팅을 직접 구현해야 해서 삽질이 불가피.
+<h2 id="구조-설계">구조 설계</h2>
+<p>프로젝트 구조는 이렇게 잡음:</p>
+<ul><li>index.html - 메인 페이지 (SPA)</li>
+<li>blog.js - 핵심 로직</li>
+<li>blog.css - 스타일</li>
+<li>posts/index.json - 게시물 목록</li>
+<li>posts/playground/ - Playground 카테고리</li>
+<li>posts/web/ - Web 카테고리</li>
+<li>.nojekyll - Jekyll 비활성화</li>
+</ul>
+핵심은 posts/index.json에서 게시물 목록을 관리하고, 각 게시물은 마크다운 형식의 .txt 파일로 저장하는 것.
+<h2 id="마크다운-파싱-구현">마크다운 파싱 구현</h2>
+<p>별도 라이브러리 없이 정규식으로 간단하게 구현. markdownToHtml 함수에서 코드 블록, 헤더, 볼드, 이탤릭, 링크 등을 정규식으로 HTML 태그로 변환함.</p>
+<p>완벽한 마크다운 파서는 아니지만, 블로그 글 쓰기엔 충분함.</p>
+<h2 id="front-matter-파싱">Front Matter 파싱</h2>
+<p>각 게시물 파일 상단에 메타데이터를 YAML 형식으로 넣음. title, category, date 등의 정보를 --- 구분자 사이에 작성하고, parseMarkdown 함수에서 파싱해서 사용.</p>
+<h2 id="github-pages에서-md-파일-404-문제">GitHub Pages에서 .md 파일 404 문제</h2>
+<p>여기서 삽질이 시작됨.</p>
+<p>로컬에서는 잘 되는데, GitHub Pages에 배포하니까 .md 파일 요청이 전부 404.</p>
+<h3 id="시도-1-nojekyll-파일-추가">시도 1: .nojekyll 파일 추가</h3>
+<p>GitHub Pages는 기본적으로 Jekyll로 빌드하는데, .nojekyll 파일을 루트에 추가하면 Jekyll 처리를 건너뜀.</p>
+<strong>결과: 실패</strong> - 여전히 404
+<h3 id="시도-2-캐시-문제-">시도 2: 캐시 문제?</h3>
+<p>브라우저 캐시 비우고 다시 시도.</p>
+<strong>결과: 실패</strong> - 그대로 404
+<h3 id="시도-3-확장자-변경-md-txt-">시도 3: 확장자 변경 (.md → .txt)</h3>
+<p>결국 .md 확장자를 .txt로 변경.</p>
+<strong>결과: 성공!</strong>
+<h3 id="왜-이런-일이-">왜 이런 일이?</h3>
+<p>GitHub Pages는 .nojekyll이 있어도 .md 파일을 특별하게 처리하는 것 같음. 아마 내부적으로 마크다운 렌더링을 시도하다가 실패하는 듯.</p>
+<p>.txt는 그냥 평범한 텍스트 파일이라 아무 처리 없이 그대로 서빙됨.</p>
+<h2 id="결론">결론</h2>
+<ul><li>바닐라 JS로 블로그 만들기는 가능하지만 삽질 각오해야 함</li>
+<li>GitHub Pages + 마크다운 = .txt 확장자 쓰자</li>
+<li>프레임워크 쓰기 싫으면 이런 삽질은 감수해야...</li>
+</ul>
+근데 이 과정에서 fetch API, 정규식, GitHub Pages 동작 방식 등 배운 게 많아서 나쁘지 않았음.
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#왜-바닐라로-" class="toc-h2" data-section="왜-바닐라로-">왜 바닐라로?</a>
+                    <a href="#구조-설계" class="toc-h2" data-section="구조-설계">구조 설계</a>
+                    <a href="#마크다운-파싱-구현" class="toc-h2" data-section="마크다운-파싱-구현">마크다운 파싱 구현</a>
+                    <a href="#front-matter-파싱" class="toc-h2" data-section="front-matter-파싱">Front Matter 파싱</a>
+                    <a href="#github-pages에서-md-파일-404-문제" class="toc-h2" data-section="github-pages에서-md-파일-404-문제">GitHub Pages에서 .md 파일 404 문제</a>
+                    <a href="#시도-1-nojekyll-파일-추가" class="toc-h3" data-section="시도-1-nojekyll-파일-추가">시도 1: .nojekyll 파일 추가</a>
+                    <a href="#시도-2-캐시-문제-" class="toc-h3" data-section="시도-2-캐시-문제-">시도 2: 캐시 문제?</a>
+                    <a href="#시도-3-확장자-변경-md-txt-" class="toc-h3" data-section="시도-3-확장자-변경-md-txt-">시도 3: 확장자 변경 (.md → .txt)</a>
+                    <a href="#왜-이런-일이-" class="toc-h3" data-section="왜-이런-일이-">왜 이런 일이?</a>
+                    <a href="#결론" class="toc-h2" data-section="결론">결론</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="vanilla-blog"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

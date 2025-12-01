@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>firebase-ranking-system - 람가의 개발로그</title>
+    <meta name="description" content="firebase-ranking-system">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="firebase-ranking-system">
+    <meta property="og:description" content="firebase-ranking-system">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/web/firebase-ranking-system.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="firebase-ranking-system">
+    <meta name="twitter:description" content="firebase-ranking-system">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/web/firebase-ranking-system.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "firebase-ranking-system",
+        "description": "firebase-ranking-system",
+        "url": "https://ramgaku.github.io/posts/web/firebase-ranking-system.html",
+        "datePublished": "2025-12-01",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">firebase-ranking-system</h2>
+                <div class="post-meta-header">
+                    <span class="post-date"></span>
+                    <span class="post-category-tag">web</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <p>---
+title: GitHub Pages + Firebase로 실시간 랭킹 시스템 만들기
+description: 정적 사이트에서 Firebase Realtime Database 연동으로 글로벌 랭킹 시스템 구현하기
+date: 2024-11-29
+tags: [Firebase, GitHub Pages, JavaScript, Realtime Database, 웹게임, 랭킹시스템]
+---
+
+<h1>GitHub Pages + Firebase로 실시간 랭킹 시스템 만들기 🔥📊</h1>
+
+정적 사이트인 <strong>GitHub Pages</strong>에서 <strong>Firebase Realtime Database</strong>를 활용해 실시간 글로벌 랭킹 시스템을 구현하는 완전한 가이드! 웹게임이나 스코어 기반 애플리케이션에 바로 적용할 수 있어.
+
+<h2 id="-구현-목표">🎯 구현 목표</h2>
+
+<ul><li>✅ <strong>완전 무료 호스팅</strong> (GitHub Pages + Firebase 무료 티어)</li></ul>
+<ul><li>✅ <strong>실시간 점수 공유</strong> (전세계 사용자들과 랭킹 경쟁)</li></ul>
+<ul><li>✅ <strong>견고한 백업 시스템</strong> (Firebase 실패 시 로컬스토리지 대안)</li></ul>
+<ul><li>✅ <strong>보안 규칙 적용</strong> (스팸/해킹 방지)</li></ul>
+<ul><li>✅ <strong>반응형 UI</strong> (모바일/PC 모두 지원)</li></ul>
+
+<h2 id="-기술-스택">🔧 기술 스택</h2>
+
+``<code>javascript
+Frontend: 바닐라 JavaScript + HTML5 Canvas
+Database: Firebase Realtime Database  
+Hosting: GitHub Pages
+Testing: Chrome DevTools Protocol (CDP)
+Backup: localStorage
+</code>`<code>
+
+## 📋 프로젝트 구조
+
+</code>`<code>
+GitHub Pages 사이트/
+├── game.html              # 게임 메인 페이지
+├── firebase-config.js     # Firebase 설정 (선택)
+├── ranking-system.js      # 랭킹 로직 (선택)
+└── styles/
+    └── ranking.css        # 랭킹 UI 스타일
+</code>`<code>
+
+## 🚀 1단계: Firebase 프로젝트 설정
+
+### 1.1 프로젝트 생성
+</code>`<code>bash
+# Firebase 콘솔 접속
+https://console.firebase.google.com
+</code>`<code>
+
+1. **"프로젝트 추가"** 클릭
+2. 프로젝트 이름: </code>your-game-ranking<code>
+3. Google Analytics: **선택 사항**
+4. 프로젝트 생성 완료
+
+### 1.2 Realtime Database 생성
+1. 좌측 메뉴 → **"Realtime Database"**
+2. **"데이터베이스 만들기"**
+3. 보안 규칙: **테스트 모드** 선택 (30일간 유효)
+4. 지역: **asia-southeast1** (아시아 서버)
+
+### 1.3 웹 앱 등록
+1. 프로젝트 설정 ⚙️ → **"앱 추가"** → **웹**
+2. 앱 닉네임: </code>Game Ranking<code>
+3. Firebase Hosting: **체크 해제** (GitHub Pages 사용)
+4. **설정 정보 복사** (나중에 사용)
+
+## 🔒 2단계: 보안 규칙 설정
+
+### 2.1 기본 보안 규칙
+</code>`<code>json
+{
+  "rules": {
+    "game-scores": {
+      ".read": true,
+      ".write": "auth == null && newData.exists()",
+      "$scoreId": {
+        "name": {
+          ".validate": "newData.isString() && newData.val().length <= 10"
+        },
+        "score": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
+        },
+        "level": {
+          ".validate": "newData.isNumber() && newData.val() >= 1"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        }
+      }
+    }
+  }
+}
+</code>`<code>
+
+### 2.2 고급 보안 규칙 (스팸 방지)
+</code>`<code>json
+{
+  "rules": {
+    "game-scores": {
+      ".read": true,
+      ".write": "!data.exists() && newData.child('score').val() >= 100",
+      "$scoreId": {
+        ".write": "!data.exists()",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 10"
+        },
+        "score": {
+          ".validate": "newData.isNumber() && newData.val() >= 100 && newData.val() <= 50000"
+        },
+        "timestamp": {
+          ".validate": "(now - newData.val()) <= 60000 && (now - newData.val()) >= -60000"
+        }
+      }
+    }
+  }
+}
+</code>`<code>
+
+## 💻 3단계: 프론트엔드 구현
+
+### 3.1 Firebase SDK 로드
+</code>`<code>html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>랭킹 게임</title>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } 
+               from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+        
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-project.firebaseapp.com",
+            databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "your-project",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "your-app-id"
+        };
+        
+        // Firebase 초기화
+        let app, database, isFirebaseEnabled = false;
+        
+        try {
+            app = initializeApp(firebaseConfig);
+            database = getDatabase(app);
+            isFirebaseEnabled = true;
+            console.log('🔥 Firebase 연결 성공!');
+        } catch (error) {
+            console.log('⚠️ Firebase 연결 실패:', error);
+            isFirebaseEnabled = false;
+        }
+</script>
+</head>
+</code>`<code>
+
+### 3.2 점수 저장 함수
+</code>`<code>javascript
+// 점수 저장 함수 (Firebase + 로컬스토리지 백업)
+window.saveScore = async function(playerName, score, level) {
+    if (!isFirebaseEnabled) {
+        console.log('Firebase 미연결 - 로컬 점수 저장');
+        saveLocalScore(playerName, score, level);
+        return;
+    }
+    
+    try {
+        const scoresRef = ref(database, 'game-scores');
+        await push(scoresRef, {
+            name: playerName.substring(0, 10), // 이름 길이 제한
+            score: score,
+            level: level,
+            timestamp: Date.now(),
+            date: new Date().toISOString().split('T')[0]
+        });
+        console.log('💾 Firebase 점수 저장 완료!');
+        loadRankings();
+    } catch (error) {
+        console.error('Firebase 저장 실패:', error);
+        saveLocalScore(playerName, score, level); // 백업
+    }
+};
+
+// 로컬스토리지 백업 시스템
+function saveLocalScore(name, score, level) {
+    let localScores = JSON.parse(localStorage.getItem('game-local-scores') || '[]');
+    localScores.push({
+        name: name,
+        score: score,
+        level: level,
+        timestamp: Date.now(),
+        date: new Date().toISOString().split('T')[0]
+    });
+    
+    // 상위 20개만 보관
+    localScores.sort((a, b) => b.score - a.score);
+    localScores = localScores.slice(0, 20);
+    
+    localStorage.setItem('game-local-scores', JSON.stringify(localScores));
+    loadLocalRankings();
+}
+</code>`<code>
+
+### 3.3 랭킹 로드 함수
+</code>`<code>javascript
+// Firebase 랭킹 로드
+window.loadRankings = function() {
+    if (!isFirebaseEnabled) {
+        loadLocalRankings();
+        return;
+    }
+    
+    try {
+        const scoresRef = ref(database, 'game-scores');
+        const topScoresQuery = query(scoresRef, orderByChild('score'), limitToLast(10));
+        
+        onValue(topScoresQuery, (snapshot) => {
+            const scores = [];
+            snapshot.forEach((childSnapshot) => {
+                scores.push(childSnapshot.val());
+            });
+            
+            // 점수 높은 순으로 정렬
+            scores.sort((a, b) => b.score - a.score);
+            displayRankings(scores);
+        });
+    } catch (error) {
+        console.error('Firebase 랭킹 로드 실패:', error);
+        loadLocalRankings();
+    }
+};
+
+// 랭킹 UI 표시
+function displayRankings(scores) {
+    const rankingList = document.getElementById('rankingList');
+    if (!rankingList) return;
+    
+    rankingList.innerHTML = '';
+    
+    if (scores.length === 0) {
+        rankingList.innerHTML = '<div class="no-scores">아직 등록된 점수가 없습니다</div>';
+        return;
+    }
+    
+    scores.forEach((score, index) => {
+        const rankingItem = document.createElement('div');
+        rankingItem.className = 'ranking-item';
+        rankingItem.innerHTML = </code>
+            <span class="rank">${index + 1}</span>
+            <span class="name">${score.name}</span>
+            <span class="score">${score.score.toLocaleString()}</span>
+            <span class="level">Lv.${score.level}</span>
+        <code>;
+        rankingList.appendChild(rankingItem);
+    });
+}
+</code>`<code>
+
+### 3.4 랭킹 UI (HTML + CSS)
+</code>`<code>html
+<!-- 랭킹 컨테이너 -->
+<div id="rankingContainer">
+    <h3>🏆 최고 기록</h3>
+    
+    <!-- 점수 등록 섹션 -->
+    <div id="scoreSubmitSection" style="display: none;">
+        <div class="score-info">
+            새로운 기록! <span id="finalScore"></span>점 달성!
+        </div>
+        <div class="score-input">
+            <input type="text" id="playerNameInput" placeholder="이름 입력 (최대 10자)" maxlength="10">
+            <div class="buttons">
+                <button onclick="submitScore()">점수 등록</button>
+                <button onclick="skipScore()">건너뛰기</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 랭킹 리스트 -->
+    <div id="rankingList">
+        <div class="no-scores">랭킹을 로딩중...</div>
+    </div>
+    
+    <!-- 버튼들 -->
+    <div class="ranking-buttons">
+        <button onclick="showRanking()">랭킹 보기</button>
+        <button onclick="hideRanking()">닫기</button>
+    </div>
+</div>
+</code>`<code>
+
+</code>`<code>css
+/* 랭킹 시스템 스타일 */
+#rankingContainer {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.ranking-item {
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    gap: 10px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+}
+
+/* 1, 2, 3위 색상 구분 */
+.ranking-item:nth-child(1) .rank { color: #ffd700; } /* 금 */
+.ranking-item:nth-child(2) .rank { color: #c0c0c0; } /* 은 */
+.ranking-item:nth-child(3) .rank { color: #cd7f32; } /* 동 */
+
+.ranking-item .rank {
+    font-weight: bold;
+    text-align: center;
+}
+
+.ranking-item .name {
+    color: #40ff40;
+    font-weight: bold;
+}
+
+.ranking-item .score {
+    color: #ff8000;
+    font-weight: bold;
+}
+</code>`<code>
+
+## 🧪 4단계: 테스트 및 검증
+
+### 4.1 curl을 이용한 API 테스트
+</code>`<code>bash
+# Firebase 연결 테스트 (읽기)
+curl -X GET "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/.json"
+
+# 테스트 데이터 쓰기
+curl -X PUT "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/game-scores/test1.json" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"테스터","score":1500,"level":2,"timestamp":1700000000000}'
+
+# 저장된 데이터 확인
+curl -X GET "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/game-scores.json"
+</code>`<code>
+
+### 4.2 Chrome DevTools Protocol (CDP) 자동화 테스트
+</code>`<code>javascript
+const CDP = require('chrome-remote-interface');
+
+async function testRankingSystem() {
+    const tab = await CDP.New({port: 9222});
+    const client = await CDP({tab});
+    const {Page, Runtime} = client;
+    
+    await Page.enable();
+    await Runtime.enable();
+    
+    // 게임 페이지 로드
+    await Page.navigate({url: 'http://localhost:3000/game.html'});
+    await new Promise(resolve => Page.loadEventFired(resolve));
+    
+    // Firebase 연결 상태 확인
+    const firebaseStatus = await Runtime.evaluate({
+        expression: </code>window.isFirebaseEnabled ? window.isFirebaseEnabled() : false<code>
+    });
+    
+    console.log('Firebase 상태:', firebaseStatus.result.value);
+    
+    // 테스트 점수 저장
+    await Runtime.evaluate({
+        expression: </code>window.saveScore('테스터', 9999, 5)<code>
+    });
+    
+    // 랭킹 확인
+    await Runtime.evaluate({
+        expression: </code>window.loadRankings()<code>
+    });
+    
+    client.close();
+}
+</code>`<code>
+
+## 🚀 5단계: 배포 및 최적화
+
+### 5.1 GitHub Pages 배포
+</code>`<code>bash
+# 코드 푸시
+git add .
+git commit -m "Firebase 랭킹 시스템 구현 완료"
+git push origin main
+
+# GitHub Pages 활성화 (Settings → Pages → Source: Deploy from a branch)
+</code>`<code>
+
+### 5.2 도메인 인증 설정
+Firebase 콘솔 → Authentication → Settings → 승인된 도메인에 추가:
+</code>`<code>
+localhost (개발용)
+your-username.github.io (프로덕션)
+</code>`<code>
+
+### 5.3 성능 최적화
+</code>`<code>javascript
+// Firebase SDK 지연 로딩
+const loadFirebase = async () => {
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
+    const { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } 
+          = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js');
+    
+    // Firebase 초기화
+    return initializeApp(firebaseConfig);
+};
+
+// 게임 시작 시에만 Firebase 로드
+document.getElementById('startGame').addEventListener('click', async () => {
+    if (!window.firebaseApp) {
+        window.firebaseApp = await loadFirebase();
+    }
+});
+</code>`<code>
+
+## 📊 실제 구현 결과
+
+### 테스트 결과 스크린샷
+</code>`<code>
+🏆 최고 기록
+
+1  CDPFirebas     9,999  Lv.5
+2  curl테스터     1,500  Lv.2  
+3  Real테스터       199  Lv.1
+
+[랭킹 보기] [닫기] [다시 시작]
+</code>`<code>
+
+### Firebase 데이터 구조
+</code>`<code>json
+{
+  "game-scores": {
+    "-NbcDef123": {
+      "name": "CDPFirebas",
+      "score": 9999,
+      "level": 5,
+      "timestamp": 1700000000000,
+      "date": "2024-11-29"
+    },
+    "-NbcDef124": {
+      "name": "Real테스터",
+      "score": 199,
+      "level": 1,
+      "timestamp": 1700000001000,
+      "date": "2024-11-29"
+    }
+  }
+}
+</code>``
+
+<h2 id="-핵심-포인트">🔥 핵심 포인트</h2>
+
+<h3 id="-장점들">✅ 장점들</h3>
+1. <strong>완전 무료</strong> - GitHub Pages + Firebase 무료 티어 활용
+2. <strong>실시간 동기화</strong> - 여러 사용자간 즉시 랭킹 업데이트
+3. <strong>견고한 백업</strong> - Firebase 실패 시 로컬스토리지 대안
+4. <strong>보안 규칙</strong> - 스팸/해킹 방지로 데이터 무결성 보장
+5. <strong>확장성</strong> - Firebase 자동 스케일링
+
+<h3 id="-주의사항들">⚠️ 주의사항들</h3>
+1. <strong>Firebase 무료 티어 제한</strong> - 동시 연결 100개, 10GB/월 전송량
+2. <strong>보안 규칙 중요성</strong> - 잘못 설정하면 데이터 유출 위험
+3. <strong>로컬스토리지 제한</strong> - 브라우저별 5-10MB 제한
+4. <strong>CORS 이슈</strong> - file:// 프로토콜에서는 Firebase 작동 안함
+
+<h2 id="-활용-아이디어">💡 활용 아이디어</h2>
+
+<h3 id="-게임-개발">🎮 게임 개발</h3>
+<ul><li><strong>웹게임 랭킹 시스템</strong> (테트리스, 뱀게임, 퍼즐 등)</li></ul>
+<ul><li><strong>실시간 멀티플레이어</strong> (채팅, 공유 점수판)</li></ul>
+<ul><li><strong>일일/주간 리더보드</strong> (기간별 랭킹 초기화)</li></ul>
+
+<h3 id="-웹앱-개발-">📱 웹앱 개발  </h3>
+<ul><li><strong>피트니스 트래커</strong> (운동 기록 공유)</li></ul>
+<ul><li><strong>학습 관리 시스템</strong> (진도율 랭킹)</li></ul>
+<ul><li><strong>설문조사 플랫폼</strong> (실시간 응답 현황)</li></ul>
+
+<h3 id="-비즈니스-활용">🏢 비즈니스 활용</h3>
+<ul><li><strong>고객 만족도 조사</strong> (실시간 피드백 수집)</li></ul>
+<ul><li><strong>이벤트 참여도</strong> (실시간 참가자 현황)</li></ul>
+<ul><li><strong>커뮤니티 활동</strong> (사용자 기여도 점수)</li></ul>
+
+<h2 id="-마무리">🎯 마무리</h2>
+
+<strong>GitHub Pages + Firebase</strong>의 조합으로 완전 무료로 글로벌 실시간 랭킹 시스템을 구축할 수 있어! 
+
+특히 <strong>로컬스토리지 백업 시스템</strong>과 <strong>보안 규칙</strong>을 통해 견고하고 안전한 서비스를 만들 수 있다는 게 핵심이야.
+
+웹게임이나 스코어 기반 서비스를 만들 때 이 가이드를 참고해서 유저들이 서로 경쟁할 수 있는 재미있는 기능을 추가해보자! 🚀🏆
+
+---
+
+<em>실제 구현 예시: <a href="/posts/playground/neon-breakout" target="_blank">Falling Bricks Breakout</a> 게임에서 작동 중!</em></p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#-구현-목표" class="toc-h2" data-section="-구현-목표">🎯 구현 목표</a>
+                    <a href="#-기술-스택" class="toc-h2" data-section="-기술-스택">🔧 기술 스택</a>
+                    <a href="#-핵심-포인트" class="toc-h2" data-section="-핵심-포인트">🔥 핵심 포인트</a>
+                    <a href="#-장점들" class="toc-h3" data-section="-장점들">✅ 장점들</a>
+                    <a href="#-주의사항들" class="toc-h3" data-section="-주의사항들">⚠️ 주의사항들</a>
+                    <a href="#-활용-아이디어" class="toc-h2" data-section="-활용-아이디어">💡 활용 아이디어</a>
+                    <a href="#-게임-개발" class="toc-h3" data-section="-게임-개발">🎮 게임 개발</a>
+                    <a href="#-웹앱-개발-" class="toc-h3" data-section="-웹앱-개발-">📱 웹앱 개발  </a>
+                    <a href="#-비즈니스-활용" class="toc-h3" data-section="-비즈니스-활용">🏢 비즈니스 활용</a>
+                    <a href="#-마무리" class="toc-h2" data-section="-마무리">🎯 마무리</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="firebase-ranking-system"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

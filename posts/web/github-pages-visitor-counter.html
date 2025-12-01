@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>github-pages-visitor-counter - 람가의 개발로그</title>
+    <meta name="description" content="github-pages-visitor-counter">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="github-pages-visitor-counter">
+    <meta property="og:description" content="github-pages-visitor-counter">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/web/github-pages-visitor-counter.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="github-pages-visitor-counter">
+    <meta name="twitter:description" content="github-pages-visitor-counter">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/web/github-pages-visitor-counter.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "github-pages-visitor-counter",
+        "description": "github-pages-visitor-counter",
+        "url": "https://ramgaku.github.io/posts/web/github-pages-visitor-counter.html",
+        "datePublished": "2025-12-01",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">github-pages-visitor-counter</h2>
+                <div class="post-meta-header">
+                    <span class="post-date"></span>
+                    <span class="post-category-tag">web</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <p>---
+title: GitHub Pages 정적 블로그에 방문자 카운터 추가하기
+description: Firebase Realtime Database와 localStorage를 활용한 방문자 수 카운터 구현
+date: 2025-12-01
+tags: [Firebase, GitHub Pages, JavaScript, 방문자카운터, 블로그]
+---
+
+<h1>GitHub Pages 정적 블로그에 방문자 카운터 추가하기</h1>
+
+정적 사이트인 GitHub Pages에서 Firebase Realtime Database를 활용해 방문자 카운터를 구현하는 방법.
+
+<h2 id="구현-목표">구현 목표</h2>
+
+<ul><li>Total: 전체 방문자 수</li></ul>
+<ul><li>Today: 오늘 방문자 수</li></ul>
+<ul><li>같은 브라우저에서 새로고침해도 중복 카운트 방지</li></ul>
+
+<h2 id="기술-스택">기술 스택</h2>
+
+``<code>
+Database: Firebase Realtime Database
+Storage: localStorage (중복 방문 체크)
+Hosting: GitHub Pages
+</code>`<code>
+
+## Firebase 데이터 구조
+
+</code>`<code>
+visitors/
+├── total: 1234           # 전체 방문자 수
+└── daily/
+    ├── 2025-12-01: 56    # 일별 방문자 수
+    ├── 2025-11-30: 42
+    └── ...
+</code>`<code>
+
+## 1단계: Firebase 설정
+
+기존 Firebase 프로젝트가 있다면 재사용 가능. 없다면 Firebase Console에서 새 프로젝트 생성.
+
+### Realtime Database URL 확인
+
+Firebase Console → Realtime Database에서 URL 복사:
+</code>`<code>
+https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/
+</code>`<code>
+
+## 2단계: visitor.js 작성
+
+</code>`<code>javascript
+// Firebase 방문자 카운터
+(function() {
+    const firebaseConfig = {
+        apiKey: "your-api-key",
+        authDomain: "your-project.firebaseapp.com",
+        databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "your-project",
+        storageBucket: "your-project.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "your-app-id"
+    };
+
+    // Firebase 초기화
+    let app;
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            app = firebase.initializeApp(firebaseConfig);
+        } else {
+            app = firebase.apps[0];
+        }
+    }
+
+    const STORAGE_KEY = 'blog_visit_date';
+
+    // 오늘 날짜 (YYYY-MM-DD)
+    function getTodayString() {
+        const now = new Date();
+        return now.toISOString().split('T')[0];
+    }
+
+    // 오늘 이미 방문했는지 확인
+    function hasVisitedToday() {
+        const lastVisit = localStorage.getItem(STORAGE_KEY);
+        return lastVisit === getTodayString();
+    }
+
+    // 방문 기록 저장
+    function markVisited() {
+        localStorage.setItem(STORAGE_KEY, getTodayString());
+    }
+
+    // 방문자 수 증가 및 표시
+    function initVisitorCounter() {
+        if (typeof firebase === 'undefined') {
+            console.warn('Firebase not loaded');
+            return;
+        }
+
+        const db = firebase.database();
+        const visitorsRef = db.ref('visitors');
+        const todayRef = db.ref('visitors/daily/' + getTodayString());
+
+        // 오늘 첫 방문이면 카운터 증가
+        if (!hasVisitedToday()) {
+            // 총 방문자 수 증가
+            visitorsRef.child('total').transaction(function(current) {
+                return (current || 0) + 1;
+            });
+
+            // 오늘 방문자 수 증가
+            todayRef.transaction(function(current) {
+                return (current || 0) + 1;
+            });
+
+            markVisited();
+        }
+
+        // 총 방문자 수 표시
+        visitorsRef.child('total').on('value', function(snapshot) {
+            const total = snapshot.val() || 0;
+            const totalEl = document.getElementById('visitor-total');
+            if (totalEl) {
+                totalEl.textContent = total.toLocaleString();
+            }
+        });
+
+        // 오늘 방문자 수 표시
+        todayRef.on('value', function(snapshot) {
+            const today = snapshot.val() || 0;
+            const todayEl = document.getElementById('visitor-today');
+            if (todayEl) {
+                todayEl.textContent = today.toLocaleString();
+            }
+        });
+    }
+
+    // DOM 로드 후 실행
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initVisitorCounter);
+    } else {
+        initVisitorCounter();
+    }
+})();
+</code>`<code>
+
+## 3단계: HTML에 추가
+
+### Firebase SDK 로드
+
+</code>`<code>html
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="js/visitor.js"></script>
+</code>`<code>
+
+### 카운터 UI
+
+</code>`<code>html
+<div class="visitor-counter">
+    <span class="visitor-label">Today</span>
+    <span class="visitor-count" id="visitor-today">-</span>
+    <span class="visitor-separator">|</span>
+    <span class="visitor-label">Total</span>
+    <span class="visitor-count" id="visitor-total">-</span>
+</div>
+</code>`<code>
+
+## 중복 카운트 방지 원리
+
+</code>`<code>
+1. 방문 시 localStorage에 오늘 날짜 저장
+2. 새로고침 시 localStorage 확인
+3. 오늘 날짜가 이미 있으면 → 카운터 증가 안 함
+4. 다음 날이 되면 → 새로운 방문으로 처리
+</code>`<code>
+
+중복 카운트가 발생하는 경우:
+- 다른 브라우저 사용
+- 시크릿/프라이빗 모드
+- localStorage 삭제
+- 다음 날 방문
+
+## Firebase Security Rules
+
+API 키가 노출되어도 Security Rules로 보안 처리:
+
+</code>`<code>json
+{
+  "rules": {
+    "visitors": {
+      "total": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isNumber() && newData.val() >= data.val()"
+      },
+      "daily": {
+        "$date": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    }
+  }
+}
+</code>`<code>
+
+### 도메인 제한 (권장)
+
+Firebase Console → Authentication → Settings → 승인된 도메인:
+</code>`<code>
+your-username.github.io
+</code>`<code>
+
+## 결과
+
+사이드바 하단에 방문자 카운터가 표시됨:
+</code>`<code>
+Today 12 | Total 1,234
+</code>`<code>
+
+## 기존 Firebase 프로젝트 재사용
+
+이미 다른 용도로 Firebase를 사용 중이라면 같은 프로젝트에 </code>visitors/<code> 경로만 추가하면 됨.
+
+</code>`<code>
+your-project-default-rtdb/
+├── game-scores/     # 기존 게임 랭킹
+└── visitors/        # 새로 추가한 방문자 카운터
+    ├── total
+    └── daily/
+</code>``
+
+---
+
+<em>이 블로그의 사이드바 하단에서 실제 작동 중</em></p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#구현-목표" class="toc-h2" data-section="구현-목표">구현 목표</a>
+                    <a href="#기술-스택" class="toc-h2" data-section="기술-스택">기술 스택</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="github-pages-visitor-counter"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>

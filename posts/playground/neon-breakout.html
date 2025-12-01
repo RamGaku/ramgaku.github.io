@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-2234620038718524">
+
+    <!-- SEO 메타 태그 -->
+    <title>neon-breakout - 람가의 개발로그</title>
+    <meta name="description" content="neon-breakout">
+    <meta name="keywords" content="프로그래밍, 웹개발, 개발블로그">
+    <meta name="author" content="람가">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="neon-breakout">
+    <meta property="og:description" content="neon-breakout">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ramgaku.github.io/posts/playground/neon-breakout.html">
+    <meta property="og:site_name" content="람가의 개발로그">
+    <meta property="og:locale" content="ko_KR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="neon-breakout">
+    <meta name="twitter:description" content="neon-breakout">
+
+    <!-- 검색엔진 -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ramgaku.github.io/posts/playground/neon-breakout.html">
+
+    <link rel="stylesheet" href="../../blog.css">
+
+    <!-- 구조화된 데이터 -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "neon-breakout",
+        "description": "neon-breakout",
+        "url": "https://ramgaku.github.io/posts/playground/neon-breakout.html",
+        "datePublished": "2025-12-01",
+        "author": {
+            "@type": "Person",
+            "name": "람가"
+        },
+        "publisher": {
+            "@type": "Person",
+            "name": "람가"
+        }
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2234620038718524"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="snowCanvas"></canvas>
+    <div class="blog-container">
+        <!-- 좌측 사이드바 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="blog-title"><a href="../../" style="color: inherit; text-decoration: none;">람가의 블로그</a></h1>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-category">
+                    <div class="category-header">
+                        <a href="../../" style="color: inherit; text-decoration: none;">
+                            <span class="category-icon">🏠</span>
+                            <span class="category-name">홈으로</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 중앙 컨텐츠 -->
+        <main class="content">
+            <div class="content-header">
+                <h2 id="content-title">neon-breakout</h2>
+                <div class="post-meta-header">
+                    <span class="post-date"></span>
+                    <span class="post-category-tag">playground</span>
+                </div>
+            </div>
+            <div id="content-body" class="content-body">
+                <div class="post-content">
+                    <p>---
+title: Falling Bricks Breakout
+description: 뿌요뿌요 스타일 벽돌깨기 게임
+date: 2024-11-29
+tags: [게임, JavaScript, Canvas, 벽돌깨기]
+---
+
+<h1>Falling Bricks Breakout</h1>
+
+뿌요뿌요처럼 벽돌이 위에서 떨어지는 벽돌깨기 게임.
+
+<div class="iframe-container"><iframe src="/posts/playground/falling-bricks-breakout-v2.html" width="100%" height="700" style="border: none; background: #000; border-radius: 10px;"></iframe></div>
+
+<h2 id="게임-특징">게임 특징</h2>
+
+<h3 id="뿌요뿌요-스타일">뿌요뿌요 스타일</h3>
+<ul><li>일정 시간마다 새 벽돌 라인이 위에서 생성</li></ul>
+<ul><li>모든 벽돌이 한 줄씩 아래로 이동</li></ul>
+<ul><li>벽돌이 바닥에 닿으면 게임오버</li></ul>
+
+<h3 id="hp-시스템">HP 시스템</h3>
+벽돌 체력에 따른 색상 구분:
+<ul><li>연한 초록 (HP 1) → 파랑 (HP 8)</li></ul>
+
+<h3 id="특수-아이템">특수 아이템</h3>
+하얀 테두리 벽돌 (15% 확률):
+<ul><li>공 추가 (+100점)</li></ul>
+<ul><li>공 분열 (+200점)</li></ul>
+
+<h3 id="ai-모드">AI 모드</h3>
+<ul><li>자동/수동 모드 전환 가능</li></ul>
+<ul><li>다중 공 추적</li></ul>
+
+<h2 id="조작법">조작법</h2>
+
+<strong>PC</strong>: ←/→ 방향키 또는 A/D키
+<strong>모바일</strong>: 화면 터치 버튼
+
+<h2 id="firebase-랭킹-시스템">Firebase 랭킹 시스템</h2>
+
+<ul><li>전세계 플레이어와 실시간 점수 경쟁</li></ul>
+<ul><li>상위 10위 표시 (1,2,3위 특별 색상)</li></ul>
+<ul><li>수동 플레이만 랭킹 등록 가능</li></ul>
+<ul><li>로컬스토리지 백업</li></ul>
+
+---
+
+<strong>관련 포스팅</strong>: <a href="/posts/web/firebase-ranking-system" target="_blank">Firebase 랭킹 시스템 구현</a></p>
+                </div>
+                <div class="comments-section">
+                    <h3 class="comments-title">댓글</h3>
+                    <div class="giscus"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 우측 TOC -->
+        <aside class="toc">
+            <div class="toc-upper">
+                <div class="toc-header">
+                    <h3>목차</h3>
+                </div>
+                <nav id="toc-nav" class="toc-nav">
+                    <a href="#게임-특징" class="toc-h2" data-section="게임-특징">게임 특징</a>
+                    <a href="#뿌요뿌요-스타일" class="toc-h3" data-section="뿌요뿌요-스타일">뿌요뿌요 스타일</a>
+                    <a href="#hp-시스템" class="toc-h3" data-section="hp-시스템">HP 시스템</a>
+                    <a href="#특수-아이템" class="toc-h3" data-section="특수-아이템">특수 아이템</a>
+                    <a href="#ai-모드" class="toc-h3" data-section="ai-모드">AI 모드</a>
+                    <a href="#조작법" class="toc-h2" data-section="조작법">조작법</a>
+                    <a href="#firebase-랭킹-시스템" class="toc-h2" data-section="firebase-랭킹-시스템">Firebase 랭킹 시스템</a>
+                </nav>
+                <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
+                    <span class="snow-toggle-icon">❄</span>
+                    <span class="snow-toggle-text">snow: on</span>
+                </button>
+            </div>
+            <div class="toc-lower">
+                <div class="ad-container" id="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-2234620038718524"
+                         data-ad-slot="5521900934"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="../../snow.js"></script>
+    <script src="../../js/visitor.js"></script>
+    <script src="../../js/post-page.js"></script>
+
+    <!-- Giscus -->
+    <script src="https://giscus.app/client.js"
+        data-repo="RamGaku/ramgaku.github.io"
+        data-repo-id="R_kgDOQcvYMg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOQcvYMs4CzI0d"
+        data-mapping="specific"
+        data-term="neon-breakout"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark_tritanopia"
+        data-lang="ko"
+        crossorigin="anonymous"
+        async>
+    </script>
+</body>
+</html>
