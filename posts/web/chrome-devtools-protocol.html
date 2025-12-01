@@ -96,20 +96,20 @@
                 <div class="post-content">
                     <p>---
 title: Chrome DevTools Protocol로 브라우저 제어하기
-description: CDP를 이용해서 Chrome과 Edge 브라우저를 완전히 프로그래밍 방식으로 제어하는 방법
+description: CDP를 이용해서 Chrome과 Edge 브라우저를 프로그래밍 방식으로 제어하는 방법
 date: 2024-11-29
 tags: [CDP, 브라우저 제어, Chrome, Edge, JavaScript, Node.js]
 ---
 
-<h1>Chrome DevTools Protocol로 브라우저 제어하기 🌐</h1>
+<h1>Chrome DevTools Protocol로 브라우저 제어하기</h1>
 
-웹 브라우저를 프로그래밍 방식으로 완전히 조작할 수 있는 <strong>Chrome DevTools Protocol (CDP)</strong>를 소개하고, 실제로 벽돌깨기 게임을 스크립트로 플레이하도록 만드는 과정을 보여드릴게!
+웹 브라우저를 프로그래밍 방식으로 완전히 조작할 수 있는 <strong>Chrome DevTools Protocol (CDP)</strong>. 실제로 벽돌깨기 게임을 스크립트로 플레이하도록 만드는 과정까지 정리함.
 
-<h2 id="-cdp란-">🎯 CDP란?</h2>
+<h2 id="cdp란-">CDP란?</h2>
 
-<strong>Chrome DevTools Protocol</strong>은 Chrome 브라우저의 디버깅 인터페이스로, WebSocket을 통해 브라우저와 직접 통신할 수 있게 해주는 강력한 API입니다.
+<strong>Chrome DevTools Protocol</strong>은 Chrome 브라우저의 디버깅 인터페이스로, WebSocket을 통해 브라우저와 직접 통신할 수 있는 API.
 
-<h3 id="-가능한-작업들">✨ 가능한 작업들</h3>
+<h3 id="가능한-작업들">가능한 작업들</h3>
 <ul><li><strong>DOM 조작</strong>: 실시간으로 HTML 요소 수정</li></ul>
 <ul><li><strong>JavaScript 실행</strong>: 페이지에서 코드 실행</li></ul>
 <ul><li><strong>이벤트 시뮬레이션</strong>: 키보드/마우스 입력 생성</li></ul>
@@ -117,65 +117,62 @@ tags: [CDP, 브라우저 제어, Chrome, Edge, JavaScript, Node.js]
 <ul><li><strong>성능 분석</strong>: 메모리, CPU 사용량 측정</li></ul>
 <ul><li><strong>스크린샷</strong>: 페이지 캡처</li></ul>
 
-<h2 id="-설정-방법">🚀 설정 방법</h2>
+<h2 id="설정-방법">설정 방법</h2>
 
 <h3 id="1단계-chrome-edge를-디버깅-모드로-실행">1단계: Chrome/Edge를 디버깅 모드로 실행</h3>
 
-``<code>bash
+<pre><code class="language-bash">
 # Chrome
 start chrome --remote-debugging-port=9222 --user-data-dir="c:\\temp\\chrome_debug"
 
 # Edge (Chromium 기반이므로 동일한 CDP 지원)
-start msedge --remote-debugging-port=9222 --user-data-dir="c:\\temp\\edge_debug"
-</code>`<code>
+start msedge --remote-debugging-port=9222 --user-data-dir="c:\\temp\\edge_debug"</code></pre>
 
-### 2단계: CDP 라이브러리 설치
+<h3 id="2단계-cdp-라이브러리-설치">2단계: CDP 라이브러리 설치</h3>
 
-</code>`<code>bash
-npm install chrome-remote-interface
-</code>`<code>
+<pre><code class="language-bash">
+npm install chrome-remote-interface</code></pre>
 
-### 3단계: 기본 연결 테스트
+<h3 id="3단계-기본-연결-테스트">3단계: 기본 연결 테스트</h3>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 const CDP = require('chrome-remote-interface');
 
 async function connectToBrowser() {
     // 새 탭 생성
     const tab = await CDP.New({port: 9222});
     console.log('새 탭 생성됨:', tab.id);
-    
+
     // 탭에 연결
     const client = await CDP({tab});
     const {Page, Runtime} = client;
-    
+
     // 프로토콜 활성화
     await Page.enable();
     await Runtime.enable();
-    
+
     // 페이지 로드
     await Page.navigate({url: 'https://example.com'});
-    
+
     // JavaScript 실행
     const result = await Runtime.evaluate({
         expression: 'document.title'
     });
-    
+
     console.log('페이지 제목:', result.result.value);
-    
+
     client.close();
 }
 
-connectToBrowser();
-</code>`<code>
+connectToBrowser();</code></pre>
 
-## 🎮 실전 예제: 벽돌깨기 게임 스크립트
+<h2 id="실전-예제-벽돌깨기-게임-스크립트">실전 예제: 벽돌깨기 게임 스크립트</h2>
 
-벽돌깨기 게임을 스크립트로 플레이하도록 만들어보겠습니다!
+벽돌깨기 게임을 스크립트로 자동 플레이하도록 만들어봤다.
 
-### 게임 제어 스크립트
+<h3 id="게임-제어-스크립트">게임 제어 스크립트</h3>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 const CDP = require('chrome-remote-interface');
 
 async function autoPlayBreakout() {
@@ -184,40 +181,40 @@ async function autoPlayBreakout() {
         const tab = await CDP.New({port: 9222});
         const client = await CDP({tab});
         const {Page, Runtime} = client;
-        
+
         await Page.enable();
         await Runtime.enable();
-        
+
         // 게임 페이지 로드
         const gameUrl = 'file:///path/to/breakout-game.html';
         await Page.navigate({url: gameUrl});
-        
+
         // 페이지 로드 완료 대기
-        await new Promise(resolve => {
+        await new Promise(resolve =&gt; {
             Page.loadEventFired(resolve);
         });
-        
+
         console.log('게임 로드 완료');
-        
+
         // 게임 제어 스크립트 주입
         await Runtime.evaluate({
-            expression: </code>
+            expression: `
                 let autoPlayInterval;
-                
+
                 function startAutoPlay() {
-                    autoPlayInterval = setInterval(() => {
+                    autoPlayInterval = setInterval(() =&gt; {
                         if (typeof ball !== 'undefined' && typeof paddle !== 'undefined') {
                             // 공의 위치를 추적해서 패들 이동
                             const targetX = ball.x - paddle.width / 2;
-                            
-                            if (targetX > paddle.x + 10) {
+
+                            if (targetX &gt; paddle.x + 10) {
                                 // 우측으로 이동
                                 const rightEvent = new KeyboardEvent('keydown', {
                                     code: 'ArrowRight',
                                     key: 'ArrowRight'
                                 });
                                 document.dispatchEvent(rightEvent);
-                            } else if (targetX < paddle.x - 10) {
+                            } else if (targetX &lt; paddle.x - 10) {
                                 // 좌측으로 이동
                                 const leftEvent = new KeyboardEvent('keydown', {
                                     code: 'ArrowLeft',
@@ -228,76 +225,75 @@ async function autoPlayBreakout() {
                         }
                     }, 50);
                 }
-                
+
                 startAutoPlay();
                 '게임 제어 스크립트 시작됨!';
-            <code>
+            `
         });
-        
+
         // 게임 상태 모니터링
-        const monitorInterval = setInterval(async () => {
+        const monitorInterval = setInterval(async () =&gt; {
             try {
                 const gameState = await Runtime.evaluate({
-                    expression: </code>
+                    expression: `
                         JSON.stringify({
                             score: document.getElementById('scoreValue')?.textContent || '0',
                             gameOver: document.getElementById('gameOver')?.style.display !== 'none',
-                            ballPosition: typeof ball !== 'undefined' ? 
+                            ballPosition: typeof ball !== 'undefined' ?
                                 {x: Math.round(ball.x), y: Math.round(ball.y)} : null
                         });
-                    <code>
+                    `
                 });
-                
+
                 const state = JSON.parse(gameState.result.value);
-                console.log(</code>점수: ${state.score}, 공 위치: (${state.ballPosition?.x}, ${state.ballPosition?.y})<code>);
-                
+                console.log(`점수: ${state.score}, 공 위치: (${state.ballPosition?.x}, ${state.ballPosition?.y})`);
+
                 // 게임 오버 시 재시작
                 if (state.gameOver) {
                     console.log('게임 오버! 재시작...');
                     await Runtime.evaluate({
-                        expression: </code>
+                        expression: `
                             const spaceEvent = new KeyboardEvent('keydown', {
                                 code: 'Space',
                                 key: ' '
                             });
                             document.dispatchEvent(spaceEvent);
-                        <code>
+                        `
                     });
                 }
-                
+
             } catch (error) {
                 console.error('모니터링 에러:', error.message);
             }
         }, 1000);
-        
+
         // 30초 후 종료
-        setTimeout(() => {
+        setTimeout(() =&gt; {
             clearInterval(monitorInterval);
             console.log('게임 제어 종료');
             client.close();
         }, 30000);
-        
+
     } catch (error) {
         console.error('CDP 에러:', error.message);
     }
 }
 
-autoPlayBreakout();
-</code>`<code>
+autoPlayBreakout();</code></pre>
 
-## 🔧 고급 기능들
+<h2 id="고급-기능들">고급 기능들</h2>
 
-### DOM 요소 직접 조작
+<h3 id="dom-요소-직접-조작">DOM 요소 직접 조작</h3>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // 페이지의 모든 링크 색상 변경
 await Runtime.evaluate({
-    expression: </code>
-        document.querySelectorAll('a').forEach(link => {
+    expression: `
+        document.querySelectorAll('a').forEach(link =&gt; {
             link.style.color = '#ff0080';
             link.style.textShadow = '0 0 10px #ff0080';
         });
-    <code>
+    `
 });
 
 // DOM 노드 직접 조작
@@ -308,30 +304,28 @@ const {nodeId} = await DOM.querySelector({
 });
 
 await DOM.setAttributeValue({
-    nodeId, 
-    name: 'style', 
+    nodeId,
+    name: 'style',
     value: 'background: linear-gradient(45deg, #ff0080, #00ff80);'
-});
-</code>`<code>
+});</code></pre>
 
-### 네트워크 요청 모니터링
+<h3 id="네트워크-요청-모니터링">네트워크 요청 모니터링</h3>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // 네트워크 모니터링 시작
 await Network.enable();
 
-Network.responseReceived(({response}) => {
-    console.log(</code>응답: ${response.status} ${response.url}<code>);
+Network.responseReceived(({response}) =&gt; {
+    console.log(`응답: ${response.status} ${response.url}`);
 });
 
-Network.requestWillBeSent(({request}) => {
-    console.log(</code>요청: ${request.method} ${request.url}<code>);
-});
-</code>`<code>
+Network.requestWillBeSent(({request}) =&gt; {
+    console.log(`요청: ${request.method} ${request.url}`);
+});</code></pre>
 
-### 스크린샷 캡처
+<h3 id="스크린샷-캡처">스크린샷 캡처</h3>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // 페이지 전체 스크린샷
 const screenshot = await Page.captureScreenshot({
     format: 'png',
@@ -339,67 +333,63 @@ const screenshot = await Page.captureScreenshot({
 });
 
 require('fs').writeFileSync('screenshot.png', screenshot.data, 'base64');
-console.log('스크린샷 저장됨: screenshot.png');
-</code>`<code>
+console.log('스크린샷 저장됨: screenshot.png');</code></pre>
 
-## 🌟 실전 활용 사례
+<h2 id="실전-활용-사례">실전 활용 사례</h2>
 
-### 1. 웹 스크래핑 제어
-</code>`<code>javascript
+<h3 id="1-웹-스크래핑-제어">1. 웹 스크래핑 제어</h3>
+<pre><code class="language-javascript">
 // 무한 스크롤 페이지 전체 로드
 await Runtime.evaluate({
-    expression: </code>
+    expression: `
         async function loadAllContent() {
             while (true) {
                 const scrollHeight = document.documentElement.scrollHeight;
                 window.scrollTo(0, scrollHeight);
-                
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
+
+                await new Promise(resolve =&gt; setTimeout(resolve, 1000));
+
                 if (document.documentElement.scrollHeight === scrollHeight) break;
             }
         }
-        
-        loadAllContent();
-    <code>
-});
-</code>`<code>
 
-### 2. 폼 제어
-</code>`<code>javascript
+        loadAllContent();
+    `
+});</code></pre>
+
+<h3 id="2-폼-제어">2. 폼 제어</h3>
+<pre><code class="language-javascript">
 await Runtime.evaluate({
-    expression: </code>
+    expression: `
         document.querySelector('#username').value = 'testuser';
         document.querySelector('#password').value = 'testpass';
         document.querySelector('#login-form').submit();
-    <code>
-});
-</code>`<code>
+    `
+});</code></pre>
 
-### 3. 성능 테스트
-</code>`<code>javascript
+<h3 id="3-성능-테스트">3. 성능 테스트</h3>
+<pre><code class="language-javascript">
 // 성능 메트릭 수집
 await Performance.enable();
 
 const metrics = await Performance.getMetrics();
-metrics.metrics.forEach(metric => {
-    console.log(</code>${metric.name}: ${metric.value}<code>);
-});
-</code>`<code>
+metrics.metrics.forEach(metric =&gt; {
+    console.log(`${metric.name}: ${metric.value}`);
+});</code></pre>
 
-## 🚨 주의사항
+<h2 id="주의사항">주의사항</h2>
 
-### 보안 고려사항
-- CDP는 매우 강력한 도구이므로 **신뢰할 수 있는 환경**에서만 사용
-- 디버깅 포트가 열린 브라우저는 **외부 접근 차단** 필요
-- 프로덕션 환경에서는 **별도의 브라우저 인스턴스** 사용 권장
+<h3 id="보안-고려사항">보안 고려사항</h3>
+<ul><li>CDP는 매우 강력한 도구이므로 <strong>신뢰할 수 있는 환경</strong>에서만 사용</li></ul>
+<ul><li>디버깅 포트가 열린 브라우저는 <strong>외부 접근 차단</strong> 필요</li></ul>
+<ul><li>프로덕션 환경에서는 <strong>별도의 브라우저 인스턴스</strong> 사용 권장</li></ul>
 
-### 성능 최적화
-- **불필요한 이벤트 리스너 제거**
-- **메모리 누수 방지**를 위한 적절한 정리
-- **동시 연결 수 제한**
+<h3 id="성능-최적화">성능 최적화</h3>
+<ul><li><strong>불필요한 이벤트 리스너 제거</strong></li></ul>
+<ul><li><strong>메모리 누수 방지</strong>를 위한 적절한 정리</li></ul>
+<ul><li><strong>동시 연결 수 제한</strong></li></ul>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // 정리 함수 예시
 async function cleanup(client) {
     try {
@@ -409,22 +399,21 @@ async function cleanup(client) {
     }
 }
 
-process.on('SIGINT', () => cleanup(client));
-</code>``
+process.on('SIGINT', () =&gt; cleanup(client));</code></pre>
 
-<h2 id="-다른-브라우저-지원">🔄 다른 브라우저 지원</h2>
+<h2 id="다른-브라우저-지원">다른 브라우저 지원</h2>
 
 <h3 id="chromium-기반-브라우저들">Chromium 기반 브라우저들</h3>
-<ul><li>✅ <strong>Chrome</strong>: 네이티브 지원</li></ul>
-<ul><li>✅ <strong>Edge</strong>: 완전 호환</li></ul>
-<ul><li>✅ <strong>Brave</strong>: 동일한 API</li></ul>
-<ul><li>✅ <strong>Opera</strong>: Chromium 기반이므로 지원</li></ul>
+<ul><li><strong>Chrome</strong>: 네이티브 지원</li></ul>
+<ul><li><strong>Edge</strong>: 완전 호환</li></ul>
+<ul><li><strong>Brave</strong>: 동일한 API</li></ul>
+<ul><li><strong>Opera</strong>: Chromium 기반이므로 지원</li></ul>
 
 <h3 id="다른-브라우저들">다른 브라우저들</h3>
-<ul><li>🟨 <strong>Firefox</strong>: Firefox DevTools Protocol (다른 API)</li></ul>
-<ul><li>🟨 <strong>Safari</strong>: WebKit Remote Debugging Protocol</li></ul>
+<ul><li><strong>Firefox</strong>: Firefox DevTools Protocol (다른 API)</li></ul>
+<ul><li><strong>Safari</strong>: WebKit Remote Debugging Protocol</li></ul>
 
-<h2 id="-더-알아보기">📚 더 알아보기</h2>
+<h2 id="참고-자료">참고 자료</h2>
 
 <h3 id="공식-문서">공식 문서</h3>
 <ul><li><a href="https://chromedevtools.github.io/devtools-protocol/" target="_blank">Chrome DevTools Protocol 문서</a></li></ul>
@@ -435,17 +424,11 @@ process.on('SIGINT', () => cleanup(client));
 <ul><li><strong>Playwright</strong>: 멀티 브라우저 제어</li></ul>
 <ul><li><strong>Selenium</strong>: WebDriver 기반 (다른 프로토콜)</li></ul>
 
-<h2 id="-마무리">🎊 마무리</h2>
+<h2 id="정리">정리</h2>
 
-CDP는 웹 개발자에게 <strong>브라우저의 모든 기능에 접근</strong>할 수 있는 강력한 도구입니다. 단순한 제어부터 복잡한 테스팅까지, 상상력의 한계가 곧 가능성의 한계!
+CDP는 브라우저의 모든 기능에 접근할 수 있는 강력한 도구. 단순한 제어부터 복잡한 테스팅까지, 기존 도구들로는 불가능했던 세밀한 제어가 가능하다.
 
-특히 게임 제어나 복잡한 웹 앱 테스팅에서는 기존의 도구들로는 불가능했던 세밀한 제어가 가능합니다.
-
-<strong>실제로 우리 벽돌깨기 게임에서 스크립트가 인간보다 정확하게 패들을 조작하는 모습</strong>을 보면, CDP의 강력함을 실감할 수 있을 거예요! 🎮⚡
-
----
-
-<em>CDP로 여러분만의 브라우저 제어 도구를 만들어보세요!</em></p>
+실제로 벽돌깨기 게임에서 스크립트가 인간보다 정확하게 패들을 조작하는 걸 보면 CDP의 강력함을 체감할 수 있음.</p>
                 </div>
                 <div class="comments-section">
                     <h3 class="comments-title">댓글</h3>
@@ -461,17 +444,32 @@ CDP는 웹 개발자에게 <strong>브라우저의 모든 기능에 접근</stro
                     <h3>목차</h3>
                 </div>
                 <nav id="toc-nav" class="toc-nav">
-                    <a href="#-cdp란-" class="toc-h2" data-section="-cdp란-">🎯 CDP란?</a>
-                    <a href="#-가능한-작업들" class="toc-h3" data-section="-가능한-작업들">✨ 가능한 작업들</a>
-                    <a href="#-설정-방법" class="toc-h2" data-section="-설정-방법">🚀 설정 방법</a>
+                    <a href="#cdp란-" class="toc-h2" data-section="cdp란-">CDP란?</a>
+                    <a href="#가능한-작업들" class="toc-h3" data-section="가능한-작업들">가능한 작업들</a>
+                    <a href="#설정-방법" class="toc-h2" data-section="설정-방법">설정 방법</a>
                     <a href="#1단계-chrome-edge를-디버깅-모드로-실행" class="toc-h3" data-section="1단계-chrome-edge를-디버깅-모드로-실행">1단계: Chrome/Edge를 디버깅 모드로 실행</a>
-                    <a href="#-다른-브라우저-지원" class="toc-h2" data-section="-다른-브라우저-지원">🔄 다른 브라우저 지원</a>
+                    <a href="#2단계-cdp-라이브러리-설치" class="toc-h3" data-section="2단계-cdp-라이브러리-설치">2단계: CDP 라이브러리 설치</a>
+                    <a href="#3단계-기본-연결-테스트" class="toc-h3" data-section="3단계-기본-연결-테스트">3단계: 기본 연결 테스트</a>
+                    <a href="#실전-예제-벽돌깨기-게임-스크립트" class="toc-h2" data-section="실전-예제-벽돌깨기-게임-스크립트">실전 예제: 벽돌깨기 게임 스크립트</a>
+                    <a href="#게임-제어-스크립트" class="toc-h3" data-section="게임-제어-스크립트">게임 제어 스크립트</a>
+                    <a href="#고급-기능들" class="toc-h2" data-section="고급-기능들">고급 기능들</a>
+                    <a href="#dom-요소-직접-조작" class="toc-h3" data-section="dom-요소-직접-조작">DOM 요소 직접 조작</a>
+                    <a href="#네트워크-요청-모니터링" class="toc-h3" data-section="네트워크-요청-모니터링">네트워크 요청 모니터링</a>
+                    <a href="#스크린샷-캡처" class="toc-h3" data-section="스크린샷-캡처">스크린샷 캡처</a>
+                    <a href="#실전-활용-사례" class="toc-h2" data-section="실전-활용-사례">실전 활용 사례</a>
+                    <a href="#1-웹-스크래핑-제어" class="toc-h3" data-section="1-웹-스크래핑-제어">1. 웹 스크래핑 제어</a>
+                    <a href="#2-폼-제어" class="toc-h3" data-section="2-폼-제어">2. 폼 제어</a>
+                    <a href="#3-성능-테스트" class="toc-h3" data-section="3-성능-테스트">3. 성능 테스트</a>
+                    <a href="#주의사항" class="toc-h2" data-section="주의사항">주의사항</a>
+                    <a href="#보안-고려사항" class="toc-h3" data-section="보안-고려사항">보안 고려사항</a>
+                    <a href="#성능-최적화" class="toc-h3" data-section="성능-최적화">성능 최적화</a>
+                    <a href="#다른-브라우저-지원" class="toc-h2" data-section="다른-브라우저-지원">다른 브라우저 지원</a>
                     <a href="#chromium-기반-브라우저들" class="toc-h3" data-section="chromium-기반-브라우저들">Chromium 기반 브라우저들</a>
                     <a href="#다른-브라우저들" class="toc-h3" data-section="다른-브라우저들">다른 브라우저들</a>
-                    <a href="#-더-알아보기" class="toc-h2" data-section="-더-알아보기">📚 더 알아보기</a>
+                    <a href="#참고-자료" class="toc-h2" data-section="참고-자료">참고 자료</a>
                     <a href="#공식-문서" class="toc-h3" data-section="공식-문서">공식 문서</a>
                     <a href="#대안-도구들" class="toc-h3" data-section="대안-도구들">대안 도구들</a>
-                    <a href="#-마무리" class="toc-h2" data-section="-마무리">🎊 마무리</a>
+                    <a href="#정리" class="toc-h2" data-section="정리">정리</a>
                 </nav>
                 <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
                     <span class="snow-toggle-icon">❄</span>

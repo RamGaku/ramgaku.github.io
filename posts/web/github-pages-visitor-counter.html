@@ -113,37 +113,34 @@ tags: [Firebase, GitHub Pages, JavaScript, 방문자카운터, 블로그]
 
 <h2 id="기술-스택">기술 스택</h2>
 
-``<code>
+<pre><code class="language-text">
 Database: Firebase Realtime Database
 Storage: localStorage (중복 방문 체크)
-Hosting: GitHub Pages
-</code>`<code>
+Hosting: GitHub Pages</code></pre>
 
-## Firebase 데이터 구조
+<h2 id="firebase-데이터-구조">Firebase 데이터 구조</h2>
 
-</code>`<code>
+<pre><code class="language-text">
 visitors/
 ├── total: 1234           # 전체 방문자 수
 └── daily/
     ├── 2025-12-01: 56    # 일별 방문자 수
     ├── 2025-11-30: 42
-    └── ...
-</code>`<code>
+    └── ...</code></pre>
 
-## 1단계: Firebase 설정
+<h2 id="1단계-firebase-설정">1단계: Firebase 설정</h2>
 
 기존 Firebase 프로젝트가 있다면 재사용 가능. 없다면 Firebase Console에서 새 프로젝트 생성.
 
-### Realtime Database URL 확인
+<h3 id="realtime-database-url-확인">Realtime Database URL 확인</h3>
 
 Firebase Console → Realtime Database에서 URL 복사:
-</code>`<code>
-https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/
-</code>`<code>
+<pre><code class="language-text">
+https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/</code></pre>
 
-## 2단계: visitor.js 작성
+<h2 id="2단계-visitor-js-작성">2단계: visitor.js 작성</h2>
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // Firebase 방문자 카운터
 (function() {
     const firebaseConfig = {
@@ -236,97 +233,89 @@ https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/
     } else {
         initVisitorCounter();
     }
-})();
-</code>`<code>
+})();</code></pre>
 
-## 3단계: HTML에 추가
+<h2 id="3단계-html에-추가">3단계: HTML에 추가</h2>
 
-### Firebase SDK 로드
+<h3 id="firebase-sdk-로드">Firebase SDK 로드</h3>
 
-</code>`<code>html
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="js/visitor.js"></script>
-</code>`<code>
+<pre><code class="language-html">
+&lt;!-- Firebase SDK --&gt;
+&lt;script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"&gt;&lt;/script&gt;
+&lt;script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"&gt;&lt;/script&gt;
+&lt;script src="js/visitor.js"&gt;&lt;/script&gt;</code></pre>
 
-### 카운터 UI
+<h3 id="카운터-ui">카운터 UI</h3>
 
-</code>`<code>html
-<div class="visitor-counter">
-    <span class="visitor-label">Today</span>
-    <span class="visitor-count" id="visitor-today">-</span>
-    <span class="visitor-separator">|</span>
-    <span class="visitor-label">Total</span>
-    <span class="visitor-count" id="visitor-total">-</span>
-</div>
-</code>`<code>
+<pre><code class="language-html">
+&lt;div class="visitor-counter"&gt;
+    &lt;span class="visitor-label"&gt;Today&lt;/span&gt;
+    &lt;span class="visitor-count" id="visitor-today"&gt;-&lt;/span&gt;
+    &lt;span class="visitor-separator"&gt;|&lt;/span&gt;
+    &lt;span class="visitor-label"&gt;Total&lt;/span&gt;
+    &lt;span class="visitor-count" id="visitor-total"&gt;-&lt;/span&gt;
+&lt;/div&gt;</code></pre>
 
-## 중복 카운트 방지 원리
+<h2 id="중복-카운트-방지-원리">중복 카운트 방지 원리</h2>
 
-</code>`<code>
+<pre><code class="language-text">
 1. 방문 시 localStorage에 오늘 날짜 저장
 2. 새로고침 시 localStorage 확인
 3. 오늘 날짜가 이미 있으면 → 카운터 증가 안 함
-4. 다음 날이 되면 → 새로운 방문으로 처리
-</code>`<code>
+4. 다음 날이 되면 → 새로운 방문으로 처리</code></pre>
 
 중복 카운트가 발생하는 경우:
-- 다른 브라우저 사용
-- 시크릿/프라이빗 모드
-- localStorage 삭제
-- 다음 날 방문
+<ul><li>다른 브라우저 사용</li></ul>
+<ul><li>시크릿/프라이빗 모드</li></ul>
+<ul><li>localStorage 삭제</li></ul>
+<ul><li>다음 날 방문</li></ul>
 
-## Firebase Security Rules
+<h2 id="firebase-security-rules">Firebase Security Rules</h2>
 
 API 키가 노출되어도 Security Rules로 보안 처리:
 
-</code>`<code>json
+<pre><code class="language-json">
 {
   "rules": {
     "visitors": {
       "total": {
         ".read": true,
         ".write": true,
-        ".validate": "newData.isNumber() && newData.val() >= data.val()"
+        ".validate": "newData.isNumber() && newData.val() &gt;= data.val()"
       },
       "daily": {
         "$date": {
           ".read": true,
           ".write": true,
-          ".validate": "newData.isNumber() && newData.val() >= 0"
+          ".validate": "newData.isNumber() && newData.val() &gt;= 0"
         }
       }
     }
   }
-}
-</code>`<code>
+}</code></pre>
 
-### 도메인 제한 (권장)
+<h3 id="도메인-제한-권장-">도메인 제한 (권장)</h3>
 
 Firebase Console → Authentication → Settings → 승인된 도메인:
-</code>`<code>
-your-username.github.io
-</code>`<code>
+<pre><code class="language-text">
+your-username.github.io</code></pre>
 
-## 결과
+<h2 id="결과">결과</h2>
 
 사이드바 하단에 방문자 카운터가 표시됨:
-</code>`<code>
-Today 12 | Total 1,234
-</code>`<code>
+<pre><code class="language-text">
+Today 12 | Total 1,234</code></pre>
 
-## 기존 Firebase 프로젝트 재사용
+<h2 id="기존-firebase-프로젝트-재사용">기존 Firebase 프로젝트 재사용</h2>
 
-이미 다른 용도로 Firebase를 사용 중이라면 같은 프로젝트에 </code>visitors/<code> 경로만 추가하면 됨.
+이미 다른 용도로 Firebase를 사용 중이라면 같은 프로젝트에 <code>visitors/</code> 경로만 추가하면 됨.
 
-</code>`<code>
+<pre><code class="language-text">
 your-project-default-rtdb/
 ├── game-scores/     # 기존 게임 랭킹
 └── visitors/        # 새로 추가한 방문자 카운터
     ├── total
-    └── daily/
-</code>``
+    └── daily/</code></pre>
 
 ---
 
@@ -348,6 +337,18 @@ your-project-default-rtdb/
                 <nav id="toc-nav" class="toc-nav">
                     <a href="#구현-목표" class="toc-h2" data-section="구현-목표">구현 목표</a>
                     <a href="#기술-스택" class="toc-h2" data-section="기술-스택">기술 스택</a>
+                    <a href="#firebase-데이터-구조" class="toc-h2" data-section="firebase-데이터-구조">Firebase 데이터 구조</a>
+                    <a href="#1단계-firebase-설정" class="toc-h2" data-section="1단계-firebase-설정">1단계: Firebase 설정</a>
+                    <a href="#realtime-database-url-확인" class="toc-h3" data-section="realtime-database-url-확인">Realtime Database URL 확인</a>
+                    <a href="#2단계-visitor-js-작성" class="toc-h2" data-section="2단계-visitor-js-작성">2단계: visitor.js 작성</a>
+                    <a href="#3단계-html에-추가" class="toc-h2" data-section="3단계-html에-추가">3단계: HTML에 추가</a>
+                    <a href="#firebase-sdk-로드" class="toc-h3" data-section="firebase-sdk-로드">Firebase SDK 로드</a>
+                    <a href="#카운터-ui" class="toc-h3" data-section="카운터-ui">카운터 UI</a>
+                    <a href="#중복-카운트-방지-원리" class="toc-h2" data-section="중복-카운트-방지-원리">중복 카운트 방지 원리</a>
+                    <a href="#firebase-security-rules" class="toc-h2" data-section="firebase-security-rules">Firebase Security Rules</a>
+                    <a href="#도메인-제한-권장-" class="toc-h3" data-section="도메인-제한-권장-">도메인 제한 (권장)</a>
+                    <a href="#결과" class="toc-h2" data-section="결과">결과</a>
+                    <a href="#기존-firebase-프로젝트-재사용" class="toc-h2" data-section="기존-firebase-프로젝트-재사용">기존 Firebase 프로젝트 재사용</a>
                 </nav>
                 <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
                     <span class="snow-toggle-icon">❄</span>

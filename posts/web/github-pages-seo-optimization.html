@@ -95,17 +95,17 @@
             <div id="content-body" class="content-body">
                 <div class="post-content">
                     <p>---
-title: GitHub Pages 블로그 SEO 완전 최적화 가이드
+title: GitHub Pages 블로그 SEO 최적화 가이드
 description: 검색엔진 친화적인 정적 블로그 만들기 - robots.txt, sitemap.xml, 메타태그부터 구조화된 데이터까지
 date: 2024-11-29
 tags: [SEO, GitHub Pages, 블로그 최적화, 검색엔진 최적화, sitemap, robots.txt, 메타태그]
 ---
 
-<h1>GitHub Pages 블로그 SEO 완전 최적화 가이드 🔍</h1>
+<h1>GitHub Pages 블로그 SEO 최적화 가이드</h1>
 
-GitHub Pages로 만든 정적 블로그가 검색엔진에서 잘 노출되지 않나요? <strong>검색 트래픽을 10배 늘리는 실전 SEO 최적화 방법</strong>을 단계별로 알려드릴게요!
+GitHub Pages로 만든 정적 블로그가 검색엔진에서 잘 노출되지 않는 문제를 해결하는 실전 SEO 최적화 방법.
 
-<h2 id="-seo-최적화-전후-비교">🎯 SEO 최적화 전후 비교</h2>
+<h2 id="seo-최적화-전후-비교">SEO 최적화 전후 비교</h2>
 
 <h3 id="before-기본-html-">Before (기본 HTML)</h3>
 <ul><li>SEO 점수: <strong>30-40점</strong></li></ul>
@@ -119,13 +119,13 @@ GitHub Pages로 만든 정적 블로그가 검색엔진에서 잘 노출되지 �
 <ul><li>완벽한 소셜 미디어 지원</li></ul>
 <ul><li>리치 스니펫 대응</li></ul>
 
-<h2 id="-1단계-기본-seo-인프라-구축">🚀 1단계: 기본 SEO 인프라 구축</h2>
+<h2 id="1단계-기본-seo-인프라-구축">1단계: 기본 SEO 인프라 구축</h2>
 
 <h3 id="robots-txt-생성">robots.txt 생성</h3>
 
-검색엔진 크롤러에게 사이트 구조를 알려주는 필수 파일입니다.
+검색엔진 크롤러에게 사이트 구조를 알려주는 필수 파일.
 
-``<code>txt
+<pre><code class="language-txt">
 User-agent: *
 Allow: /
 
@@ -136,129 +136,125 @@ Sitemap: https://yoursite.github.io/sitemap.xml
 Disallow: /.git/
 Disallow: /node_modules/
 Disallow: /*.js$
-Disallow: /*.css$
-</code>`<code>
+Disallow: /*.css$</code></pre>
 
-### 동적 사이트맵 생성기
+<h3 id="동적-사이트맵-생성기">동적 사이트맵 생성기</h3>
 
-게시물이 추가될 때마다 사이트맵을 업데이트하는 스크립트입니다.
+게시물이 추가될 때마다 사이트맵을 업데이트하는 스크립트.
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // generate-sitemap.js
 const fs = require('fs');
 
 async function generateSitemap() {
     const baseUrl = 'https://yoursite.github.io';
     const posts = JSON.parse(fs.readFileSync('./posts/index.json', 'utf8'));
-    
-    let sitemap = </code><?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <!-- 메인 페이지 -->
-    <url>
-        <loc>${baseUrl}/</loc>
-        <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
-    </url>
-<code>;
+
+    let sitemap = `&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+    &lt;!-- 메인 페이지 --&gt;
+    &lt;url&gt;
+        &lt;loc&gt;${baseUrl}/&lt;/loc&gt;
+        &lt;lastmod&gt;${new Date().toISOString().split('T')[0]}&lt;/lastmod&gt;
+        &lt;changefreq&gt;weekly&lt;/changefreq&gt;
+        &lt;priority&gt;1.0&lt;/priority&gt;
+    &lt;/url&gt;
+`;
 
     // 각 게시물별 URL 추가
     for (const post of posts.posts) {
         const postContent = fs.readFileSync(post.path, 'utf8');
         const frontMatterMatch = postContent.match(/^---([\s\S]*?)---/);
         let lastmod = new Date().toISOString().split('T')[0];
-        
+
         if (frontMatterMatch) {
             const frontMatter = frontMatterMatch[1];
             const dateMatch = frontMatter.match(/date:\s*(.+)/);
             if (dateMatch) {
                 const date = dateMatch[1].trim();
-                lastmod = date.includes('-') ? date : </code>${date}-01-01<code>;
+                lastmod = date.includes('-') ? date : `${date}-01-01`;
             }
         }
-        
-        sitemap += </code>    <url>
-        <loc>${baseUrl}/#${post.id}</loc>
-        <lastmod>${lastmod}</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-<code>;
+
+        sitemap += `    &lt;url&gt;
+        &lt;loc&gt;${baseUrl}/#${post.id}&lt;/loc&gt;
+        &lt;lastmod&gt;${lastmod}&lt;/lastmod&gt;
+        &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+        &lt;priority&gt;0.8&lt;/priority&gt;
+    &lt;/url&gt;
+`;
     }
-    
-    sitemap += </code></urlset><code>;
+
+    sitemap += `&lt;/urlset&gt;`;
     fs.writeFileSync('./sitemap.xml', sitemap);
-    console.log('사이트맵 생성 완료!');
+    console.log('사이트맵 생성 완료');
 }
 
-generateSitemap().catch(console.error);
-</code>`<code>
+generateSitemap().catch(console.error);</code></pre>
 
-**사용법:**
-</code>`<code>bash
-node generate-sitemap.js
-</code>`<code>
+<strong>사용법:</strong>
+<pre><code class="language-bash">
+node generate-sitemap.js</code></pre>
 
-## 📝 2단계: 메타 태그 최적화
+<h2 id="2단계-메타-태그-최적화">2단계: 메타 태그 최적화</h2>
 
-### HTML head 섹션 강화
+<h3 id="html-head-섹션-강화">HTML head 섹션 강화</h3>
 
-</code>`<code>html
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO 메타 태그 -->
-    <title>블로그 제목 - 주요 키워드 포함</title>
-    <meta name="description" content="검색 결과에 나타날 설명문 (150자 이내)">
-    <meta name="keywords" content="주요키워드, 관련키워드, 태그들">
-    <meta name="author" content="작성자명">
-    
-    <!-- Open Graph (페이스북, 카카오톡 등) -->
-    <meta property="og:title" content="블로그 제목">
-    <meta property="og:description" content="블로그 설명">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yoursite.github.io/">
-    <meta property="og:site_name" content="사이트명">
-    <meta property="og:locale" content="ko_KR">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="블로그 제목">
-    <meta name="twitter:description" content="블로그 설명">
-    
-    <!-- 검색엔진 최적화 -->
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://yoursite.github.io/">
-</head>
-</code>`<code>
+<pre><code class="language-html">
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
 
-### 🔧 동적 메타데이터 업데이트
+    &lt;!-- SEO 메타 태그 --&gt;
+    &lt;title&gt;블로그 제목 - 주요 키워드 포함&lt;/title&gt;
+    &lt;meta name="description" content="검색 결과에 나타날 설명문 (150자 이내)"&gt;
+    &lt;meta name="keywords" content="주요키워드, 관련키워드, 태그들"&gt;
+    &lt;meta name="author" content="작성자명"&gt;
+
+    &lt;!-- Open Graph (페이스북, 카카오톡 등) --&gt;
+    &lt;meta property="og:title" content="블로그 제목"&gt;
+    &lt;meta property="og:description" content="블로그 설명"&gt;
+    &lt;meta property="og:type" content="website"&gt;
+    &lt;meta property="og:url" content="https://yoursite.github.io/"&gt;
+    &lt;meta property="og:site_name" content="사이트명"&gt;
+    &lt;meta property="og:locale" content="ko_KR"&gt;
+
+    &lt;!-- Twitter Card --&gt;
+    &lt;meta name="twitter:card" content="summary"&gt;
+    &lt;meta name="twitter:title" content="블로그 제목"&gt;
+    &lt;meta name="twitter:description" content="블로그 설명"&gt;
+
+    &lt;!-- 검색엔진 최적화 --&gt;
+    &lt;meta name="robots" content="index, follow"&gt;
+    &lt;link rel="canonical" href="https://yoursite.github.io/"&gt;
+&lt;/head&gt;</code></pre>
+
+<h3 id="동적-메타데이터-업데이트">동적 메타데이터 업데이트</h3>
 
 게시물을 로드할 때마다 메타데이터를 업데이트하는 JavaScript 함수:
 
-</code>`<code>javascript
+<pre><code class="language-javascript">
 // SEO 메타데이터 동적 업데이트
 function updateSEOMetadata(post, postId) {
     // 페이지 제목 업데이트
-    document.title = </code>${post.title} - 블로그명<code>;
-    
+    document.title = `${post.title} - 블로그명`;
+
     // 메타 description 업데이트
-    const description = post.description || 
-                       post.content.replace(/<[^>]*>/g, '').substring(0, 150) + '...';
-    
+    const description = post.description ||
+                       post.content.replace(/&lt;[^&gt;]*&gt;/g, '').substring(0, 150) + '...';
+
     updateMetaTag('name', 'description', description);
     updateMetaTag('property', 'og:title', post.title);
     updateMetaTag('property', 'og:description', description);
-    updateMetaTag('property', 'og:url', </code>https://yoursite.github.io/#${postId}<code>);
-    
+    updateMetaTag('property', 'og:url', `https://yoursite.github.io/#${postId}`);
+
     // Canonical URL 업데이트
-    updateLinkTag('canonical', </code>https://yoursite.github.io/#${postId}<code>);
+    updateLinkTag('canonical', `https://yoursite.github.io/#${postId}`);
 }
 
 // 유틸리티 함수들
 function updateMetaTag(attr, name, content) {
-    let meta = document.querySelector(</code>meta[${attr}="${name}"]<code>);
+    let meta = document.querySelector(`meta[${attr}="${name}"]`);
     if (meta) {
         meta.setAttribute('content', content);
     } else {
@@ -270,7 +266,7 @@ function updateMetaTag(attr, name, content) {
 }
 
 function updateLinkTag(rel, href) {
-    let link = document.querySelector(</code>link[rel="${rel}"]<code>);
+    let link = document.querySelector(`link[rel="${rel}"]`);
     if (link) {
         link.setAttribute('href', href);
     } else {
@@ -279,15 +275,14 @@ function updateLinkTag(rel, href) {
         link.setAttribute('href', href);
         document.head.appendChild(link);
     }
-}
-</code>`<code>
+}</code></pre>
 
-## 🏗️ 3단계: 구조화된 데이터 (JSON-LD)
+<h2 id="3단계-구조화된-데이터-json-ld-">3단계: 구조화된 데이터 (JSON-LD)</h2>
 
-구글이 이해하기 쉬운 형태로 블로그 정보를 제공합니다.
+구글이 이해하기 쉬운 형태로 블로그 정보를 제공.
 
-</code>`<code>html
-<script type="application/ld+json">
+<pre><code class="language-html">
+&lt;script type="application/ld+json"&gt;
 {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -316,134 +311,130 @@ function updateLinkTag(rel, href) {
         }
     ]
 }
-</script>
-</code>`<code>
+&lt;/script&gt;</code></pre>
 
-## 📊 4단계: SEO 모니터링 설정
+<h2 id="4단계-seo-모니터링-설정">4단계: SEO 모니터링 설정</h2>
 
-### Google Search Console 등록
+<h3 id="google-search-console-등록">Google Search Console 등록</h3>
 
-1. [Google Search Console](https://search.google.com/search-console) 접속
+1. <a href="https://search.google.com/search-console" target="_blank">Google Search Console</a> 접속
 2. 속성 추가 → URL 접두사 방식 선택
 3. GitHub Pages 도메인 입력
 4. HTML 파일 업로드로 소유권 확인
-5. 사이트맵 제출: </code>https://yoursite.github.io/sitemap.xml<code>
+5. 사이트맵 제출: <code>https://yoursite.github.io/sitemap.xml</code>
 
-### 핵심 모니터링 지표
+<h3 id="핵심-모니터링-지표">핵심 모니터링 지표</h3>
 
-- **검색 노출수**: 게시물이 검색 결과에 나타난 횟수
-- **클릭수**: 실제 방문자 수
-- **평균 게재순위**: 검색 결과에서의 평균 순위
-- **CTR (클릭률)**: 노출 대비 클릭 비율
+<ul><li><strong>검색 노출수</strong>: 게시물이 검색 결과에 나타난 횟수</li></ul>
+<ul><li><strong>클릭수</strong>: 실제 방문자 수</li></ul>
+<ul><li><strong>평균 게재순위</strong>: 검색 결과에서의 평균 순위</li></ul>
+<ul><li><strong>CTR (클릭률)</strong>: 노출 대비 클릭 비율</li></ul>
 
-## 🎯 5단계: 컨텐츠 SEO 최적화
+<h2 id="5단계-컨텐츠-seo-최적화">5단계: 컨텐츠 SEO 최적화</h2>
 
-### 게시물 Front Matter 최적화
+<h3 id="게시물-front-matter-최적화">게시물 Front Matter 최적화</h3>
 
-</code>`<code>yaml
+<pre><code class="language-yaml">
 ---
 title: 구체적이고 검색 친화적인 제목
 description: 게시물 요약 설명 (150자 이내)
 date: 2024-11-29
 tags: [주요키워드, 관련키워드, 세부키워드]
 category: Web
----
-</code>`<code>
+---</code></pre>
 
-### SEO 친화적 글쓰기 팁
+<h3 id="seo-친화적-글쓰기-팁">SEO 친화적 글쓰기 팁</h3>
 
-1. **제목 최적화**
+1. <strong>제목 최적화</strong>
    - 주요 키워드를 제목 앞쪽에 배치
    - 60자 이내로 작성
    - 클릭을 유도하는 매력적인 표현 사용
 
-2. **메타 description 작성**
+2. <strong>메타 description 작성</strong>
    - 150-160자 이내
    - 핵심 키워드 포함
    - 클릭 유도 문구 포함
 
-3. **헤딩 구조화**
-   </code>`<code>markdown
+3. <strong>헤딩 구조화</strong>
+   <pre><code class="language-markdown">
    # H1: 메인 제목 (페이지당 1개)
    ## H2: 주요 섹션
    ### H3: 세부 항목
-   </code>`<code>
+   </code></pre>
 
-4. **내부 링크 활용**
+4. <strong>내부 링크 활용</strong>
    - 관련 게시물 간 연결
    - 앵커 텍스트에 키워드 포함
 
-## 🚀 6단계: 성능 최적화
+<h2 id="6단계-성능-최적화">6단계: 성능 최적화</h2>
 
-### 이미지 SEO
+<h3 id="이미지-seo">이미지 SEO</h3>
 
-</code>`<code>html
-<!-- SEO 친화적 이미지 태그 -->
-<img src="image.jpg" 
-     alt="구체적인 이미지 설명" 
+<pre><code class="language-html">
+&lt;!-- SEO 친화적 이미지 태그 --&gt;
+&lt;img src="image.jpg"
+     alt="구체적인 이미지 설명"
      title="이미지 제목"
      loading="lazy"
-     width="800" 
-     height="600">
-</code>`<code>
+     width="800"
+     height="600"&gt;</code></pre>
 
-### Core Web Vitals 최적화
+<h3 id="core-web-vitals-최적화">Core Web Vitals 최적화</h3>
 
-- **LCP (Largest Contentful Paint)**: 2.5초 이내
-- **FID (First Input Delay)**: 100ms 이내  
-- **CLS (Cumulative Layout Shift)**: 0.1 이내
+<ul><li><strong>LCP (Largest Contentful Paint)</strong>: 2.5초 이내</li></ul>
+<ul><li><strong>FID (First Input Delay)</strong>: 100ms 이내</li></ul>
+<ul><li><strong>CLS (Cumulative Layout Shift)</strong>: 0.1 이내</li></ul>
 
-## 📈 실전 SEO 체크리스트
+<h2 id="실전-seo-체크리스트">실전 SEO 체크리스트</h2>
 
-### ✅ 기술적 SEO
-- [ ] robots.txt 설정
-- [ ] sitemap.xml 생성
-- [ ] 메타 태그 완성
-- [ ] 구조화된 데이터 추가
-- [ ] HTTPS 설정 (GitHub Pages 기본 제공)
+<h3 id="기술적-seo">기술적 SEO</h3>
+<ul><li>[ ] robots.txt 설정</li></ul>
+<ul><li>[ ] sitemap.xml 생성</li></ul>
+<ul><li>[ ] 메타 태그 완성</li></ul>
+<ul><li>[ ] 구조화된 데이터 추가</li></ul>
+<ul><li>[ ] HTTPS 설정 (GitHub Pages 기본 제공)</li></ul>
 
-### ✅ 컨텐츠 SEO  
-- [ ] 키워드 리서치 완료
-- [ ] 제목 최적화
-- [ ] 메타 description 작성
-- [ ] 헤딩 구조화
-- [ ] 내부 링크 추가
+<h3 id="컨텐츠-seo">컨텐츠 SEO</h3>
+<ul><li>[ ] 키워드 리서치 완료</li></ul>
+<ul><li>[ ] 제목 최적화</li></ul>
+<ul><li>[ ] 메타 description 작성</li></ul>
+<ul><li>[ ] 헤딩 구조화</li></ul>
+<ul><li>[ ] 내부 링크 추가</li></ul>
 
-### ✅ 사용자 경험
-- [ ] 모바일 친화적 디자인
-- [ ] 빠른 로딩 속도
-- [ ] 명확한 네비게이션
-- [ ] 읽기 쉬운 폰트와 색상
+<h3 id="사용자-경험">사용자 경험</h3>
+<ul><li>[ ] 모바일 친화적 디자인</li></ul>
+<ul><li>[ ] 빠른 로딩 속도</li></ul>
+<ul><li>[ ] 명확한 네비게이션</li></ul>
+<ul><li>[ ] 읽기 쉬운 폰트와 색상</li></ul>
 
-## 🎊 SEO 배포 스크립트
+<h2 id="seo-배포-스크립트">SEO 배포 스크립트</h2>
 
 새 게시물 추가 시 SEO 작업을 처리하는 배포 스크립트:
 
-</code>`<code>bash
+<pre><code class="language-bash">
 #!/bin/bash
 # deploy.sh
 
-echo "🚀 SEO 최적화 배포 시작..."
+echo "SEO 최적화 배포 시작..."
 
 # 사이트맵 재생성
-echo "📄 사이트맵 업데이트..."
+echo "사이트맵 업데이트..."
 node generate-sitemap.js
 
 # Git 커밋
-echo "📤 변경사항 커밋..."
+echo "변경사항 커밋..."
 git add .
 git commit -m "새 게시물 추가 및 SEO 최적화"
 git push
 
-echo "✅ 배포 완료! Google Search Console에서 사이트맵 재제출하세요."
-</code>``
+echo "배포 완료. Google Search Console에서 사이트맵 재제출 권장."</code></pre>
 
-<h2 id="-seo-성과-측정">🔍 SEO 성과 측정</h2>
+<h2 id="seo-성과-측정">SEO 성과 측정</h2>
 
 <h3 id="예상-개선-효과-3개월-기준-">예상 개선 효과 (3개월 기준)</h3>
 
 <ul><li><strong>검색 트래픽</strong>: 300-500% 증가</li></ul>
-<ul><li><strong>검색 노출수</strong>: 10배 이상 증가  </li></ul>
+<ul><li><strong>검색 노출수</strong>: 10배 이상 증가</li></ul>
 <ul><li><strong>평균 게재순위</strong>: 50위 → 10위 내</li></ul>
 <ul><li><strong>브랜드 인지도</strong>: 크게 향상</li></ul>
 
@@ -454,17 +445,13 @@ echo "✅ 배포 완료! Google Search Console에서 사이트맵 재제출하�
 3. <strong>소셜 미디어 공유 증가</strong>
 4. <strong>백링크 자연 획득</strong>
 
-<h2 id="-마무리">🎯 마무리</h2>
+<h2 id="정리">정리</h2>
 
-GitHub Pages 블로그의 SEO 최적화는 <strong>한 번 설정하면 지속적인 효과</strong>를 가져다주는 투자입니다. 
+GitHub Pages 블로그의 SEO 최적화는 <strong>한 번 설정하면 지속적인 효과</strong>를 가져다주는 투자다.
 
-특히 개발 블로그의 경우, 기술적 내용에 대한 검색 수요가 높아서 <strong>제대로 최적화된 블로그는 엄청난 트래픽</strong>을 얻을 수 있어요.
+특히 개발 블로그의 경우, 기술적 내용에 대한 검색 수요가 높아서 제대로 최적화된 블로그는 상당한 트래픽을 얻을 수 있다.
 
-위의 가이드를 따라 하나씩 적용하다 보면, 여러분의 블로그도 검색엔진에서 <strong>상위 노출되는 권위 있는 사이트</strong>로 성장할 거예요! 🚀
-
----
-
-<em>SEO는 마라톤이에요. 꾸준히 좋은 컨텐츠를 만들면서 기술적 최적화를 병행하세요!</em></p>
+SEO는 마라톤이다. 꾸준히 좋은 컨텐츠를 만들면서 기술적 최적화를 병행하면 된다.</p>
                 </div>
                 <div class="comments-section">
                     <h3 class="comments-title">댓글</h3>
@@ -480,15 +467,34 @@ GitHub Pages 블로그의 SEO 최적화는 <strong>한 번 설정하면 지속�
                     <h3>목차</h3>
                 </div>
                 <nav id="toc-nav" class="toc-nav">
-                    <a href="#-seo-최적화-전후-비교" class="toc-h2" data-section="-seo-최적화-전후-비교">🎯 SEO 최적화 전후 비교</a>
+                    <a href="#seo-최적화-전후-비교" class="toc-h2" data-section="seo-최적화-전후-비교">SEO 최적화 전후 비교</a>
                     <a href="#before-기본-html-" class="toc-h3" data-section="before-기본-html-">Before (기본 HTML)</a>
                     <a href="#after-완전-최적화-" class="toc-h3" data-section="after-완전-최적화-">After (완전 최적화)</a>
-                    <a href="#-1단계-기본-seo-인프라-구축" class="toc-h2" data-section="-1단계-기본-seo-인프라-구축">🚀 1단계: 기본 SEO 인프라 구축</a>
+                    <a href="#1단계-기본-seo-인프라-구축" class="toc-h2" data-section="1단계-기본-seo-인프라-구축">1단계: 기본 SEO 인프라 구축</a>
                     <a href="#robots-txt-생성" class="toc-h3" data-section="robots-txt-생성">robots.txt 생성</a>
-                    <a href="#-seo-성과-측정" class="toc-h2" data-section="-seo-성과-측정">🔍 SEO 성과 측정</a>
+                    <a href="#동적-사이트맵-생성기" class="toc-h3" data-section="동적-사이트맵-생성기">동적 사이트맵 생성기</a>
+                    <a href="#2단계-메타-태그-최적화" class="toc-h2" data-section="2단계-메타-태그-최적화">2단계: 메타 태그 최적화</a>
+                    <a href="#html-head-섹션-강화" class="toc-h3" data-section="html-head-섹션-강화">HTML head 섹션 강화</a>
+                    <a href="#동적-메타데이터-업데이트" class="toc-h3" data-section="동적-메타데이터-업데이트">동적 메타데이터 업데이트</a>
+                    <a href="#3단계-구조화된-데이터-json-ld-" class="toc-h2" data-section="3단계-구조화된-데이터-json-ld-">3단계: 구조화된 데이터 (JSON-LD)</a>
+                    <a href="#4단계-seo-모니터링-설정" class="toc-h2" data-section="4단계-seo-모니터링-설정">4단계: SEO 모니터링 설정</a>
+                    <a href="#google-search-console-등록" class="toc-h3" data-section="google-search-console-등록">Google Search Console 등록</a>
+                    <a href="#핵심-모니터링-지표" class="toc-h3" data-section="핵심-모니터링-지표">핵심 모니터링 지표</a>
+                    <a href="#5단계-컨텐츠-seo-최적화" class="toc-h2" data-section="5단계-컨텐츠-seo-최적화">5단계: 컨텐츠 SEO 최적화</a>
+                    <a href="#게시물-front-matter-최적화" class="toc-h3" data-section="게시물-front-matter-최적화">게시물 Front Matter 최적화</a>
+                    <a href="#seo-친화적-글쓰기-팁" class="toc-h3" data-section="seo-친화적-글쓰기-팁">SEO 친화적 글쓰기 팁</a>
+                    <a href="#6단계-성능-최적화" class="toc-h2" data-section="6단계-성능-최적화">6단계: 성능 최적화</a>
+                    <a href="#이미지-seo" class="toc-h3" data-section="이미지-seo">이미지 SEO</a>
+                    <a href="#core-web-vitals-최적화" class="toc-h3" data-section="core-web-vitals-최적화">Core Web Vitals 최적화</a>
+                    <a href="#실전-seo-체크리스트" class="toc-h2" data-section="실전-seo-체크리스트">실전 SEO 체크리스트</a>
+                    <a href="#기술적-seo" class="toc-h3" data-section="기술적-seo">기술적 SEO</a>
+                    <a href="#컨텐츠-seo" class="toc-h3" data-section="컨텐츠-seo">컨텐츠 SEO</a>
+                    <a href="#사용자-경험" class="toc-h3" data-section="사용자-경험">사용자 경험</a>
+                    <a href="#seo-배포-스크립트" class="toc-h2" data-section="seo-배포-스크립트">SEO 배포 스크립트</a>
+                    <a href="#seo-성과-측정" class="toc-h2" data-section="seo-성과-측정">SEO 성과 측정</a>
                     <a href="#예상-개선-효과-3개월-기준-" class="toc-h3" data-section="예상-개선-효과-3개월-기준-">예상 개선 효과 (3개월 기준)</a>
                     <a href="#핵심-성공-지표" class="toc-h3" data-section="핵심-성공-지표">핵심 성공 지표</a>
-                    <a href="#-마무리" class="toc-h2" data-section="-마무리">🎯 마무리</a>
+                    <a href="#정리" class="toc-h2" data-section="정리">정리</a>
                 </nav>
                 <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
                     <span class="snow-toggle-icon">❄</span>

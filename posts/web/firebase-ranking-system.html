@@ -101,68 +101,65 @@ date: 2024-11-29
 tags: [Firebase, GitHub Pages, JavaScript, Realtime Database, 웹게임, 랭킹시스템]
 ---
 
-<h1>GitHub Pages + Firebase로 실시간 랭킹 시스템 만들기 🔥📊</h1>
+<h1>GitHub Pages + Firebase로 실시간 랭킹 시스템 만들기</h1>
 
-정적 사이트인 <strong>GitHub Pages</strong>에서 <strong>Firebase Realtime Database</strong>를 활용해 실시간 글로벌 랭킹 시스템을 구현하는 완전한 가이드! 웹게임이나 스코어 기반 애플리케이션에 바로 적용할 수 있어.
+정적 사이트인 <strong>GitHub Pages</strong>에서 <strong>Firebase Realtime Database</strong>를 활용해 실시간 글로벌 랭킹 시스템을 구현하는 방법. 웹게임이나 스코어 기반 애플리케이션에 바로 적용 가능.
 
-<h2 id="-구현-목표">🎯 구현 목표</h2>
+<h2 id="구현-목표">구현 목표</h2>
 
-<ul><li>✅ <strong>완전 무료 호스팅</strong> (GitHub Pages + Firebase 무료 티어)</li></ul>
-<ul><li>✅ <strong>실시간 점수 공유</strong> (전세계 사용자들과 랭킹 경쟁)</li></ul>
-<ul><li>✅ <strong>견고한 백업 시스템</strong> (Firebase 실패 시 로컬스토리지 대안)</li></ul>
-<ul><li>✅ <strong>보안 규칙 적용</strong> (스팸/해킹 방지)</li></ul>
-<ul><li>✅ <strong>반응형 UI</strong> (모바일/PC 모두 지원)</li></ul>
+<ul><li><strong>완전 무료 호스팅</strong> (GitHub Pages + Firebase 무료 티어)</li></ul>
+<ul><li><strong>실시간 점수 공유</strong> (전세계 사용자들과 랭킹 경쟁)</li></ul>
+<ul><li><strong>견고한 백업 시스템</strong> (Firebase 실패 시 로컬스토리지 대안)</li></ul>
+<ul><li><strong>보안 규칙 적용</strong> (스팸/해킹 방지)</li></ul>
+<ul><li><strong>반응형 UI</strong> (모바일/PC 모두 지원)</li></ul>
 
-<h2 id="-기술-스택">🔧 기술 스택</h2>
+<h2 id="기술-스택">기술 스택</h2>
 
-``<code>javascript
+<pre><code class="language-javascript">
 Frontend: 바닐라 JavaScript + HTML5 Canvas
-Database: Firebase Realtime Database  
+Database: Firebase Realtime Database
 Hosting: GitHub Pages
 Testing: Chrome DevTools Protocol (CDP)
-Backup: localStorage
-</code>`<code>
+Backup: localStorage</code></pre>
 
-## 📋 프로젝트 구조
+<h2 id="프로젝트-구조">프로젝트 구조</h2>
 
-</code>`<code>
+<pre><code class="language-text">
 GitHub Pages 사이트/
 ├── game.html              # 게임 메인 페이지
 ├── firebase-config.js     # Firebase 설정 (선택)
 ├── ranking-system.js      # 랭킹 로직 (선택)
 └── styles/
-    └── ranking.css        # 랭킹 UI 스타일
-</code>`<code>
+    └── ranking.css        # 랭킹 UI 스타일</code></pre>
 
-## 🚀 1단계: Firebase 프로젝트 설정
+<h2 id="1단계-firebase-프로젝트-설정">1단계: Firebase 프로젝트 설정</h2>
 
-### 1.1 프로젝트 생성
-</code>`<code>bash
+<h3 id="1-1-프로젝트-생성">1.1 프로젝트 생성</h3>
+<pre><code class="language-bash">
 # Firebase 콘솔 접속
-https://console.firebase.google.com
-</code>`<code>
+https://console.firebase.google.com</code></pre>
 
-1. **"프로젝트 추가"** 클릭
-2. 프로젝트 이름: </code>your-game-ranking<code>
-3. Google Analytics: **선택 사항**
+1. <strong>"프로젝트 추가"</strong> 클릭
+2. 프로젝트 이름: <code>your-game-ranking</code>
+3. Google Analytics: <strong>선택 사항</strong>
 4. 프로젝트 생성 완료
 
-### 1.2 Realtime Database 생성
-1. 좌측 메뉴 → **"Realtime Database"**
-2. **"데이터베이스 만들기"**
-3. 보안 규칙: **테스트 모드** 선택 (30일간 유효)
-4. 지역: **asia-southeast1** (아시아 서버)
+<h3 id="1-2-realtime-database-생성">1.2 Realtime Database 생성</h3>
+1. 좌측 메뉴 → <strong>"Realtime Database"</strong>
+2. <strong>"데이터베이스 만들기"</strong>
+3. 보안 규칙: <strong>테스트 모드</strong> 선택 (30일간 유효)
+4. 지역: <strong>asia-southeast1</strong> (아시아 서버)
 
-### 1.3 웹 앱 등록
-1. 프로젝트 설정 ⚙️ → **"앱 추가"** → **웹**
-2. 앱 닉네임: </code>Game Ranking<code>
-3. Firebase Hosting: **체크 해제** (GitHub Pages 사용)
-4. **설정 정보 복사** (나중에 사용)
+<h3 id="1-3-웹-앱-등록">1.3 웹 앱 등록</h3>
+1. 프로젝트 설정 → <strong>"앱 추가"</strong> → <strong>웹</strong>
+2. 앱 닉네임: <code>Game Ranking</code>
+3. Firebase Hosting: <strong>체크 해제</strong> (GitHub Pages 사용)
+4. <strong>설정 정보 복사</strong> (나중에 사용)
 
-## 🔒 2단계: 보안 규칙 설정
+<h2 id="2단계-보안-규칙-설정">2단계: 보안 규칙 설정</h2>
 
-### 2.1 기본 보안 규칙
-</code>`<code>json
+<h3 id="2-1-기본-보안-규칙">2.1 기본 보안 규칙</h3>
+<pre><code class="language-json">
 {
   "rules": {
     "game-scores": {
@@ -170,13 +167,13 @@ https://console.firebase.google.com
       ".write": "auth == null && newData.exists()",
       "$scoreId": {
         "name": {
-          ".validate": "newData.isString() && newData.val().length <= 10"
+          ".validate": "newData.isString() && newData.val().length &lt;= 10"
         },
         "score": {
-          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000"
+          ".validate": "newData.isNumber() && newData.val() &gt;= 0 && newData.val() &lt;= 100000"
         },
         "level": {
-          ".validate": "newData.isNumber() && newData.val() >= 1"
+          ".validate": "newData.isNumber() && newData.val() &gt;= 1"
         },
         "timestamp": {
           ".validate": "newData.isNumber()"
@@ -184,47 +181,45 @@ https://console.firebase.google.com
       }
     }
   }
-}
-</code>`<code>
+}</code></pre>
 
-### 2.2 고급 보안 규칙 (스팸 방지)
-</code>`<code>json
+<h3 id="2-2-고급-보안-규칙-스팸-방지-">2.2 고급 보안 규칙 (스팸 방지)</h3>
+<pre><code class="language-json">
 {
   "rules": {
     "game-scores": {
       ".read": true,
-      ".write": "!data.exists() && newData.child('score').val() >= 100",
+      ".write": "!data.exists() && newData.child('score').val() &gt;= 100",
       "$scoreId": {
         ".write": "!data.exists()",
         "name": {
-          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 10"
+          ".validate": "newData.isString() && newData.val().length &gt;= 1 && newData.val().length &lt;= 10"
         },
         "score": {
-          ".validate": "newData.isNumber() && newData.val() >= 100 && newData.val() <= 50000"
+          ".validate": "newData.isNumber() && newData.val() &gt;= 100 && newData.val() &lt;= 50000"
         },
         "timestamp": {
-          ".validate": "(now - newData.val()) <= 60000 && (now - newData.val()) >= -60000"
+          ".validate": "(now - newData.val()) &lt;= 60000 && (now - newData.val()) &gt;= -60000"
         }
       }
     }
   }
-}
-</code>`<code>
+}</code></pre>
 
-## 💻 3단계: 프론트엔드 구현
+<h2 id="3단계-프론트엔드-구현">3단계: 프론트엔드 구현</h2>
 
-### 3.1 Firebase SDK 로드
-</code>`<code>html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>랭킹 게임</title>
-    <!-- Firebase SDK -->
-    <script type="module">
+<h3 id="3-1-firebase-sdk-로드">3.1 Firebase SDK 로드</h3>
+<pre><code class="language-html">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;랭킹 게임&lt;/title&gt;
+    &lt;!-- Firebase SDK --&gt;
+    &lt;script type="module"&gt;
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-        import { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } 
+        import { getDatabase, ref, push, query, orderByChild, limitToLast, onValue }
                from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
-        
+
         // Firebase 설정
         const firebaseConfig = {
             apiKey: "your-api-key",
@@ -235,25 +230,24 @@ https://console.firebase.google.com
             messagingSenderId: "123456789",
             appId: "your-app-id"
         };
-        
+
         // Firebase 초기화
         let app, database, isFirebaseEnabled = false;
-        
+
         try {
             app = initializeApp(firebaseConfig);
             database = getDatabase(app);
             isFirebaseEnabled = true;
-            console.log('🔥 Firebase 연결 성공!');
+            console.log('Firebase 연결 성공');
         } catch (error) {
-            console.log('⚠️ Firebase 연결 실패:', error);
+            console.log('Firebase 연결 실패:', error);
             isFirebaseEnabled = false;
         }
-</script>
-</head>
-</code>`<code>
+&lt;/script&gt;
+&lt;/head&gt;</code></pre>
 
-### 3.2 점수 저장 함수
-</code>`<code>javascript
+<h3 id="3-2-점수-저장-함수">3.2 점수 저장 함수</h3>
+<pre><code class="language-javascript">
 // 점수 저장 함수 (Firebase + 로컬스토리지 백업)
 window.saveScore = async function(playerName, score, level) {
     if (!isFirebaseEnabled) {
@@ -261,7 +255,7 @@ window.saveScore = async function(playerName, score, level) {
         saveLocalScore(playerName, score, level);
         return;
     }
-    
+
     try {
         const scoresRef = ref(database, 'game-scores');
         await push(scoresRef, {
@@ -271,7 +265,7 @@ window.saveScore = async function(playerName, score, level) {
             timestamp: Date.now(),
             date: new Date().toISOString().split('T')[0]
         });
-        console.log('💾 Firebase 점수 저장 완료!');
+        console.log('Firebase 점수 저장 완료');
         loadRankings();
     } catch (error) {
         console.error('Firebase 저장 실패:', error);
@@ -289,37 +283,36 @@ function saveLocalScore(name, score, level) {
         timestamp: Date.now(),
         date: new Date().toISOString().split('T')[0]
     });
-    
+
     // 상위 20개만 보관
-    localScores.sort((a, b) => b.score - a.score);
+    localScores.sort((a, b) =&gt; b.score - a.score);
     localScores = localScores.slice(0, 20);
-    
+
     localStorage.setItem('game-local-scores', JSON.stringify(localScores));
     loadLocalRankings();
-}
-</code>`<code>
+}</code></pre>
 
-### 3.3 랭킹 로드 함수
-</code>`<code>javascript
+<h3 id="3-3-랭킹-로드-함수">3.3 랭킹 로드 함수</h3>
+<pre><code class="language-javascript">
 // Firebase 랭킹 로드
 window.loadRankings = function() {
     if (!isFirebaseEnabled) {
         loadLocalRankings();
         return;
     }
-    
+
     try {
         const scoresRef = ref(database, 'game-scores');
         const topScoresQuery = query(scoresRef, orderByChild('score'), limitToLast(10));
-        
-        onValue(topScoresQuery, (snapshot) => {
+
+        onValue(topScoresQuery, (snapshot) =&gt; {
             const scores = [];
-            snapshot.forEach((childSnapshot) => {
+            snapshot.forEach((childSnapshot) =&gt; {
                 scores.push(childSnapshot.val());
             });
-            
+
             // 점수 높은 순으로 정렬
-            scores.sort((a, b) => b.score - a.score);
+            scores.sort((a, b) =&gt; b.score - a.score);
             displayRankings(scores);
         });
     } catch (error) {
@@ -332,62 +325,60 @@ window.loadRankings = function() {
 function displayRankings(scores) {
     const rankingList = document.getElementById('rankingList');
     if (!rankingList) return;
-    
+
     rankingList.innerHTML = '';
-    
+
     if (scores.length === 0) {
-        rankingList.innerHTML = '<div class="no-scores">아직 등록된 점수가 없습니다</div>';
+        rankingList.innerHTML = '&lt;div class="no-scores"&gt;아직 등록된 점수가 없습니다&lt;/div&gt;';
         return;
     }
-    
-    scores.forEach((score, index) => {
+
+    scores.forEach((score, index) =&gt; {
         const rankingItem = document.createElement('div');
         rankingItem.className = 'ranking-item';
-        rankingItem.innerHTML = </code>
-            <span class="rank">${index + 1}</span>
-            <span class="name">${score.name}</span>
-            <span class="score">${score.score.toLocaleString()}</span>
-            <span class="level">Lv.${score.level}</span>
-        <code>;
+        rankingItem.innerHTML = `
+            &lt;span class="rank"&gt;${index + 1}&lt;/span&gt;
+            &lt;span class="name"&gt;${score.name}&lt;/span&gt;
+            &lt;span class="score"&gt;${score.score.toLocaleString()}&lt;/span&gt;
+            &lt;span class="level"&gt;Lv.${score.level}&lt;/span&gt;
+        `;
         rankingList.appendChild(rankingItem);
     });
-}
-</code>`<code>
+}</code></pre>
 
-### 3.4 랭킹 UI (HTML + CSS)
-</code>`<code>html
-<!-- 랭킹 컨테이너 -->
-<div id="rankingContainer">
-    <h3>🏆 최고 기록</h3>
-    
-    <!-- 점수 등록 섹션 -->
-    <div id="scoreSubmitSection" style="display: none;">
-        <div class="score-info">
-            새로운 기록! <span id="finalScore"></span>점 달성!
-        </div>
-        <div class="score-input">
-            <input type="text" id="playerNameInput" placeholder="이름 입력 (최대 10자)" maxlength="10">
-            <div class="buttons">
-                <button onclick="submitScore()">점수 등록</button>
-                <button onclick="skipScore()">건너뛰기</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 랭킹 리스트 -->
-    <div id="rankingList">
-        <div class="no-scores">랭킹을 로딩중...</div>
-    </div>
-    
-    <!-- 버튼들 -->
-    <div class="ranking-buttons">
-        <button onclick="showRanking()">랭킹 보기</button>
-        <button onclick="hideRanking()">닫기</button>
-    </div>
-</div>
-</code>`<code>
+<h3 id="3-4-랭킹-ui-html-css-">3.4 랭킹 UI (HTML + CSS)</h3>
+<pre><code class="language-html">
+&lt;!-- 랭킹 컨테이너 --&gt;
+&lt;div id="rankingContainer"&gt;
+    &lt;h3&gt;최고 기록&lt;/h3&gt;
 
-</code>`<code>css
+    &lt;!-- 점수 등록 섹션 --&gt;
+    &lt;div id="scoreSubmitSection" style="display: none;"&gt;
+        &lt;div class="score-info"&gt;
+            새로운 기록! &lt;span id="finalScore"&gt;&lt;/span&gt;점 달성!
+        &lt;/div&gt;
+        &lt;div class="score-input"&gt;
+            &lt;input type="text" id="playerNameInput" placeholder="이름 입력 (최대 10자)" maxlength="10"&gt;
+            &lt;div class="buttons"&gt;
+                &lt;button onclick="submitScore()"&gt;점수 등록&lt;/button&gt;
+                &lt;button onclick="skipScore()"&gt;건너뛰기&lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 랭킹 리스트 --&gt;
+    &lt;div id="rankingList"&gt;
+        &lt;div class="no-scores"&gt;랭킹을 로딩중...&lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;!-- 버튼들 --&gt;
+    &lt;div class="ranking-buttons"&gt;
+        &lt;button onclick="showRanking()"&gt;랭킹 보기&lt;/button&gt;
+        &lt;button onclick="hideRanking()"&gt;닫기&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<pre><code class="language-css">
 /* 랭킹 시스템 스타일 */
 #rankingContainer {
     background: rgba(0, 0, 0, 0.9);
@@ -425,13 +416,12 @@ function displayRankings(scores) {
 .ranking-item .score {
     color: #ff8000;
     font-weight: bold;
-}
-</code>`<code>
+}</code></pre>
 
-## 🧪 4단계: 테스트 및 검증
+<h2 id="4단계-테스트-및-검증">4단계: 테스트 및 검증</h2>
 
-### 4.1 curl을 이용한 API 테스트
-</code>`<code>bash
+<h3 id="4-1-curl을-이용한-api-테스트">4.1 curl을 이용한 API 테스트</h3>
+<pre><code class="language-bash">
 # Firebase 연결 테스트 (읽기)
 curl -X GET "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/.json"
 
@@ -441,100 +431,94 @@ curl -X PUT "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.
      -d '{"name":"테스터","score":1500,"level":2,"timestamp":1700000000000}'
 
 # 저장된 데이터 확인
-curl -X GET "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/game-scores.json"
-</code>`<code>
+curl -X GET "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/game-scores.json"</code></pre>
 
-### 4.2 Chrome DevTools Protocol (CDP) 자동화 테스트
-</code>`<code>javascript
+<h3 id="4-2-chrome-devtools-protocol-cdp-자동화-테스트">4.2 Chrome DevTools Protocol (CDP) 자동화 테스트</h3>
+<pre><code class="language-javascript">
 const CDP = require('chrome-remote-interface');
 
 async function testRankingSystem() {
     const tab = await CDP.New({port: 9222});
     const client = await CDP({tab});
     const {Page, Runtime} = client;
-    
+
     await Page.enable();
     await Runtime.enable();
-    
+
     // 게임 페이지 로드
     await Page.navigate({url: 'http://localhost:3000/game.html'});
-    await new Promise(resolve => Page.loadEventFired(resolve));
-    
+    await new Promise(resolve =&gt; Page.loadEventFired(resolve));
+
     // Firebase 연결 상태 확인
     const firebaseStatus = await Runtime.evaluate({
-        expression: </code>window.isFirebaseEnabled ? window.isFirebaseEnabled() : false<code>
+        expression: `window.isFirebaseEnabled ? window.isFirebaseEnabled() : false`
     });
-    
+
     console.log('Firebase 상태:', firebaseStatus.result.value);
-    
+
     // 테스트 점수 저장
     await Runtime.evaluate({
-        expression: </code>window.saveScore('테스터', 9999, 5)<code>
+        expression: `window.saveScore('테스터', 9999, 5)`
     });
-    
+
     // 랭킹 확인
     await Runtime.evaluate({
-        expression: </code>window.loadRankings()<code>
+        expression: `window.loadRankings()`
     });
-    
+
     client.close();
-}
-</code>`<code>
+}</code></pre>
 
-## 🚀 5단계: 배포 및 최적화
+<h2 id="5단계-배포-및-최적화">5단계: 배포 및 최적화</h2>
 
-### 5.1 GitHub Pages 배포
-</code>`<code>bash
+<h3 id="5-1-github-pages-배포">5.1 GitHub Pages 배포</h3>
+<pre><code class="language-bash">
 # 코드 푸시
 git add .
 git commit -m "Firebase 랭킹 시스템 구현 완료"
 git push origin main
 
-# GitHub Pages 활성화 (Settings → Pages → Source: Deploy from a branch)
-</code>`<code>
+# GitHub Pages 활성화 (Settings → Pages → Source: Deploy from a branch)</code></pre>
 
-### 5.2 도메인 인증 설정
+<h3 id="5-2-도메인-인증-설정">5.2 도메인 인증 설정</h3>
 Firebase 콘솔 → Authentication → Settings → 승인된 도메인에 추가:
-</code>`<code>
+<pre><code class="language-text">
 localhost (개발용)
-your-username.github.io (프로덕션)
-</code>`<code>
+your-username.github.io (프로덕션)</code></pre>
 
-### 5.3 성능 최적화
-</code>`<code>javascript
+<h3 id="5-3-성능-최적화">5.3 성능 최적화</h3>
+<pre><code class="language-javascript">
 // Firebase SDK 지연 로딩
-const loadFirebase = async () => {
+const loadFirebase = async () =&gt; {
     const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js');
-    const { getDatabase, ref, push, query, orderByChild, limitToLast, onValue } 
+    const { getDatabase, ref, push, query, orderByChild, limitToLast, onValue }
           = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js');
-    
+
     // Firebase 초기화
     return initializeApp(firebaseConfig);
 };
 
 // 게임 시작 시에만 Firebase 로드
-document.getElementById('startGame').addEventListener('click', async () => {
+document.getElementById('startGame').addEventListener('click', async () =&gt; {
     if (!window.firebaseApp) {
         window.firebaseApp = await loadFirebase();
     }
-});
-</code>`<code>
+});</code></pre>
 
-## 📊 실제 구현 결과
+<h2 id="실제-구현-결과">실제 구현 결과</h2>
 
-### 테스트 결과 스크린샷
-</code>`<code>
-🏆 최고 기록
+<h3 id="테스트-결과-스크린샷">테스트 결과 스크린샷</h3>
+<pre><code class="language-text">
+최고 기록
 
 1  CDPFirebas     9,999  Lv.5
-2  curl테스터     1,500  Lv.2  
+2  curl테스터     1,500  Lv.2
 3  Real테스터       199  Lv.1
 
-[랭킹 보기] [닫기] [다시 시작]
-</code>`<code>
+[랭킹 보기] [닫기] [다시 시작]</code></pre>
 
-### Firebase 데이터 구조
-</code>`<code>json
+<h3 id="firebase-데이터-구조">Firebase 데이터 구조</h3>
+<pre><code class="language-json">
 {
   "game-scores": {
     "-NbcDef123": {
@@ -552,52 +536,49 @@ document.getElementById('startGame').addEventListener('click', async () => {
       "date": "2024-11-29"
     }
   }
-}
-</code>``
+}</code></pre>
 
-<h2 id="-핵심-포인트">🔥 핵심 포인트</h2>
+<h2 id="핵심-포인트">핵심 포인트</h2>
 
-<h3 id="-장점들">✅ 장점들</h3>
+<h3 id="장점들">장점들</h3>
 1. <strong>완전 무료</strong> - GitHub Pages + Firebase 무료 티어 활용
 2. <strong>실시간 동기화</strong> - 여러 사용자간 즉시 랭킹 업데이트
 3. <strong>견고한 백업</strong> - Firebase 실패 시 로컬스토리지 대안
 4. <strong>보안 규칙</strong> - 스팸/해킹 방지로 데이터 무결성 보장
 5. <strong>확장성</strong> - Firebase 자동 스케일링
 
-<h3 id="-주의사항들">⚠️ 주의사항들</h3>
+<h3 id="주의사항들">주의사항들</h3>
 1. <strong>Firebase 무료 티어 제한</strong> - 동시 연결 100개, 10GB/월 전송량
 2. <strong>보안 규칙 중요성</strong> - 잘못 설정하면 데이터 유출 위험
 3. <strong>로컬스토리지 제한</strong> - 브라우저별 5-10MB 제한
 4. <strong>CORS 이슈</strong> - file:// 프로토콜에서는 Firebase 작동 안함
 
-<h2 id="-활용-아이디어">💡 활용 아이디어</h2>
+<h2 id="활용-아이디어">활용 아이디어</h2>
 
-<h3 id="-게임-개발">🎮 게임 개발</h3>
+<h3 id="게임-개발">게임 개발</h3>
 <ul><li><strong>웹게임 랭킹 시스템</strong> (테트리스, 뱀게임, 퍼즐 등)</li></ul>
 <ul><li><strong>실시간 멀티플레이어</strong> (채팅, 공유 점수판)</li></ul>
 <ul><li><strong>일일/주간 리더보드</strong> (기간별 랭킹 초기화)</li></ul>
 
-<h3 id="-웹앱-개발-">📱 웹앱 개발  </h3>
+<h3 id="웹앱-개발">웹앱 개발</h3>
 <ul><li><strong>피트니스 트래커</strong> (운동 기록 공유)</li></ul>
 <ul><li><strong>학습 관리 시스템</strong> (진도율 랭킹)</li></ul>
 <ul><li><strong>설문조사 플랫폼</strong> (실시간 응답 현황)</li></ul>
 
-<h3 id="-비즈니스-활용">🏢 비즈니스 활용</h3>
+<h3 id="비즈니스-활용">비즈니스 활용</h3>
 <ul><li><strong>고객 만족도 조사</strong> (실시간 피드백 수집)</li></ul>
 <ul><li><strong>이벤트 참여도</strong> (실시간 참가자 현황)</li></ul>
 <ul><li><strong>커뮤니티 활동</strong> (사용자 기여도 점수)</li></ul>
 
-<h2 id="-마무리">🎯 마무리</h2>
+<h2 id="정리">정리</h2>
 
-<strong>GitHub Pages + Firebase</strong>의 조합으로 완전 무료로 글로벌 실시간 랭킹 시스템을 구축할 수 있어! 
+<strong>GitHub Pages + Firebase</strong> 조합으로 완전 무료로 글로벌 실시간 랭킹 시스템을 구축할 수 있다.
 
-특히 <strong>로컬스토리지 백업 시스템</strong>과 <strong>보안 규칙</strong>을 통해 견고하고 안전한 서비스를 만들 수 있다는 게 핵심이야.
-
-웹게임이나 스코어 기반 서비스를 만들 때 이 가이드를 참고해서 유저들이 서로 경쟁할 수 있는 재미있는 기능을 추가해보자! 🚀🏆
+특히 <strong>로컬스토리지 백업 시스템</strong>과 <strong>보안 규칙</strong>을 통해 견고하고 안전한 서비스를 만들 수 있다는 게 핵심.
 
 ---
 
-<em>실제 구현 예시: <a href="/posts/playground/neon-breakout" target="_blank">Falling Bricks Breakout</a> 게임에서 작동 중!</em></p>
+<em>실제 구현 예시: <a href="/posts/playground/neon-breakout" target="_blank">Falling Bricks Breakout</a> 게임에서 작동 중</em></p>
                 </div>
                 <div class="comments-section">
                     <h3 class="comments-title">댓글</h3>
@@ -613,16 +594,39 @@ document.getElementById('startGame').addEventListener('click', async () => {
                     <h3>목차</h3>
                 </div>
                 <nav id="toc-nav" class="toc-nav">
-                    <a href="#-구현-목표" class="toc-h2" data-section="-구현-목표">🎯 구현 목표</a>
-                    <a href="#-기술-스택" class="toc-h2" data-section="-기술-스택">🔧 기술 스택</a>
-                    <a href="#-핵심-포인트" class="toc-h2" data-section="-핵심-포인트">🔥 핵심 포인트</a>
-                    <a href="#-장점들" class="toc-h3" data-section="-장점들">✅ 장점들</a>
-                    <a href="#-주의사항들" class="toc-h3" data-section="-주의사항들">⚠️ 주의사항들</a>
-                    <a href="#-활용-아이디어" class="toc-h2" data-section="-활용-아이디어">💡 활용 아이디어</a>
-                    <a href="#-게임-개발" class="toc-h3" data-section="-게임-개발">🎮 게임 개발</a>
-                    <a href="#-웹앱-개발-" class="toc-h3" data-section="-웹앱-개발-">📱 웹앱 개발  </a>
-                    <a href="#-비즈니스-활용" class="toc-h3" data-section="-비즈니스-활용">🏢 비즈니스 활용</a>
-                    <a href="#-마무리" class="toc-h2" data-section="-마무리">🎯 마무리</a>
+                    <a href="#구현-목표" class="toc-h2" data-section="구현-목표">구현 목표</a>
+                    <a href="#기술-스택" class="toc-h2" data-section="기술-스택">기술 스택</a>
+                    <a href="#프로젝트-구조" class="toc-h2" data-section="프로젝트-구조">프로젝트 구조</a>
+                    <a href="#1단계-firebase-프로젝트-설정" class="toc-h2" data-section="1단계-firebase-프로젝트-설정">1단계: Firebase 프로젝트 설정</a>
+                    <a href="#1-1-프로젝트-생성" class="toc-h3" data-section="1-1-프로젝트-생성">1.1 프로젝트 생성</a>
+                    <a href="#1-2-realtime-database-생성" class="toc-h3" data-section="1-2-realtime-database-생성">1.2 Realtime Database 생성</a>
+                    <a href="#1-3-웹-앱-등록" class="toc-h3" data-section="1-3-웹-앱-등록">1.3 웹 앱 등록</a>
+                    <a href="#2단계-보안-규칙-설정" class="toc-h2" data-section="2단계-보안-규칙-설정">2단계: 보안 규칙 설정</a>
+                    <a href="#2-1-기본-보안-규칙" class="toc-h3" data-section="2-1-기본-보안-규칙">2.1 기본 보안 규칙</a>
+                    <a href="#2-2-고급-보안-규칙-스팸-방지-" class="toc-h3" data-section="2-2-고급-보안-규칙-스팸-방지-">2.2 고급 보안 규칙 (스팸 방지)</a>
+                    <a href="#3단계-프론트엔드-구현" class="toc-h2" data-section="3단계-프론트엔드-구현">3단계: 프론트엔드 구현</a>
+                    <a href="#3-1-firebase-sdk-로드" class="toc-h3" data-section="3-1-firebase-sdk-로드">3.1 Firebase SDK 로드</a>
+                    <a href="#3-2-점수-저장-함수" class="toc-h3" data-section="3-2-점수-저장-함수">3.2 점수 저장 함수</a>
+                    <a href="#3-3-랭킹-로드-함수" class="toc-h3" data-section="3-3-랭킹-로드-함수">3.3 랭킹 로드 함수</a>
+                    <a href="#3-4-랭킹-ui-html-css-" class="toc-h3" data-section="3-4-랭킹-ui-html-css-">3.4 랭킹 UI (HTML + CSS)</a>
+                    <a href="#4단계-테스트-및-검증" class="toc-h2" data-section="4단계-테스트-및-검증">4단계: 테스트 및 검증</a>
+                    <a href="#4-1-curl을-이용한-api-테스트" class="toc-h3" data-section="4-1-curl을-이용한-api-테스트">4.1 curl을 이용한 API 테스트</a>
+                    <a href="#4-2-chrome-devtools-protocol-cdp-자동화-테스트" class="toc-h3" data-section="4-2-chrome-devtools-protocol-cdp-자동화-테스트">4.2 Chrome DevTools Protocol (CDP) 자동화 테스트</a>
+                    <a href="#5단계-배포-및-최적화" class="toc-h2" data-section="5단계-배포-및-최적화">5단계: 배포 및 최적화</a>
+                    <a href="#5-1-github-pages-배포" class="toc-h3" data-section="5-1-github-pages-배포">5.1 GitHub Pages 배포</a>
+                    <a href="#5-2-도메인-인증-설정" class="toc-h3" data-section="5-2-도메인-인증-설정">5.2 도메인 인증 설정</a>
+                    <a href="#5-3-성능-최적화" class="toc-h3" data-section="5-3-성능-최적화">5.3 성능 최적화</a>
+                    <a href="#실제-구현-결과" class="toc-h2" data-section="실제-구현-결과">실제 구현 결과</a>
+                    <a href="#테스트-결과-스크린샷" class="toc-h3" data-section="테스트-결과-스크린샷">테스트 결과 스크린샷</a>
+                    <a href="#firebase-데이터-구조" class="toc-h3" data-section="firebase-데이터-구조">Firebase 데이터 구조</a>
+                    <a href="#핵심-포인트" class="toc-h2" data-section="핵심-포인트">핵심 포인트</a>
+                    <a href="#장점들" class="toc-h3" data-section="장점들">장점들</a>
+                    <a href="#주의사항들" class="toc-h3" data-section="주의사항들">주의사항들</a>
+                    <a href="#활용-아이디어" class="toc-h2" data-section="활용-아이디어">활용 아이디어</a>
+                    <a href="#게임-개발" class="toc-h3" data-section="게임-개발">게임 개발</a>
+                    <a href="#웹앱-개발" class="toc-h3" data-section="웹앱-개발">웹앱 개발</a>
+                    <a href="#비즈니스-활용" class="toc-h3" data-section="비즈니스-활용">비즈니스 활용</a>
+                    <a href="#정리" class="toc-h2" data-section="정리">정리</a>
                 </nav>
                 <button id="snowToggle" class="snow-toggle" onclick="toggleSnow()">
                     <span class="snow-toggle-icon">❄</span>

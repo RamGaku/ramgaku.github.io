@@ -31,16 +31,12 @@ function hideAd() {
 function updateLastModifiedTime() {
     if (lastUpdatedTime) {
         const now = new Date();
-        const options = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        };
-        const formattedTime = now.toLocaleDateString('ko-KR', options).replace(/\. /g, '.').replace('.', '') + ' ' + 
-                             now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hour = String(now.getHours()).padStart(2, '0');
+        const minute = String(now.getMinutes()).padStart(2, '0');
+        const formattedTime = `${year}.${month}.${day} ${hour}:${minute}`;
         lastUpdatedTime.textContent = formattedTime;
     }
 }
