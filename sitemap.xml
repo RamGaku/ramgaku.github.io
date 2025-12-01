@@ -3,9 +3,28 @@
     <!-- 메인 페이지 -->
     <url>
         <loc>https://ramgaku.github.io/</loc>
-        <lastmod>2025-11-29</lastmod>
+        <lastmod>2025-12-01</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
+    </url>
+    <!-- Web 카테고리 -->
+    <url>
+        <loc>https://ramgaku.github.io/#github-pages-visitor-counter</loc>
+        <lastmod>2025-12-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://ramgaku.github.io/#gitblogeditor-development-story</loc>
+        <lastmod>2025-11-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://ramgaku.github.io/#firebase-ranking-system</loc>
+        <lastmod>2024-11-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
     <url>
         <loc>https://ramgaku.github.io/#chrome-devtools-protocol</loc>
@@ -13,6 +32,19 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
+    <url>
+        <loc>https://ramgaku.github.io/#github-pages-seo-optimization</loc>
+        <lastmod>2024-11-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://ramgaku.github.io/#giscus-comment</loc>
+        <lastmod>2024-01-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <!-- Playground 카테고리 -->
     <url>
         <loc>https://ramgaku.github.io/#neon-breakout</loc>
         <lastmod>2024-11-29</lastmod>
@@ -25,21 +57,10 @@
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
-    <url>
-        <loc>https://ramgaku.github.io/#giscus-comment</loc>
-        <lastmod>2024-01-01</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
+    <!-- 삽질 기록 카테고리 -->
     <url>
         <loc>https://ramgaku.github.io/#vanilla-blog</loc>
         <lastmod>2024-01-01</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    <url>
-        <loc>https://ramgaku.github.io/#github-pages-seo-optimization</loc>
-        <lastmod>2024-11-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
