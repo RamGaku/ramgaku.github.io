@@ -6,11 +6,6 @@
       "category": "Web"
     },
     {
-      "id": "test-post",
-      "path": "posts/web/test-post.txt",
-      "category": "Web"
-    },
-    {
       "id": "firebase-ranking-system",
       "path": "posts/web/firebase-ranking-system.txt",
       "category": "Web"
