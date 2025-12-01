@@ -1,0 +1,262 @@
+---
+title: GitHub Pages 정적 블로그에 방문자 카운터 추가하기
+description: Firebase Realtime Database와 localStorage를 활용한 방문자 수 카운터 구현
+date: 2025-12-01
+tags: [Firebase, GitHub Pages, JavaScript, 방문자카운터, 블로그]
+---
+
+# GitHub Pages 정적 블로그에 방문자 카운터 추가하기
+
+정적 사이트인 GitHub Pages에서 Firebase Realtime Database를 활용해 방문자 카운터를 구현하는 방법.
+
+## 구현 목표
+
+- Total: 전체 방문자 수
+- Today: 오늘 방문자 수
+- 같은 브라우저에서 새로고침해도 중복 카운트 방지
+
+## 기술 스택
+
+```
+Database: Firebase Realtime Database
+Storage: localStorage (중복 방문 체크)
+Hosting: GitHub Pages
+```
+
+## Firebase 데이터 구조
+
+```
+visitors/
+├── total: 1234           # 전체 방문자 수
+└── daily/
+    ├── 2025-12-01: 56    # 일별 방문자 수
+    ├── 2025-11-30: 42
+    └── ...
+```
+
+## 1단계: Firebase 설정
+
+기존 Firebase 프로젝트가 있다면 재사용 가능. 없다면 Firebase Console에서 새 프로젝트 생성.
+
+### Realtime Database URL 확인
+
+Firebase Console → Realtime Database에서 URL 복사:
+```
+https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/
+```
+
+## 2단계: visitor.js 작성
+
+```javascript
+// Firebase 방문자 카운터
+(function() {
+    const firebaseConfig = {
+        apiKey: "your-api-key",
+        authDomain: "your-project.firebaseapp.com",
+        databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "your-project",
+        storageBucket: "your-project.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "your-app-id"
+    };
+
+    // Firebase 초기화
+    let app;
+    if (typeof firebase !== 'undefined') {
+        if (!firebase.apps.length) {
+            app = firebase.initializeApp(firebaseConfig);
+        } else {
+            app = firebase.apps[0];
+        }
+    }
+
+    const STORAGE_KEY = 'blog_visit_date';
+
+    // 오늘 날짜 (YYYY-MM-DD)
+    function getTodayString() {
+        const now = new Date();
+        return now.toISOString().split('T')[0];
+    }
+
+    // 오늘 이미 방문했는지 확인
+    function hasVisitedToday() {
+        const lastVisit = localStorage.getItem(STORAGE_KEY);
+        return lastVisit === getTodayString();
+    }
+
+    // 방문 기록 저장
+    function markVisited() {
+        localStorage.setItem(STORAGE_KEY, getTodayString());
+    }
+
+    // 방문자 수 증가 및 표시
+    function initVisitorCounter() {
+        if (typeof firebase === 'undefined') {
+            console.warn('Firebase not loaded');
+            return;
+        }
+
+        const db = firebase.database();
+        const visitorsRef = db.ref('visitors');
+        const todayRef = db.ref('visitors/daily/' + getTodayString());
+
+        // 오늘 첫 방문이면 카운터 증가
+        if (!hasVisitedToday()) {
+            // 총 방문자 수 증가
+            visitorsRef.child('total').transaction(function(current) {
+                return (current || 0) + 1;
+            });
+
+            // 오늘 방문자 수 증가
+            todayRef.transaction(function(current) {
+                return (current || 0) + 1;
+            });
+
+            markVisited();
+        }
+
+        // 총 방문자 수 표시
+        visitorsRef.child('total').on('value', function(snapshot) {
+            const total = snapshot.val() || 0;
+            const totalEl = document.getElementById('visitor-total');
+            if (totalEl) {
+                totalEl.textContent = total.toLocaleString();
+            }
+        });
+
+        // 오늘 방문자 수 표시
+        todayRef.on('value', function(snapshot) {
+            const today = snapshot.val() || 0;
+            const todayEl = document.getElementById('visitor-today');
+            if (todayEl) {
+                todayEl.textContent = today.toLocaleString();
+            }
+        });
+    }
+
+    // DOM 로드 후 실행
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initVisitorCounter);
+    } else {
+        initVisitorCounter();
+    }
+})();
+```
+
+## 3단계: HTML에 추가
+
+### Firebase SDK 로드
+
+```html
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="js/visitor.js"></script>
+```
+
+### 카운터 UI
+
+```html
+<div class="visitor-counter">
+    <span class="visitor-label">Today</span>
+    <span class="visitor-count" id="visitor-today">-</span>
+    <span class="visitor-separator">|</span>
+    <span class="visitor-label">Total</span>
+    <span class="visitor-count" id="visitor-total">-</span>
+</div>
+```
+
+## 4단계: CSS 스타일
+
+```css
+.visitor-counter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+}
+
+.visitor-label {
+    color: #606060;
+}
+
+.visitor-count {
+    color: #4ec9b0;
+    font-family: monospace;
+}
+
+.visitor-separator {
+    color: #606060;
+    margin: 0 2px;
+}
+```
+
+## 중복 카운트 방지 원리
+
+```
+1. 방문 시 localStorage에 오늘 날짜 저장
+2. 새로고침 시 localStorage 확인
+3. 오늘 날짜가 이미 있으면 → 카운터 증가 안 함
+4. 다음 날이 되면 → 새로운 방문으로 처리
+```
+
+중복 카운트가 발생하는 경우:
+- 다른 브라우저 사용
+- 시크릿/프라이빗 모드
+- localStorage 삭제
+- 다음 날 방문
+
+## Firebase Security Rules
+
+API 키가 노출되어도 Security Rules로 보안 처리:
+
+```json
+{
+  "rules": {
+    "visitors": {
+      "total": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isNumber() && newData.val() >= data.val()"
+      },
+      "daily": {
+        "$date": {
+          ".read": true,
+          ".write": true,
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    }
+  }
+}
+```
+
+### 도메인 제한 (권장)
+
+Firebase Console → Authentication → Settings → 승인된 도메인:
+```
+your-username.github.io
+```
+
+## 결과
+
+사이드바 하단에 방문자 카운터가 표시됨:
+```
+Today 12 | Total 1,234
+```
+
+## 기존 Firebase 프로젝트 재사용
+
+이미 다른 용도로 Firebase를 사용 중이라면 같은 프로젝트에 `visitors/` 경로만 추가하면 됨.
+
+```
+your-project-default-rtdb/
+├── game-scores/     # 기존 게임 랭킹
+└── visitors/        # 새로 추가한 방문자 카운터
+    ├── total
+    └── daily/
+```
+
+---
+
+*이 블로그의 사이드바 하단에서 실제 작동 중*

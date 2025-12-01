@@ -1,6 +1,11 @@
 {
   "posts": [
     {
+      "id": "github-pages-visitor-counter",
+      "path": "posts/web/github-pages-visitor-counter.txt",
+      "category": "Web"
+    },
+    {
       "id": "gitblogeditor-development-story",
       "path": "posts/web/gitblogeditor-development-story.txt",
       "category": "Web"
