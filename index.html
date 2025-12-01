@@ -141,6 +141,13 @@
                 </div>
             </div>
             <div class="sidebar-footer">
+                <div class="visitor-counter">
+                    <span class="visitor-label">Today</span>
+                    <span class="visitor-count" id="visitor-today">-</span>
+                    <span class="visitor-separator">|</span>
+                    <span class="visitor-label">Total</span>
+                    <span class="visitor-count" id="visitor-total">-</span>
+                </div>
                 <div class="last-updated">
                     <span class="last-updated-label">마지막 업데이트</span>
                     <span class="last-updated-time" id="last-updated-time">로딩 중...</span>
@@ -194,7 +201,12 @@
         </aside>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script src="blog.js"></script>
     <script src="snow.js"></script>
+    <script src="js/visitor.js"></script>
 </body>
 </html>
