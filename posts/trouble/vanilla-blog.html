@@ -98,9 +98,8 @@
 <p>Jekyll, Hugo, Gatsby 등 좋은 정적 사이트 생성기가 많은데 굳이 바닐라 JS로 만든 이유:</p>
 <ul><li><strong>배우기 싫어서</strong> - Ruby(Jekyll)나 Go(Hugo) 환경 설정하기 귀찮음</li>
 <li><strong>커스터마이징 자유도</strong> - 프레임워크 제약 없이 원하는 대로</li>
-<li><strong>단순함</strong> - 빌드 과정 없이 그냥 HTML/CSS/JS만 푸시하면 끝</li>
-</ul>
-물론 장단점이 있음. 마크다운 파싱이나 라우팅을 직접 구현해야 해서 삽질이 불가피.
+<li><strong>단순함</strong> - 빌드 과정 없이 그냥 HTML/CSS/JS만 푸시하면 끝</li></ul>
+<p>물론 장단점이 있음. 마크다운 파싱이나 라우팅을 직접 구현해야 해서 삽질이 불가피.</p>
 <h2 id="구조-설계">구조 설계</h2>
 <p>프로젝트 구조는 이렇게 잡음:</p>
 <ul><li>index.html - 메인 페이지 (SPA)</li>
@@ -109,9 +108,8 @@
 <li>posts/index.json - 게시물 목록</li>
 <li>posts/playground/ - Playground 카테고리</li>
 <li>posts/web/ - Web 카테고리</li>
-<li>.nojekyll - Jekyll 비활성화</li>
-</ul>
-핵심은 posts/index.json에서 게시물 목록을 관리하고, 각 게시물은 마크다운 형식의 .txt 파일로 저장하는 것.
+<li>.nojekyll - Jekyll 비활성화</li></ul>
+<p>핵심은 posts/index.json에서 게시물 목록을 관리하고, 각 게시물은 마크다운 형식의 .txt 파일로 저장하는 것.</p>
 <h2 id="마크다운-파싱-구현">마크다운 파싱 구현</h2>
 <p>별도 라이브러리 없이 정규식으로 간단하게 구현. markdownToHtml 함수에서 코드 블록, 헤더, 볼드, 이탤릭, 링크 등을 정규식으로 HTML 태그로 변환함.</p>
 <p>완벽한 마크다운 파서는 아니지만, 블로그 글 쓰기엔 충분함.</p>
@@ -135,9 +133,8 @@
 <h2 id="결론">결론</h2>
 <ul><li>바닐라 JS로 블로그 만들기는 가능하지만 삽질 각오해야 함</li>
 <li>GitHub Pages + 마크다운 = .txt 확장자 쓰자</li>
-<li>프레임워크 쓰기 싫으면 이런 삽질은 감수해야...</li>
-</ul>
-근데 이 과정에서 fetch API, 정규식, GitHub Pages 동작 방식 등 배운 게 많아서 나쁘지 않았음.
+<li>프레임워크 쓰기 싫으면 이런 삽질은 감수해야...</li></ul>
+<p>근데 이 과정에서 fetch API, 정규식, GitHub Pages 동작 방식 등 배운 게 많아서 나쁘지 않았음.</p>
                 </div>
                 <div class="comments-section">
                     <h3 class="comments-title">댓글</h3>

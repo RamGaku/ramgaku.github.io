@@ -37,7 +37,7 @@ GitHub Pages 블로그 관리의 불편함을 해결하기 위해 웹 기반 통
 - Monaco Editor: VS Code 에디터
 - XTerm.js: 웹 터미널
 
-## 혁신적인 워크플로우
+## 워크플로우
 
 1. 브라우저에서 접속
 2. 사이드바에서 게시물 선택
@@ -46,4 +46,4 @@ GitHub Pages 블로그 관리의 불편함을 해결하기 위해 웹 기반 통
 5. 터미널에서 git 명령어 실행
 6. 원클릭 배포
 
-이 포스팅도 GitBlogEditor로 작성되었다!
+이 포스팅도 GitBlogEditor로 작성됨.
