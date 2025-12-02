@@ -130,22 +130,93 @@ body::before {
     border-left-color: var(--accent-primary);
 }
 
-.category-icon {
-    font-size: 1rem;
+/* 폴더 아이콘 (VS Code 스타일) */
+.folder-icon {
+    display: inline-block;
+    width: 16px;
+    height: 12px;
     margin-right: 8px;
-    filter: grayscale(100%) brightness(1.5);
+    position: relative;
+    background: #c09553;
+    border-radius: 1px;
+    vertical-align: middle;
+    transition: background 0.15s;
+}
+
+.folder-icon::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 7px;
+    height: 3px;
+    background: inherit;
+    border-radius: 1px 1px 0 0;
+}
+
+/* 열린 폴더 */
+.nav-category:not(.collapsed) .folder-icon {
+    background: #dcb67a;
+}
+
+.nav-category:not(.collapsed) .folder-icon::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 1px 1px;
+}
+
+/* 파일 아이콘 */
+.file-icon {
+    display: inline-block;
+    width: 14px;
+    height: 16px;
+    margin-right: 6px;
+    position: relative;
+    background: #6d8086;
+    border-radius: 1px;
+    vertical-align: middle;
+}
+
+.file-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 4px 4px 0;
+    border-color: transparent var(--bg-tertiary) transparent transparent;
+}
+
+/* HTML 파일 아이콘 */
+.file-icon.html {
+    background: #e44d26;
+}
+
+/* JS 파일 아이콘 */
+.file-icon.js {
+    background: #f7df1e;
+}
+
+/* 기타 파일 아이콘 */
+.file-icon.md {
+    background: #519aba;
+}
+
+.file-icon.txt {
+    background: #8b8b8b;
 }
 
 .category-name {
     flex: 1;
     font-weight: normal;
     font-size: 0.9rem;
-    text-transform: lowercase;
-}
-
-.category-name::before {
-    content: './';
-    color: var(--text-muted);
 }
 
 .toggle-icon {
@@ -183,12 +254,7 @@ body::before {
 }
 
 .category-posts li a::before {
-    content: '├─ ';
-    color: var(--text-muted);
-}
-
-.category-posts li:last-child a::before {
-    content: '└─ ';
+    content: '';
 }
 
 .category-posts li a:hover,
@@ -203,8 +269,7 @@ body::before {
 }
 
 .category-posts li.empty-category::before {
-    content: '└─ ';
-    color: var(--text-muted);
+    content: '';
 }
 
 /* 중앙 컨텐츠 영역 */
