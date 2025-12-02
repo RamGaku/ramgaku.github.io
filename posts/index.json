@@ -1,6 +1,16 @@
 {
   "posts": [
     {
+      "id": "git-blog-editor-push-test",
+      "path": "posts/web/git-blog-editor-push-test.txt",
+      "category": "Web"
+    },
+    {
+      "id": "git-blog-editor-test-push",
+      "path": "posts/web/git-blog-editor-test-push.txt",
+      "category": "Web"
+    },
+    {
       "id": "github-pages-visitor-counter",
       "path": "posts/web/github-pages-visitor-counter.txt",
       "category": "Web"
